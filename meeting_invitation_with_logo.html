@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دعوة اجتماع - مدرسة توبلي الابتدائية للبنات</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #8A2BE2, #4169E1); /* From Blue-Violet (top) to RoyalBlue (bottom) */
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            direction: rtl; /* Ensure right-to-left for content */
+            text-align: right; /* Align text to the right for main content */
+        }
+        .header-content {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .school-logo {
+            margin-bottom: 15px;
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+            font-size: 2em;
+        }
+        .field-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00008B; /* Dark Blue color */
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+        input[type="text"],
+        textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .agenda-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .agenda-item span {
+            margin-left: 10px;
+            color: #00008B; /* Dark Blue color */
+            font-weight: bold;
+        }
+        .footer-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+        .footer-text {
+            color: #555;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .round-stamp {
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Print Button Styles */
+        .print-button-container {
+            text-align: center;
+            margin-top: 30px;
+            padding-bottom: 20px;
+        }
+        .print-button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+        .print-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Adjustments for Print Layout */
+        @media print {
+            .print-button-container {
+                display: none; /* Hide the print button when printing */
+            }
+            body {
+                background: none; /* Remove gradient for print */
+                background-color: #fff; /* White background for print */
+                padding: 0; /* Remove body padding */
+            }
+            .container {
+                box-shadow: none; /* Remove shadow for print */
+                border: none; /* Remove border for print if desired */
+                padding: 15px 20px; /* Reduced padding for print, adjust as needed */
+                width: 100%; /* Ensure it takes full width for printing */
+                max-width: none; /* Remove max-width restriction for printing */
+            }
+            /* Further compacting elements for print */
+            .header-content {
+                margin-bottom: 15px; /* Reduce header margin */
+            }
+            .field-group {
+                margin-bottom: 10px; /* Reduce spacing between fields */
+            }
+            label {
+                font-size: 1em; /* Slightly smaller font for labels */
+                margin-bottom: 5px; /* Reduce label bottom margin */
+            }
+            input[type="text"],
+            textarea {
+                padding: 5px; /* Reduce input padding */
+                font-size: 0.9em; /* Slightly smaller font for input text */
+            }
+            textarea {
+                min-height: 60px; /* Reduce minimum height for text areas */
+            }
+            .agenda-item {
+                margin-bottom: 5px; /* Reduce spacing between agenda items */
+            }
+            .footer-section {
+                margin-top: 20px; /* Reduce footer top margin */
+                padding-top: 10px; /* Reduce footer top padding */
+            }
+            .footer-text {
+                font-size: 1em; /* Slightly smaller font for footer text */
+                margin-bottom: 5px; /* Reduce footer text margin */
+            }
+            .round-stamp {
+                width: 120px; /* Smaller stamp for print */
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-content">
+            <img src="new tubli.png" alt="شعار مدرسة توبلي الابتدائية للبنات" class="school-logo" width="400" height="98">
+            <h1>دعوة اجتماع 📝</h1>
+        </div>
+
+        <div class="field-group">
+            <label for="topic">الموضوع:</label>
+            <input type="text" id="topic" name="topic" placeholder="ادخل موضوع الاجتماع هنا">
+        </div>
+
+        <div class="field-group">
+            <label for="date_time">التاريخ واليوم:</label>
+            <input type="text" id="date_time" name="date_time" placeholder="مثال: الأحد، 14 يوليو 2024">
+        </div>
+
+        <div class="field-group">
+            <label for="time">الوقت:</label>
+            <input type="text" id="time" name="time" placeholder="مثال: 10:00 صباحًا - 11:30 صباحًا">
+        </div>
+
+        <div class="field-group">
+            <label for="location">المكان:</label>
+            <input type="text" id="location" name="location" placeholder="ادخل مكان الاجتماع">
+        </div>
+
+        <div class="field-group">
+            <label for="participants">المشاركون المدعون:</label>
+            <textarea id="participants" name="participants" placeholder="ادخل أسماء المشاركين"></textarea>
+        </div>
+
+        <div class="field-group">
+            <label>🎯 محاور الاجتماع:</label>
+            <div class="agenda-item">
+                <span>1.</span>
+                <input type="text" name="agenda_item_1" placeholder="نقطة رقم 1 من جدول الأعمال">
+            </div>
+            <div class="agenda-item">
+                <span>2.</span>
+                <input type="text" name="agenda_item_2" placeholder="نقطة رقم 2 من جدول الأعمال">
+            </div>
+            <div class="agenda-item">
+                <span>3.</span>
+                <input type="text" name="agenda_item_3" placeholder="نقطة رقم 3 من جدول الأعمال">
+            </div>
+            <div class="agenda-item">
+                <span>4.</span>
+                <input type="text" name="agenda_item_4" placeholder="أضف المزيد من النقاط حسب الحاجة">
+            </div>
+            <div class="field-group">
+                <label for="other_topics">5. ما يستجد من أعمال:</label>
+                <textarea id="other_topics" name="other_topics" placeholder="مواضيع إضافية هنا"></textarea>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <span class="footer-text">يعتمد إدارة المدرسة</span>
+            <img src="Round-stamp-582x582.png" alt="ختم دائري" class="round-stamp" width="160" height="160">
+        </div>
+
+        <div class="print-button-container">
+            <button class="print-button" onclick="window.print()">طباعة الدعوة</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateDayInput = document.getElementById('date_time');
+            if (dateDayInput) {
+                const today = new Date();
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const formattedDate = today.toLocaleDateString('ar-US', options);
+
+                dateDayInput.value = formattedDate;
+            }
+        });
+    </script>
+</body>
+</html>
