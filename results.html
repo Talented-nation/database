@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدرسة توبلي الابتدائية للبنات - البرامج والأنشطة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #5c6bc0 0%, #3949ab 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: #3949ab;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            right: 0;
+            width: 80px;
+            height: 2px;
+            background: #5c6bc0;
+        }
+        
+        /* Page 1 Styles */
+        .projects-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .projects-table th {
+            background-color: #5c6bc0;
+            color: white;
+            padding: 16px 12px;
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .projects-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: right;
+        }
+        
+        .projects-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .projects-table tr:nth-child(even) {
+            background-color: #f8fbff;
+        }
+        
+        .projects-table tr:hover {
+            background-color: #edf0f7;
+            transition: background-color 0.3s ease;
+        }
+        
+        .campaigns-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .campaigns-table th {
+            background-color: #26a69a;
+            color: white;
+            padding: 16px 12px;
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .campaigns-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: right;
+        }
+        
+        .campaigns-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .campaigns-table tr:nth-child(even) {
+            background-color: #f0faf9;
+        }
+        
+        .campaigns-table tr:hover {
+            background-color: #e0f2f1;
+            transition: background-color 0.3s ease;
+        }
+        
+        .academic-list {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .academic-list h3 {
+            color: #3949ab;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        
+        .academic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .academic-item {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .academic-item:hover {
+            transform: translateY(-3px);
+            background: #e3e9ff;
+        }
+        
+        .academic-item .number {
+            background: #5c6bc0;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        
+        .academic-item .name {
+            flex-grow: 1;
+            font-weight: 500;
+        }
+        
+        /* Page 2 Styles */
+        .committees-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+        
+        .school-committees-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .school-committees-table th,
+        .school-committees-table td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .school-committees-table thead tr:first-child td {
+            background-color: #e0e0e0;
+            font-size: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .school-committees-table thead th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            padding: 15px;
+            font-size: 15px;
+            white-space: nowrap;
+        }
+        
+        .school-committees-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .school-committees-table tbody tr:hover {
+            background-color: #eaf2f8;
+        }
+        
+        .committee-name {
+            text-align: right;
+            font-weight: 600;
+            color: #0056b3;
+        }
+        
+        .committee-goal {
+            text-align: right;
+            font-size: 13px;
+            color: #555;
+        }
+        
+        .numeric-cell {
+            font-family: Arial, sans-serif;
+            direction: ltr;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .page-main-heading {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+            display: inline-block;
+            margin-right: auto;
+            margin-left: auto;
+            display: block;
+            width: fit-content;
+        }
+        
+        /* Page 3 Styles */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --light-gray: #f5f7fa;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333;
+            --white: #fff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .activities-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 12px 15px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .activities-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .activities-table th, .activities-table td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        .activities-table th {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            font-weight: 600;
+        }
+        
+        .activities-table tr:nth-child(even) {
+            background-color: var(--light-gray);
+        }
+        
+        .activities-table tr:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .schedule-table {
+            width: 100%;
+        }
+        
+        .schedule-table th {
+            background-color: var(--accent-color);
+        }
+        
+        .month-cell {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            font-weight: bold;
+        }
+        
+        /* Page 4 Styles */
+        .outputs-section {
+            font-family: 'Tajawal', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+        }
+        
+        .outputs-section h1, .outputs-section h2, .outputs-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .section-title-block {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin: 30px 0 15px 0;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .outputs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .outputs-table th, .outputs-table td {
+            padding: 12px 15px;
+            text-align: right;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .outputs-table th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+        }
+        
+        .outputs-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .outputs-table tr:hover {
+            background-color: #e8f4fc;
+        }
+        
+        .highlight {
+            background-color: #e3f2fd;
+            font-weight: 500;
+        }
+        
+        .success-indicator {
+            color: #27ae60;
+            font-weight: 500;
+        }
+        
+        .month-column {
+            width: 80px;
+        }
+        
+        .committee-column {
+            width: 120px;
+        }
+        
+        /* Page 5 Styles */
+        .operational-plan-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        
+        .plan-table th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            padding: 12px 8px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+        }
+        
+        .plan-table td {
+            padding: 10px 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        .plan-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .plan-table tr:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .phase-title {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .action-title {
+            background-color: #e0f7fa;
+            font-weight: bold;
+        }
+        
+        .completed {
+            background-color: #d4edda;
+        }
+        
+        .in-progress {
+            background-color: #fff3cd;
+        }
+        
+        .not-started {
+            background-color: #f8d7da;
+        }
+        
+        .evaluation-methods {
+            background-color: #e8f5e9;
+        }
+        
+        .status-cell {
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .projects-table, .campaigns-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .academic-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .activities-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .plan-table {
+                font-size: 12px;
+            }
+            
+            .plan-table th, 
+            .plan-table td {
+                padding: 8px 4px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .academic-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .school-committees-table th,
+            .school-committees-table td {
+                padding: 6px 8px;
+            }
+            
+            .page-main-heading {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1 Content -->
+    <div class="header">
+        <h1> مدرسة توبلي الابتدائية للبنات</h1>
+        <p></p>
+    </div>
+    
+    <h2 class="section-title">المشاريع والبرامج التعليمية</h2>
+    <table class="projects-table">
+        <thead>
+            <tr>
+                <th width="5%">الرقم</th>
+                <th width="15%">اسم البرنامج</th>
+                <th width="35%">الهدف</th>
+                <th width="15%">الفئة المستهدفة</th>
+                <th width="30%">التحديات</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>برنامج توبلي تقرأ</td>
+                <td>زيادة نسبة الطلاب الذين يحققون مستوى جيد في مهارة القراءة بنسبة 10% بحلول نهاية العام الدراسي</td>
+                <td>
+                    متعثرات التحصيل<br>
+                    متوسطات التحصيل<br>
+                    الناطقات بغير العربية<br>
+                    الموهوبات والمتفوقات<br>
+                    صعوبات التعلم
+                </td>
+                <td>انخفاض نسبة مشاركة أولياء الأمور في اللقاءات الخاصة بالمشروع</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>برنامج فراشات التحدي</td>
+                <td>تطوير الجانب المعرفي والسلوكي والوجداني لطالبات صعوبات التعلم بنسبة 5% بحلول نهاية العام الدراسي</td>
+                <td>صعوبات التعلم</td>
+                <td>الحاجة إلى توفير مستلزمات التدريب والعمل داخل الصفوف، مثل الحقائب العلمية والألعاب التعليمية</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>لجنة التقوية</td>
+                <td>زيادة تقديم الدعم التعليمي الفردي لمتعثرات التحصيل لتجاوز التحديات الأكاديمية بما يضمن اكتساب الطالبات المهارات الاساسية في المواد الاساسية</td>
+                <td>متعثرات التحصيل</td>
+                <td>الحاجة إلى متابعة دقيقة ومستمرة لتقدم الطالبات</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>مشروع بلسان عربي</td>
+                <td>تيسير اكتساب الطالبات للمهارات الاساسية في اللغة العربية وفق كفايات المنهج الدراسي</td>
+                <td>الناطقات بغير العربية</td>
+                <td>خلق بيئة تشجع على ممارسة اللغة العربية خارج الفصول الدراسية</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>مشروع خطواتي نحو النجاح</td>
+                <td>زيادة نسبة اتقان الطالبات المتعثرات في المواد الاساسية بما يضمن اكتسابهم للمعارف والمهارات الاساسية بنسبة 10%</td>
+                <td>متعثرات التحصيل</td>
+                <td>تفعيل دور الأهل والمعلمين والإرشاد الاجتماعي في دعم الطالبات</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>مشروع أثابر لأعلو</td>
+                <td>زيادة نسبة الطلاب الذين يحققون مستوى جيد في نسب اتقان المواد الاساسية بنسبة 20% بحلول نهاية العام الدراسي</td>
+                <td>متوسطات التحصيل</td>
+                <td>الحاجة إلى متابعة دقيقة ومستمرة لتقدم الطالبات</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>مشروع عقول نيرة</td>
+                <td>يهدف إلى اثراء خبرات الطالبات في المهارات الاساسية في المواد الاساسية</td>
+                <td>الموهوبات والمتفوقات</td>
+                <td>توفير الموارد اللازمة لتنفيذ المشروع بفاعلية</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>لجنة الموهوبات</td>
+                <td>يهدف إلى تنمية وصقل مهارات البحث العلمي الاحترافي، واستخدام استراتيجيات التفكير العلمي، وتطوير المهارات الذهنية في حل المشكلات بطرق إبداعية</td>
+                <td>الموهوبات</td>
+                <td>الحاجة الى تأهيل الكوادر التعليمية: ضمان وجود معلمين مؤهلين ومدربين للتعامل مع الطالبات الموهوبات</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>برنامج الخوارزمية الصغيرة</td>
+                <td>تنمية المهارات الحسابية الأخرى وتتضمن (العمل مع المعلومات الرسومية، العمل مع البرامج فهم العلاقات بين الأرقام) بالحصص الدراسية، EXCEL الحاسوبية المخصصة للرسوم البيانية والمشاريع والمسابقات المخصصة لذلك</td>
+                <td>الموهوبات والمتفوقات</td>
+                <td>دمج التكنولوجيا بفاعلية</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2 class="section-title">الحملات المدرسية</h2>
+    <table class="campaigns-table">
+        <thead>
+            <tr>
+                <th width="10%">اسم الحملة</th>
+                <th width="25%">وصف الحملة</th>
+                <th width="25%">هدف الحملة</th>
+                <th width="10%">تاريخ البدأ</th>
+                <th width="10%">تاريخ الانتهاء</th>
+                <th width="10%">نوع الرعاية</th>
+                <th width="10%">الفئة المستهدفة</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>حملة "دفء"</td>
+                <td>نشاط إنساني وتعليمي رائع يُعزز قيم العطاء والتكافل الاجتماعي بين الطلاب</td>
+                <td>يهدف إلى جمع التبرعات المالية لشراء مستلزمات الشتاء (مثل البطانيات، الملابس الدافئة) وتوزيعها على طالبات الاسر ذوات الدخل المحدود</td>
+                <td>15 أكتوبر 2025</td>
+                <td>20 أكتوبر 2025</td>
+                <td>الرعاية الاجتماعية</td>
+                <td>الطالبات المحتاجات</td>
+            </tr>
+            <tr>
+                <td>حملة "صحتك كنزك"</td>
+                <td>حملة توعوية صحية تُركّز على تعزيز الوعي بأهمية الصحة الجسدية والنفسية بين الطلاب، وتشجيعهم على اتباع عادات صحية سليمة داخل المدرسة وخارجها</td>
+                <td>
+                    - تعزيز الوعي بأهمية التغذية السليمة والنشاط البدني<br>
+                    - مساعدة الطالبات على تبني عادات صحية مستدامة<br>
+                    - تقديم الدعم النفسي والاجتماعي<br>
+                    - الوقاية من الأمراض المرتبطة بالسمنة
+                </td>
+                <td>2 أبريل 2026</td>
+                <td>13 أبريل 2026</td>
+                <td>الرعاية الصحية والجسدية</td>
+                <td>الطالبات اللاتي يعانين من السمنة (أو زيادة الوزن)</td>
+            </tr>
+            <tr>
+                <td>حملة "لأجلكم.."</td>
+                <td>
+                    إلقاء الضوء على حقوق وإنجازات وتحديات ملايين الأشخاص ذوي الإعاقة حول العالم<br>
+                    شعار الحملة "همم تتألق... فرص تتحقق"
+                </td>
+                <td>زيادة الوعي بالتحديات التي يواجهها الأشخاص ذوو الإعاقة في جميع أنحاء العالم</td>
+                <td>3 ديسمبر 2025</td>
+                <td>5 ديسمبر 2025</td>
+                <td>الرعاية النفسية</td>
+                <td>ذوي الهمم والاعاقة</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="academic-list">
+        <h3>الأقسام الأكاديمية في مدرسة توبلي الابتدائية</h3>
+        <div class="academic-grid">
+            <div class="academic-item">
+                <div class="number">1</div>
+                <div class="name">اللغة الانجليزية</div>
+            </div>
+            <div class="academic-item">
+                <div class="number">2</div>
+                <div class="name">اللغة العربية</div>
+            </div>
+            <div class="academic-item">
+                <div class="number">3</div>
+                <div class="name">العلوم</div>
+            </div>
+            <div class="academic-item">
+                <div class="number">4</div>
+                <div class="name">الرياضيات</div>
+            </div>
+            <div class="academic-item">
+                <div class="number">5</div>
+                <div class="name">نظام الفصل</div>
+            </div>
+            <div class="academic-item">
+                <div class="number">6</div>
+                <div class="name">المواطنة والاجتماعيات</div>
+            </div>
+            <div class="academic-item">
+                <div class="number">7</div>
+                <div class="name">التربية الاسلامية</div>
+            </div>
+            <div class="academic-item">
+                <div class="number">8</div>
+                <div class="name">الرياضة</div>
+            </div>
+            <div class="academic-item">
+                <div class="number">9</div>
+                <div class="name">التربية الفنية</div>
+            </div>
+            <div class="academic-item">
+                <div class="number">10</div>
+                <div class="name">التصميم والتقانة</div>
+            </div>
+            <div class="academic-item">
+                <div class="number">11</div>
+                <div class="name">التربية الاسرية</div>
+            </div>
+            <div class="academic-item">
+                <div class="number">12</div>
+                <div class="name">الحاسوب</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2 Content -->
+    <h2 class="section-title">اللجان المدرسية</h2>
+    <div class="committees-container">
+        <h1 class="page-main-heading">اللجان المدرسية في مدرسة توبلي الابتدائية للبنات</h1>
+        
+        <table class="school-committees-table">
+            <thead>
+                <tr>
+                    <td colspan="3">اللجان المدرسية في مدرسة توبلي الابتدائية للبنات</td>
+                    <td colspan="2">مجموع عدد الطالبات <span class="numeric-cell">520</span> طالبة</td>
+                </tr>
+                <tr>
+                    <th>الرقم</th>
+                    <th>اسم اللجنة</th>
+                    <th>الهدف</th>
+                    <th>عدد الطالبات</th>
+                    <th>نسبة المشاركة</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="numeric-cell">1</span></td>
+                    <td class="committee-name">لجنة التقوية</td>
+                    <td class="committee-goal">زيادة تقديم الدعم التعليمي الفردي لمتعثرات التحصيل لتجاوز التحديات الأكاديمية بما يضمن اكتساب الطالبات المهارات الاساسية في المواد الاساسية.</td>
+                    <td><span class="numeric-cell">35</span></td>
+                    <td><span class="numeric-cell">6.70%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">2</span></td>
+                    <td class="committee-name">لجنة الموهوبات</td>
+                    <td class="committee-goal">يهدف إلى تنمية وصقل مهارات البحث العلمي الاحترافي، واستخدام استراتيجيات التفكير العلمي، وتطوير المهارات الذهنية في حل المشكلات بطرق إبداعية.</td>
+                    <td><span class="numeric-cell">40</span></td>
+                    <td><span class="numeric-cell">7.70%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">3</span></td>
+                    <td class="committee-name">لجنة الزراعة</td>
+                    <td class="committee-goal">تنمية الوعي البيئي والزراعي وترسيخ ثقافة الاستدامة لدى الطالبات، وإكسابهم المهارات العملية في زراعة النباتات ورعايتها، والمساهمة في تجميل البيئة المدرسي وزيادة المساحات الخضراء.</td>
+                    <td><span class="numeric-cell">30</span></td>
+                    <td><span class="numeric-cell">5.80%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">4</span></td>
+                    <td class="committee-name">لجنة الفنون والرسم</td>
+                    <td class="committee-goal">اكتشاف وتطوير المواهب الفنية للطلاب، وتشجيعهم على التعبير الابداعي عن أفكارهم ومشاعرهم من خلال الألوان واللوحات الفنية.</td>
+                    <td><span class="numeric-cell">35</span></td>
+                    <td><span class="numeric-cell">6.70%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">5</span></td>
+                    <td class="committee-name">لجنة المسرح والتمثيل</td>
+                    <td class="committee-goal">صقل مهارات الطلاب في الأداء المسرحي والتمثيل، وتنمية قدراتهم على التعبير اللفظي والجسدي، وتعزيز الثقة بالنفس والعمل الجماعي لديهم من خلال إنتاج وتقديم الأعمال المسرحية.</td>
+                    <td><span class="numeric-cell">50</span></td>
+                    <td><span class="numeric-cell">9.60%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">6</span></td>
+                    <td class="committee-name">لجنة تراثي هويتي</td>
+                    <td class="committee-goal">تعزيز الانتماء الوطني والاعتزاز بالتراث البحريني والعربي لدى الطلاب، وتعريفهم بالعادات والتقاليد والقيم الأصيلة، وتشجيعهم على البحث في تاريخ وثقافة الوطن والمحافظة عليها.</td>
+                    <td><span class="numeric-cell">45</span></td>
+                    <td><span class="numeric-cell">8.70%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">7</span></td>
+                    <td class="committee-name">لجنة العمل التطوعي</td>
+                    <td class="committee-goal">غرس قيم المسؤولية المجتمعية والمبادرة في نفوس الطلاب، وتشجيعهم على خدمة المجتمع وتقديم العون للمحتاجين، وتنمية روح التعاون والإيجابية لديهم من خلال المشاركة في مبادرات تطوعية داخل وخارج المدرسة.</td>
+                    <td><span class="numeric-cell">30</span></td>
+                    <td><span class="numeric-cell">5.80%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">8</span></td>
+                    <td class="committee-name">لجنة التصوير والتصميم</td>
+                    <td class="committee-goal">تطوير مهارات الطلاب في فنون التصوير الفوتوغرافي والتصميم الجرافيكي، وإكسابهم الأدوات والتقنيات اللازمة لالتقاط الصور الإبداعية وإنتاج تصاميم بصرية، وتشجيعهم على توثيق الأنشطة المدرسية والتعبير عن رؤاهم الفنية.</td>
+                    <td><span class="numeric-cell">35</span></td>
+                    <td><span class="numeric-cell">6.70%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">9</span></td>
+                    <td class="committee-name">لجنة التكنولوجيا والبرمجة</td>
+                    <td class="committee-goal">تمكين الطلاب من مهارات المستقبل الرقمي عبر مشاريع برمجية وإبداعية (تطبيقات، روبوتات، ذكاء اصطناعي) تُحفّز الابتكار وحل المشكلات.</td>
+                    <td><span class="numeric-cell">25</span></td>
+                    <td><span class="numeric-cell">4.80%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">10</span></td>
+                    <td class="committee-name">لجنة الاعمال اليدوية</td>
+                    <td class="committee-goal">تنمية المهارات الحركية الدقيقة والإبداعية لدى الطلاب من خلال تعليمهم مختلف الفنون اليدوية، وتشجيعهم على إنتاج أعمال فنية وحرفية مبتكرة، وتعزيز صبرهم ودقتهم في العمل.</td>
+                    <td><span class="numeric-cell">30</span></td>
+                    <td><span class="numeric-cell">5.80%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">11</span></td>
+                    <td class="committee-name">لجنة الاذاعة المدرسية</td>
+                    <td class="committee-goal">تنمية مهارات الطلاب في الإلقاء، التقديم، جمع الأخبار، وكتابة المحتوى الهادف، وتعزيز ثقتهم بأنفسهم وقدرتهم على التواصل الفعال، والمساهمة في نشر الوعي والمعلومات المفيدة داخل المجتمع المدرسي.</td>
+                    <td><span class="numeric-cell">35</span></td>
+                    <td><span class="numeric-cell">6.70%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">12</span></td>
+                    <td class="committee-name">لجنة الزهرات</td>
+                    <td class="committee-goal">رس القيم التربوية والأخلاقية النبيلة لدى الطالبات، وتنمية مهاراتهن الاجتماعية والحياتية الأساسية، وتشجيعهن على التعاون والعمل الجماعي والمشاركة في الأنشطة اللاصفية التي تعزز شخصياتهن.</td>
+                    <td><span class="numeric-cell">30</span></td>
+                    <td><span class="numeric-cell">5.80%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">13</span></td>
+                    <td class="committee-name">لجنة الرياضة</td>
+                    <td class="committee-goal">تعزيز الوعي بأهمية النشاط البدني والصحة واللياقة البدنية لدى الطلاب، وتنمية مهاراتهم الرياضية في مختلف الألعاب، وتشجيعهم على المنافسة الشريفة والروح الرياضية.</td>
+                    <td><span class="numeric-cell">35</span></td>
+                    <td><span class="numeric-cell">6.70%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">14</span></td>
+                    <td class="committee-name">لجنة اليونيسكو</td>
+                    <td class="committee-goal">تعريف الطلاب بمبادئ وأهداف منظمة اليونيسكو (منظمة الأمم المتحدة للتربية والعلم والثقافة)، وتعزيز قيم التسامح، السلام، الحوار الثقافي، والتنمية المستدامة لديهم، وتشجيعهم على المشاركة في مبادرات عالمية تخدم هذه الأهداف.</td>
+                    <td><span class="numeric-cell">40</span></td>
+                    <td><span class="numeric-cell">7.70%</span></td>
+                </tr>
+                <tr>
+                    <td><span class="numeric-cell">15</span></td>
+                    <td class="committee-name">لجنة في رحاب القرآن</td>
+                    <td class="committee-goal">تعميق فهم الطلاب للقرآن الكريم وتجويده وحفظه، وغرس القيم والمبادئ الإسلامية السمحة في نفوسهم، وتشجيعهم على تطبيق أخلاق القرآن في حياتهم اليومية وتعزيز ارتباطهم بدينهم.</td>
+                    <td><span class="numeric-cell">25</span></td>
+                    <td><span class="numeric-cell">4.80%</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Page 3 Content -->
+    <h2 class="section-title">الأنشطة المدرسية والمناسبات العالمية</h2>
+    <div class="activities-container">
+        <!-- Global Events - First Semester -->
+        <div class="card">
+            <div class="card-header">المناسبات العالمية للفصل الدراسي الأول</div>
+            <table class="activities-table">
+                <thead>
+                    <tr>
+                        <th>المناسبة العالمية</th>
+                        <th>التاريخ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>اليوم العالمي لمحو الأمية</td>
+                        <td>8 سبتمبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي لمنع الانتحار</td>
+                        <td>10 سبتمبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للسلام</td>
+                        <td>21 سبتمبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للسياحة</td>
+                        <td>27 سبتمبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم الدولي للمسنين</td>
+                        <td>1 أكتوبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للمعلمين</td>
+                        <td>5 أكتوبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للصحة النفسية</td>
+                        <td>10 أكتوبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للفتاة</td>
+                        <td>11 أكتوبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم الدولي للحد من مخاطر الكوارث</td>
+                        <td>13 أكتوبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي لغسل اليدين</td>
+                        <td>15 أكتوبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للأغذية</td>
+                        <td>16 أكتوبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم الدولي للقضاء على الفقر</td>
+                        <td>17 أكتوبر</td>
+                    </tr>
+                    <tr>
+                        <td>يوم الأمم المتحدة</td>
+                        <td>24 أكتوبر</td>
+                    </tr>
+                    <tr>
+                        <td>يوم الطبيب البحريني</td>
+                        <td>1 نوفمبر</td>
+                    </tr>
+                    <tr>
+                        <td>يوم السكر العالمي</td>
+                        <td>14 نوفمبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للطفل</td>
+                        <td>20 نوفمبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم الدولي للقضاء على العنف ضد المرأة</td>
+                        <td>25 نوفمبر</td>
+                    </tr>
+                    <tr>
+                        <td>يوم المرأة البحرينية</td>
+                        <td>1 ديسمبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي لإلغاء الرق</td>
+                        <td>2 ديسمبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للأشخاص ذوي الإعاقة</td>
+                        <td>3 ديسمبر</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم الدولي لمكافحة الفساد</td>
+                        <td>9 ديسمبر</td>
+                    </tr>
+                    <tr>
+                        <td>يوم حقوق الإنسان</td>
+                        <td>10 ديسمبر</td>
+                    </tr>
+                    <tr>
+                        <td>عيد استقلال مملكة البحرين</td>
+                        <td>16 ديسمبر</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- School Activities Schedule -->
+        <div class="card">
+            <div class="card-header">الجدول الزمني للأنشطة المدرسية</div>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>الفترة الزمنية</th>
+                        <th>الأنشطة المقترحة</th>
+                        <th>اللجان المسؤولة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="month-cell" rowspan="2">سبتمبر</td>
+                        <td>- إطلاق البرامج واللجان المدرسية</td>
+                        <td>فريق الأنشطة، جميع اللجان</td>
+                    </tr>
+                    <tr>
+                        <td>- ورش عمل تعريفية باللجان وأهدافها</td>
+                        <td>جميع اللجان</td>
+                    </tr>
+                    <tr>
+                        <td class="month-cell" rowspan="3">أكتوبر</td>
+                        <td>- الاحتفال باليوم العالمي للمعلم</td>
+                        <td>لجنة الإعلام المدرسي، لجنة المسرح</td>
+                    </tr>
+                    <tr>
+                        <td>- بدء فعاليات "تحدي القراءة"</td>
+                        <td>لجنة اللغة العربية، لجنة اللغة الإنجليزية</td>
+                    </tr>
+                    <tr>
+                        <td>- ورش عمل أساسيات البرمجة</td>
+                        <td>لجنة التكنولوجيا والبرمجة</td>
+                    </tr>
+                    <tr>
+                        <td class="month-cell" rowspan="3">نوفمبر</td>
+                        <td>- حملة "بيئتنا مسؤوليتنا" (زراعة أشجار/تنظيف)</td>
+                        <td>لجنة الزراعة والبيئة، لجنة العمل التطوعي</td>
+                    </tr>
+                    <tr>
+                        <td>- معرض الفنون المدرسية (المرحلة الأولى)</td>
+                        <td>لجنة الفنون والرسم، لجنة الأعمال اليدوية</td>
+                    </tr>
+                    <tr>
+                        <td>- دوري كرة القدم/السلة الداخلي</td>
+                        <td>لجنة الرياضة</td>
+                    </tr>
+                    <tr>
+                        <td class="month-cell" rowspan="3">ديسمبر</td>
+                        <td>- الاحتفال باليوم الوطني (في البحرين)</td>
+                        <td>لجنة تراثي هويتي، لجنة المسرح، الإذاعة</td>
+                    </tr>
+                    <tr>
+                        <td>- مسابقة الخط العربي</td>
+                        <td>لجنة الخط العربي والزخرفة</td>
+                    </tr>
+                    <tr>
+                        <td>- فعاليات "في رحاب القرآن"</td>
+                        <td>لجنة في رحاب القرآن</td>
+                    </tr>
+                    <tr>
+                        <td class="month-cell" rowspan="2">يناير</td>
+                        <td>- مسابقة العلوم والابتكار المدرسية</td>
+                        <td>لجنة العلوم والابتكار</td>
+                    </tr>
+                    <tr>
+                        <td>- ورش عمل التصوير الفوتوغرافي</td>
+                        <td>لجنة التصوير والتصميم</td>
+                    </tr>
+                    <tr>
+                        <td class="month-cell" rowspan="3">فبراير</td>
+                        <td>- يوم الصحة واللياقة البدنية</td>
+                        <td>لجنة الرياضة، لجنة الإسعافات الأولية</td>
+                    </tr>
+                    <tr>
+                        <td>- حملة التوعية بالعمل التطوعي</td>
+                        <td>لجنة العمل التطوعي</td>
+                    </tr>
+                    <tr>
+                        <td>- مسرحية قصيرة أو عرض مسرحي</td>
+                        <td>لجنة المسرح والتمثيل</td>
+                    </tr>
+                    <tr>
+                        <td class="month-cell" rowspan="2">مارس</td>
+                        <td>- ورشة عمل لغة إنجليزية تفاعلية</td>
+                        <td>لجنة اللغة الإنجليزية</td>
+                    </tr>
+                    <tr>
+                        <td>- مسابقة الألعاب الذهنية</td>
+                        <td>لجنة الألعاب الذهنية</td>
+                    </tr>
+                    <tr>
+                        <td class="month-cell" rowspan="2">أبريل</td>
+                        <td>- اليوم المفتوح للأنشطة والابتكارات الطلابية (معرض نهائي)</td>
+                        <td>جميع اللجان</td>
+                    </tr>
+                    <tr>
+                        <td>- حفل ختام الأنشطة وتكريم المشاركين</td>
+                        <td>فريق الأنشطة، جميع اللجان</td>
+                    </tr>
+                    <tr>
+                        <td class="month-cell">مايو/يونيو</td>
+                        <td>- إعداد التقارير النهائية وتقييم الأنشطة</td>
+                        <td>منسق الأنشطة، مشرفو اللجان</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Global Events - Second Semester -->
+        <div class="card">
+            <div class="card-header">المناسبات العالمية للفصل الدراسي الثاني</div>
+            <table class="activities-table">
+                <thead>
+                    <tr>
+                        <th>المناسبة العالمية</th>
+                        <th>التاريخ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>اليوم العالمي للسلام</td>
+                        <td>1 يناير</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للغة برايل</td>
+                        <td>4 يناير</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم الدولي للتعليم</td>
+                        <td>24 يناير</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي لمكافحة السرطان</td>
+                        <td>4 فبراير</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للإذاعة</td>
+                        <td>13 فبراير</td>
+                    </tr>
+                    <tr>
+                        <td>يوم الميثاق الوطني</td>
+                        <td>14 فبراير</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للغة الأم</td>
+                        <td>21 فبراير</td>
+                    </tr>
+                    <tr>
+                        <td>يوم الموهبة الخليجي</td>
+                        <td>3 مارس</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للمرأة</td>
+                        <td>8 مارس</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم الدولي للسعادة</td>
+                        <td>20 مارس</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي لمتلازمة داون</td>
+                        <td>21 مارس</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للشعر</td>
+                        <td>21 مارس</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للمياه</td>
+                        <td>22 مارس</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للمسرح</td>
+                        <td>27 مارس</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للتوحد</td>
+                        <td>2 أبريل</td>
+                    </tr>
+                    <tr>
+                        <td>يوم الصحة العالمي</td>
+                        <td>7 أبريل</td>
+                    </tr>
+                    <tr>
+                        <td>يوم الأرض العالمي</td>
+                        <td>22 أبريل</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للكتاب وحقوق المؤلف</td>
+                        <td>23 أبريل</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي لحرية الصحافة</td>
+                        <td>3 مايو</td>
+                    </tr>
+                    <tr>
+                        <td>يوم الطيور المهاجرة العالمي</td>
+                        <td>8 مايو</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم الدولي للأسر</td>
+                        <td>15 مايو</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للاتصالات ومجتمع المعلومات</td>
+                        <td>17 مايو</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم الدولي للتنوع البيولوجي</td>
+                        <td>22 مايو</td>
+                    </tr>
+                    <tr>
+                        <td>اليوم العالمي للامتناع عن التدخين</td>
+                        <td>31 مايو</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Page 4 Content -->
+    <h2 class="section-title">المخرجات ومؤشرات النجاح للأنشطة الطلابية</h2>
+        <div class="section-title-block">الفصل الدراسي الاول (سبتمبر- ديسمبر)</div>
+        <table class="outputs-table">
+            <thead>
+                <tr>
+                    <th class="month-column">الشهر</th>
+                    <th class="committee-column">اللجنة</th>
+                    <th>النشاط</th>
+                    <th>المخرجات المتوقعة</th>
+                    <th>مؤشرات النجاح</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>سبتمبر</td>
+                    <td>العمل التطوعي</td>
+                    <td>"مدرستي نظيفة" (تنظيف الفصول)</td>
+                    <td>بيئة مدرسية مستدامة</td>
+                    <td class="success-indicator">مشاركة 100 طالب - تنفيذ 90% من المستهدفات</td>
+                </tr>
+                <tr>
+                    <td>سبتمبر</td>
+                    <td>تراثي هويتي</td>
+                    <td>معرض "أزياء تراثية"</td>
+                    <td>تعريف الطلاب بزي كل منطقة في البلاد</td>
+                    <td class="success-indicator">مشاركة 40 طالبًا - معرض مرئي</td>
+                </tr>
+                <tr>
+                    <td>أكتوبر</td>
+                    <td>التكنولوجيا والبرمجة</td>
+                    <td>مسابقة "هاكاثون المبتكر الصغير"</td>
+                    <td>تصميم تطبيق لحل مشكلة مدرسية</td>
+                    <td class="success-indicator">15 مشروعًا - 3 فائزين</td>
+                </tr>
+                <tr>
+                    <td>أكتوبر</td>
+                    <td>الأعمال اليدوية</td>
+                    <td>سوق "صنع في توبلي"</td>
+                    <td>بيع منتجات يدوية لدعم مشاريع المدرسة</td>
+                    <td class="success-indicator">تحقيق دخل 50 دينار - مشاركة 40 طالبًا</td>
+                </tr>
+                <tr>
+                    <td>نوفمبر</td>
+                    <td>الزراعة</td>
+                    <td>إنشاء "حديقة نباتات طبية"</td>
+                    <td>20 نوعًا نباتيًا مع لوحات تعريفية</td>
+                    <td class="success-indicator">مشاركة 50 طالبًا - إنتاج أولي</td>
+                </tr>
+                <tr>
+                    <td>ديسمبر</td>
+                    <td>الفنون والرسم</td>
+                    <td>رسم جدارية "علم بلادي"</td>
+                    <td>تزيين سور المدرسة برموز وطنية</td>
+                    <td class="success-indicator">إنجاز العمل بنسبة 100%</td>
+                </tr>
+                <tr>
+                    <td>ديسمبر</td>
+                    <td>المسرح والتمثيل</td>
+                    <td>مسرحية "قصة وطن"</td>
+                    <td>عرض مسرحي بمناسبة اليوم الوطني</td>
+                    <td class="success-indicator">حضور 300 شخص - تقييم جمهور 4/5</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-title-block">الفصل الدراسي الثاني (يناير - مايو)</div>
+        
+        <table class="outputs-table">
+            <thead>
+                <tr>
+                    <th class="month-column">الشهر</th>
+                    <th class="committee-column">اللجنة</th>
+                    <th>النشاط</th>
+                    <th>المخرجات المتوقعة</th>
+                    <th>مؤشرات النجاح</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>يناير</td>
+                    <td>التصوير والتصميم</td>
+                    <td>ورشة "فن الفيديو الرقمي"</td>
+                    <td>إنتاج 5 فيديوهات توعوية</td>
+                    <td class="success-indicator">نشرها على منصات المدرسة</td>
+                </tr>
+                <tr>
+                    <td>يناير</td>
+                    <td>العمل التطوعي</td>
+                    <td>حملة "دفء" (توزيع المعونات على المحتاجين)</td>
+                    <td>خدمة 100 أسرة</td>
+                    <td class="success-indicator">مشاركة 80 طالبًا</td>
+                </tr>
+                <tr>
+                    <td>فبراير</td>
+                    <td>التكنولوجيا والبرمجة</td>
+                    <td>معرض "مستقبل الذكاء الاصطناعي"</td>
+                    <td>نماذج روبوتات بسيطة</td>
+                    <td class="success-indicator">20 نموذجًا - حضور 200 زائر</td>
+                </tr>
+                <tr>
+                    <td>فبراير</td>
+                    <td>تراثي هويتي</td>
+                    <td>مهرجان "أغاني الشعبي"</td>
+                    <td>توثيق 10 أغانٍ تراثية بأداء الطلاب</td>
+                    <td class="success-indicator">إصدار ألبوم صوتي podcast</td>
+                </tr>
+                <tr>
+                    <td>مارس</td>
+                    <td>الزراعة</td>
+                    <td>مشروع "زراعة الأسطح"</td>
+                    <td>تحويل 3 أسطح صفوف إلى مساحات خضراء</td>
+                    <td class="success-indicator">تقليل استهلاك الطاقة 10%</td>
+                </tr>
+                <tr>
+                    <td>مارس</td>
+                    <td>المسرح والتمثيل</td>
+                    <td>مسابقة "أفضل ممثلة صاعدة"</td>
+                    <td>اكتشاف 5 مواهب مسرحية</td>
+                    <td class="success-indicator">تقييم لجنة تحكيم متخصصة</td>
+                </tr>
+                <tr>
+                    <td>أبريل</td>
+                    <td>الفنون والرسم</td>
+                    <td>معرض "بريشة وعافية" (قضايا اجتماعية- صحية)</td>
+                    <td>50 لوحة فنية معبرة</td>
+                    <td class="success-indicator">بيع 30% من اللوحات لدعم الانشطة الطلابية</td>
+                </tr>
+                <tr>
+                    <td>مايو</td>
+                    <td>جميع اللجان</td>
+                    <td>مهرجان ختامي "إبداعاتنا"</td>
+                    <td>عرض منجزات العام في أركان تفاعلية</td>
+                    <td class="success-indicator">مشاركة 70% من الطلاب - حضور جماهيري</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-title-block">جدول مخرجات ومؤشرات النجاح للبرامج والمشاريع الداعمة للفئات</div>
+        
+        <table class="outputs-table">
+            <thead>
+                <tr>
+                    <th>المؤشر</th>
+                    <th>الموهوبون</th>
+                    <th>المتفوقون</th>
+                    <th>المتوسطون</th>
+                    <th>منخفضو التحصيل</th>
+                    <th>صعوبات التعلم</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>معدل المشاركة</td>
+                    <td>95%</td>
+                    <td>90%</td>
+                    <td>85%</td>
+                    <td>75%</td>
+                    <td>80%</td>
+                </tr>
+                <tr>
+                    <td>التحسن الأكاديمي</td>
+                    <td>+20% إبداع</td>
+                    <td>+15% تميز</td>
+                    <td>+25% تحصيل</td>
+                    <td>+40% مهارات أساسية</td>
+                    <td>30%</td>
+                </tr>
+                <tr>
+                    <td>الرضا العام</td>
+                    <td>4.7/5</td>
+                    <td>4.5/5</td>
+                    <td>4.2/5</td>
+                    <td>4.0/5</td>
+                    <td>4.3/5</td>
+                </tr>
+                <tr>
+                    <td>المخرجات</td>
+                    <td>مشاريع ابتكارية</td>
+                    <td>أبحاث علمية</td>
+                    <td>تحسن في المهارات الاساسية</td>
+                    <td>نجاح دراسي</td>
+                    <td>استقلالية في بعض المهارات الاساسية</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Page 5 Content -->
+    <h2 class="section-title">الخطة التشغيلية للأنشطة والبرامج المدرسية</h2>
+    <div class="operational-plan-container">
+        <table class="plan-table">
+            <tr>
+                <th colspan="2"></th>
+                <th colspan="11"></th>
+            </tr>
+            <tr>
+                <th>الهدف العام</th>
+                <td colspan="11">تنمية التطور الشخصي لدى الطالبات.</td>
+            </tr>
+            <tr>
+                <th>الهدف الخاص</th>
+                <td colspan="11">تنمية التطور الشخصي للطالبات من خلال توفير بيئة مدرسية محفزة وداعمة، تعزز مهاراتهم الأكاديمية والاجتماعية والقيادية، لمواجهة تحديات المستقبل بفاعلية وثقة</td>
+            </tr>
+            <tr>
+                <th rowspan="2">المرحلة</th>
+                <th rowspan="2">الإجراء</th>
+                <th rowspan="2">المسؤول</th>
+                <th rowspan="2">المنفذ</th>
+                <th rowspan="2">الفئة المستهدفة</th>
+                <th rowspan="2">تاريخ البدء</th>
+                <th rowspan="2">تاريخ الانتهاء</th>
+                <th colspan="3">المتابعة</th>
+                <th rowspan="2">أساليب التقويم وقياس الأثر</th>
+            </tr>
+            <tr>
+                <th>نفذ</th>
+                <th>جاري</th>
+                <th>لم ينفذ</th>
+            </tr>
+            
+            <!-- Phase 1: Planning -->
+            <tr>
+                <td class="phase-title" rowspan="4">المرحلة الأولى<br>(التخطيط)</td>
+                <td class="action-title">تشكيل فريق العمل وتحديد الادوار</td>
+                <td>القيادة العليا</td>
+                <td>مدير المدرسة</td>
+                <td>فريق العمل</td>
+                <td>2025-09-01</td>
+                <td>2025-09-05</td>
+                <td class="status-cell completed">✓</td>
+                <td class="status-cell"></td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">التكليفات</td>
+            </tr>
+            <tr>
+                <td class="action-title">دراسة الإمكانيات والموارد المتاحة بالمدرسة (قاعات، ملاعب، معدات، ميزانية)</td>
+                <td>القيادة العليا</td>
+                <td>المدير المساعد</td>
+                <td>الادارة والمعنيين</td>
+                <td>2025-09-06</td>
+                <td>2025-09-12</td>
+                <td class="status-cell completed">✓</td>
+                <td class="status-cell"></td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">تحليل الواقع</td>
+            </tr>
+            <tr>
+                <td class="action-title">وضع الجدول الزمني للانشطة المدرسية</td>
+                <td>منسق البرامج الطلابية</td>
+                <td>المدير المساعد</td>
+                <td>فريق البرنامج</td>
+                <td>2025-09-13</td>
+                <td>2025-09-20</td>
+                <td class="status-cell completed">✓</td>
+                <td class="status-cell"></td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">اعتماد الجدول الزمني</td>
+            </tr>
+            <tr>
+                <td class="action-title">حصر الأنشطة والبرامج الداعمة للفئات</td>
+                <td>فريق العمل</td>
+                <td>المعلمون</td>
+                <td>الطالبات</td>
+                <td>2025-09-15</td>
+                <td>2025-09-22</td>
+                <td class="status-cell completed">✓</td>
+                <td class="status-cell"></td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">جدول الحصر</td>
+            </tr>
+            
+            <!-- Phase 2: Design & Development -->
+            <tr>
+                <td class="phase-title" rowspan="4">المرحلة الثانية<br>(التصميم والتطوير)</td>
+                <td class="action-title">تصميم استمارة حصر المواهب</td>
+                <td>فريق العمل</td>
+                <td>معلم الحاسوب</td>
+                <td>فريق العمل</td>
+                <td>2025-09-20</td>
+                <td>2025-09-25</td>
+                <td class="status-cell completed">✓</td>
+                <td class="status-cell"></td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">تطبيق الاستبانة</td>
+            </tr>
+            <tr>
+                <td class="action-title">توزيع وجمع الاستبيانات على الطالبات</td>
+                <td>المدير المساعد</td>
+                <td>منسق البرامج الطلابية</td>
+                <td>الطالبات</td>
+                <td>2025-09-26</td>
+                <td>2025-10-01</td>
+                <td class="status-cell completed">✓</td>
+                <td class="status-cell"></td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">نشرات الاعلان عن الانشطة</td>
+            </tr>
+            <tr>
+                <td class="action-title">تحليل نتائج الاستبيانات</td>
+                <td>منسق البرامج الطلابية</td>
+                <td>فريق التقييم</td>
+                <td>فريق العمل</td>
+                <td>2025-10-02</td>
+                <td>2025-10-07</td>
+                <td class="status-cell in-progress">↻</td>
+                <td class="status-cell in-progress">↻</td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">نتائج الاستبانات</td>
+            </tr>
+            <tr>
+                <td class="action-title">توزيع الطلاب على البرامج والانشطة بحسب الميول ومراعاة الفروق الفردية</td>
+                <td>منسق البرامج الطلابية</td>
+                <td>معلمو الأنشطة</td>
+                <td>الطالبات</td>
+                <td>2025-10-08</td>
+                <td>2025-10-15</td>
+                <td class="status-cell"></td>
+                <td class="status-cell in-progress">↻</td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">قوائم اعضاء الانشطة المدرسية</td>
+            </tr>
+            
+            <!-- Phase 3: Implementation -->
+            <tr>
+                <td class="phase-title" rowspan="4">المرحلة الثالثة<br>(التطبيق)</td>
+                <td class="action-title">تنفيذ الأنشطة وفقًا للجدول الزمني المحدد</td>
+                <td>منسق البرامج الطلابية</td>
+                <td>معلمو الأنشطة</td>
+                <td>الطالبات</td>
+                <td>2025-10-16</td>
+                <td>2026-05-30</td>
+                <td class="status-cell"></td>
+                <td class="status-cell in-progress">↻</td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">تقارير التوثيق</td>
+            </tr>
+            <tr>
+                <td class="action-title">حصر انتظام الطلاب في حصص الانشطة (اسبوعيا)</td>
+                <td>منسق البرامج الطلابية</td>
+                <td>معلمو الأنشطة</td>
+                <td>الطالبات</td>
+                <td>2025-10-20</td>
+                <td>أسبوعي</td>
+                <td class="status-cell"></td>
+                <td class="status-cell in-progress">↻</td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">سجل الحضور</td>
+            </tr>
+            <tr>
+                <td class="action-title">اعداد خطط الانشطة الطلابية</td>
+                <td>منسق البرامج الطلابية</td>
+                <td>معلمو الأنشطة</td>
+                <td>فريق العمل</td>
+                <td>2025-10-16</td>
+                <td>أسبوعي</td>
+                <td class="status-cell"></td>
+                <td class="status-cell in-progress">↻</td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">متابعة خطط الانشطة</td>
+            </tr>
+            <tr>
+                <td class="action-title">تشجيع مشاركة الطالبات الفاعلة في الانشطة الداخلية والخارجية</td>
+                <td>منسق البرامج الطلابية</td>
+                <td>معلمو الأنشطة</td>
+                <td>الطالبات</td>
+                <td>2025-10-20</td>
+                <td>مستمر</td>
+                <td class="status-cell"></td>
+                <td class="status-cell in-progress">↻</td>
+                <td class="status-cell"></td>
+                <td class="evaluation-methods">سجل المشاركات والمراكز</td>
+            </tr>
+            
+            <!-- Phase 4: Evaluation & Improvement -->
+            <tr>
+                <td class="phase-title" rowspan="4">المرحلة الرابعة<br>(التقييم والتحسين المستمر)</td>
+                <td class="action-title">استطلاع رأي الطلاب والمعلمين وأولياء الامور</td>
+                <td>المدير المساعد</td>
+                <td>منسق البرامج الطلابية</td>
+                <td>الطالبات<br>أولياء الامور<br>المعلمين</td>
+                <td>2026-01-20</td>
+                <td>2026-05-30</td>
+                <td class="status-cell"></td>
+                <td class="status-cell"></td>
+                <td class="status-cell not-started">✗</td>
+                <td class="evaluation-methods">استمارات التقييم</td>
+            </tr>
+            <tr>
+                <td class="action-title">تحليل نتائج التقييم (مثل نسبة الحضور، التغيُّب، التحسن الأكاديمي)</td>
+                <td>منسق البرامج الطلابية</td>
+                <td>فريق التقييم</td>
+                <td>فريق العمل</td>
+                <td>2026-02-01</td>
+                <td>2026-02-10</td>
+                <td class="status-cell"></td>
+                <td class="status-cell"></td>
+                <td class="status-cell not-started">✗</td>
+                <td class="evaluation-methods">تقارير الاجتماعات</td>
+            </tr>
+            <tr>
+                <td class="action-title">عرض إنجازات البرنامج في الاجتماعات المدرسية</td>
+                <td>القيادة العليا</td>
+                <td>مدير المدرسة</td>
+                <td>فريق العمل</td>
+                <td>2026-02-15</td>
+                <td>2026-02-20</td>
+                <td class="status-cell"></td>
+                <td class="status-cell"></td>
+                <td class="status-cell not-started">✗</td>
+                <td class="evaluation-methods">التقرير الختامي</td>
+            </tr>
+            <tr>
+                <td class="action-title">تكريم المشاركين (فريق العمل والطالبات)</td>
+                <td>القيادة العليا</td>
+                <td>المدير المساعد</td>
+                <td>الطالبات<br>فريق العمل<br>المعلمين</td>
+                <td>2026-02-25</td>
+                <td>2026-02-28</td>
+                <td class="status-cell"></td>
+                <td class="status-cell"></td>
+                <td class="status-cell not-started">✗</td>
+                <td class="evaluation-methods">شهادات الشكر</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 مدرسة توبلي الابتدائية للبنات | جميع الحقوق محفوظة</p>
+    </div>
+</body>
+</html>
