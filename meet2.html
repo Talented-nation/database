@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محضر اجتماع تفاعلي</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            /* Changed background to a vibrant linear vertical gradient */
+            background: linear-gradient(to bottom, #8A2BE2, #4169E1); /* From Blue-Violet (purple-ish) to RoyalBlue (blue) */
+            direction: rtl; /* Ensure right-to-left for Arabic */
+            text-align: right; /* Align text to the right */
+        }
+        .container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+        }
+        h1, h2, h3 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .section {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        .add-item-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: flex-end;
+        }
+        .add-item-container .form-control {
+            flex-grow: 1;
+            margin-bottom: 0;
+        }
+        .add-item-container .btn {
+            flex-shrink: 0;
+        }
+        .delete-btn {
+            margin-right: 10px;
+        }
+        .agenda-discussion-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        /* Hide the on-screen markdown output area as it's no longer needed for preview */
+        #output {
+            display: none;
+        }
+
+        /* --- Print-specific styles --- */
+        @media print {
+            body > .container:not(#printableOutput) {
+                display: none;
+            }
+            #printableOutput {
+                display: block !important;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                max-width: 100%;
+            }
+            #printableOutput h1,
+            #printableOutput h2 {
+                color: #000;
+                text-align: center;
+                margin-top: 1em;
+                margin-bottom: 0.5em;
+            }
+            #printableOutput p {
+                margin-bottom: 0.5em;
+            }
+            #printableOutput ul,
+            #printableOutput ol {
+                list-style-position: inside;
+                padding-right: 20px;
+            }
+            #printableOutput ul li,
+            #printableOutput ol li {
+                margin-bottom: 0.3em;
+            }
+            #printableOutput table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1em;
+            }
+            #printableOutput table,
+            #printableOutput th,
+            #printableOutput td {
+                border: 1px solid #000;
+            }
+            #printableOutput th,
+            #printableOutput td {
+                padding: 8px;
+                text-align: right;
+            }
+            #printableOutput th {
+                background-color: #f2f2f2;
+            }
+            #printableOutput hr {
+                border-top: 1px dashed #ccc;
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>محضر اجتماع</h1>
+
+        <div class="mb-3">
+            <label for="meetingDate" class="form-label">التاريخ والوقت:</label>
+            <input type="datetime-local" id="meetingDate" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="meetingLocation" class="form-label">المكان:</label>
+            <input type="text" id="meetingLocation" class="form-control" value="قاعة الاجتماعات الرئيسية">
+        </div>
+
+        <div class="section">
+            <h2>حضر الاجتماع</h2>
+            <div class="add-item-container">
+                <input type="text" id="attendeeInput" class="form-control" placeholder="اسم المشارك">
+                <button onclick="addAttendee()" class="btn btn-primary">إضافة مشارك</button>
+            </div>
+            <ul id="attendeesList" class="list-group"></ul>
+        </div>
+
+        <div class="section">
+            <h2>غاب عن الاجتماع</h2>
+            <div class="add-item-container">
+                <input type="text" id="absenteeInput" class="form-control" placeholder="اسم المشارك الغائب">
+                <button onclick="addAbsentee()" class="btn btn-primary">إضافة غائب</button>
+            </div>
+            <ul id="absenteesList" class="list-group"></ul>
+        </div>
+
+        <div class="section">
+            <h2>جدول الأعمال والنقاش</h2>
+            <div class="add-item-container">
+                <input type="text" id="agendaTopicInput" class="form-control" placeholder="نقطة جدول الأعمال">
+                <button onclick="addAgendaTopic()" class="btn btn-primary">إضافة نقطة</button>
+            </div>
+            <div id="agendaItems"></div>
+        </div>
+
+        <div class="section">
+            <h2>القرارات المتخذة</h2>
+            <div class="add-item-container">
+                <input type="text" id="decisionInput" class="form-control" placeholder="وصف القرار">
+                <button onclick="addDecision()" class="btn btn-primary">إضافة قرار</button>
+            </div>
+            <ul id="decisionsList" class="list-group"></ul>
+        </div>
+
+        <div class="section">
+            <h2>الإجراءات المتخذة (بنود العمل)</h2>
+            <div class="add-item-container">
+                <input type="text" id="actionDescriptionInput" class="form-control" placeholder="وصف الإجراء" style="flex: 2;">
+                <input type="text" id="actionResponsibleInput" class="form-control" placeholder="المسؤول" style="flex: 1;">
+                <input type="date" id="actionDeadlineInput" class="form-control" style="flex: 1;">
+                <button onclick="addActionItem()" class="btn btn-primary">إضافة إجراء</button>
+            </div>
+            <table id="actionItemsTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>البند</th>
+                        <th>المسؤول</th>
+                        <th>الموعد النهائي</th>
+                        <th>إجراء</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>البنود الجديدة / جدول الأعمال للاجتماع القادم</h2>
+            <div class="add-item-container">
+                <input type="text" id="nextAgendaInput" class="form-control" placeholder="البند المقترح">
+                <button onclick="addNextAgendaItem()" class="btn btn-primary">إضافة بند</button>
+            </div>
+            <ul id="nextAgendaList" class="list-group"></ul>
+        </div>
+
+        <div class="section">
+            <h2>موعد الاجتماع القادم</h2>
+            <div class="mb-3">
+                <label for="nextMeetingDate" class="form-label">التاريخ:</label>
+                <input type="date" id="nextMeetingDate" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="nextMeetingTime" class="form-label">الوقت:</label>
+                <input type="time" id="nextMeetingTime" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="nextMeetingLocation" class="form-label">المكان:</label>
+                <input type="text" id="nextMeetingLocation" class="form-control">
+            </div>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+            <button onclick="printMeetingMinutes()" class="btn btn-info">طباعة المحضر</button>
+        </div>
+
+        <div id="output" class="mt-4"></div>
+    </div>
+
+    <div id="printableOutput" class="p-4" style="display: none;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eOzr0/l2i2Yy" crossorigin="anonymous"></script>
+
+    <script>
+        function addListItem(inputId, listId) {
+            const input = document.getElementById(inputId);
+            const list = document.getElementById(listId);
+            if (input.value.trim() !== '') {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.textContent = input.value;
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'حذف';
+                deleteBtn.className = 'btn btn-danger btn-sm delete-btn';
+                deleteBtn.onclick = function() {
+                    list.removeChild(li);
+                };
+                li.appendChild(deleteBtn);
+                list.appendChild(li);
+                input.value = '';
+            }
+        }
+
+        function addAttendee() {
+            addListItem('attendeeInput', 'attendeesList');
+        }
+
+        function addAbsentee() {
+            addListItem('absenteeInput', 'absenteesList');
+        }
+
+        let agendaTopicCounter = 0;
+        function addAgendaTopic() {
+            const topicInput = document.getElementById('agendaTopicInput');
+            const agendaItemsDiv = document.getElementById('agendaItems');
+
+            if (topicInput.value.trim() !== '') {
+                agendaTopicCounter++;
+                const currentTopicText = topicInput.value;
+                const discussionId = `agendaDiscussion${agendaTopicCounter}`;
+
+                const div = document.createElement('div');
+                div.className = 'section border p-3 rounded mb-3';
+                div.innerHTML = `
+                    <h3 class="mb-3">${agendaTopicCounter}. ${currentTopicText}</h3>
+                    <div class="mb-3">
+                        <label for="${discussionId}" class="form-label">ملخص النقاش:</label>
+                        <textarea id="${discussionId}" class="form-control agenda-discussion-textarea"></textarea>
+                    </div>
+                    <button class="btn btn-danger btn-sm delete-btn" onclick="this.closest('.section').remove(); updateAgendaNumbers();">حذف النقطة</button>
+                `;
+                agendaItemsDiv.appendChild(div);
+                topicInput.value = '';
+            }
+        }
+
+        function updateAgendaNumbers() {
+            const agendaItems = document.querySelectorAll('#agendaItems .section');
+            agendaTopicCounter = 0;
+            agendaItems.forEach((item, index) => {
+                agendaTopicCounter++;
+                const titleElement = item.querySelector('h3');
+                if (titleElement) {
+                    const originalText = titleElement.textContent.replace(/^\d+\.\s*/, '').trim();
+                    titleElement.textContent = `${agendaTopicCounter}. ${originalText}`;
+                }
+                const textarea = item.querySelector('textarea');
+                if (textarea) {
+                    textarea.id = `agendaDiscussion${agendaTopicCounter}`;
+                }
+            });
+        }
+
+        function addDecision() {
+            addListItem('decisionInput', 'decisionsList');
+        }
+
+        function addActionItem() {
+            const description = document.getElementById('actionDescriptionInput').value;
+            const responsible = document.getElementById('actionResponsibleInput').value;
+            const deadline = document.getElementById('actionDeadlineInput').value;
+            const tableBody = document.getElementById('actionItemsTable').getElementsByTagName('tbody')[0];
+
+            if (description.trim() !== '' && responsible.trim() !== '' && deadline.trim() !== '') {
+                const row = tableBody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                const cell4 = row.insertCell(3);
+
+                cell1.textContent = description;
+                cell2.textContent = responsible;
+                cell3.textContent = deadline;
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'حذف';
+                deleteBtn.className = 'btn btn-danger btn-sm';
+                deleteBtn.onclick = function() {
+                    tableBody.removeChild(row);
+                };
+                cell4.appendChild(deleteBtn);
+
+                document.getElementById('actionDescriptionInput').value = '';
+                document.getElementById('actionResponsibleInput').value = '';
+                document.getElementById('actionDeadlineInput').value = '';
+            }
+        }
+
+        function addNextAgendaItem() {
+            addListItem('nextAgendaInput', 'nextAgendaList');
+        }
+
+        // Renamed from generateMeetingMinutesContent() to reflect its new direct use
+        function getMeetingMinutesHtmlForPrint() {
+            let contentHtml = `
+                <h1 style="text-align: center; color: #000;">محضر اجتماع</h1>
+                <p><strong>التاريخ:</strong> ${document.getElementById('meetingDate').value}</p>
+                <p><strong>المكان:</strong> ${document.getElementById('meetingLocation').value}</p>
+                <hr>
+                <h2>حضر الاجتماع</h2>
+                <ul>
+            `;
+            document.querySelectorAll('#attendeesList li').forEach(item => {
+                contentHtml += `<li>${item.textContent.replace('حذف', '').trim()}</li>`;
+            });
+            contentHtml += `</ul>
+                <h2>غاب عن الاجتماع</h2>
+                <ul>
+            `;
+            document.querySelectorAll('#absenteesList li').forEach(item => {
+                contentHtml += `<li>${item.textContent.replace('حذف', '').trim()}</li>`;
+            });
+            contentHtml += `</ul>
+                <hr>
+                <h2>جدول الأعمال والنقاش</h2>
+            `;
+            document.querySelectorAll('#agendaItems .section').forEach((sectionDiv, index) => {
+                const topicElement = sectionDiv.querySelector('h3');
+                const discussionElement = sectionDiv.querySelector('textarea');
+                if (topicElement && discussionElement) {
+                    const topicText = topicElement.textContent.replace(/^\d+\.\s*/, '').trim();
+                    contentHtml += `
+                        <h3>${index + 1}. ${topicText}</h3>
+                        <p>${discussionElement.value}</p>
+                    `;
+                }
+            });
+            contentHtml += `
+                <hr>
+                <h2>القرارات المتخذة</h2>
+                <ul>
+            `;
+            document.querySelectorAll('#decisionsList li').forEach(item => {
+                contentHtml += `<li>${item.textContent.replace('حذف', '').trim()}</li>`;
+            });
+            contentHtml += `</ul>
+                <hr>
+                <h2>الإجراءات المتخذة (بنود العمل)</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>البند</th>
+                            <th>المسؤول</th>
+                            <th>الموعد النهائي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            document.querySelectorAll('#actionItemsTable tbody tr').forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 3) {
+                    contentHtml += `
+                        <tr>
+                            <td>${cells[0].textContent}</td>
+                            <td>${cells[1].textContent}</td>
+                            <td>${cells[2].textContent}</td>
+                        </tr>
+                    `;
+                }
+            });
+            contentHtml += `</tbody>
+                </table>
+                <hr>
+                <h2>البنود الجديدة / جدول الأعمال للاجتماع القادم</h2>
+                <ul>
+            `;
+            document.querySelectorAll('#nextAgendaList li').forEach(item => {
+                contentHtml += `<li>${item.textContent.replace('حذف', '').trim()}</li>`;
+            });
+            contentHtml += `</ul>
+                <hr>
+                <h2>موعد الاجتماع القادم</h2>
+                <p><strong>التاريخ:</strong> ${document.getElementById('nextMeetingDate').value}</p>
+                <p><strong>الوقت:</strong> ${document.getElementById('nextMeetingTime').value}</p>
+                <p><strong>المكان:</strong> ${document.getElementById('nextMeetingLocation').value}</p>
+                <br>
+                <p><strong>مُعد المحضر:</strong> [اسم مُعد المحضر]</p>
+                <p><strong>توقيع:</strong> _________________________</p>
+            `;
+            return contentHtml;
+        }
+
+        // The generateMeetingMinutes function is now removed, as it's not needed for a separate preview.
+
+        function printMeetingMinutes() {
+            const printContentHtml = getMeetingMinutesHtmlForPrint(); // Generate HTML content directly
+
+            const printWindow = window.open('', '_blank', 'height=800,width=800,scrollbars=yes');
+            printWindow.document.write('<!DOCTYPE html>');
+            printWindow.document.write('<html lang="ar" dir="rtl"><head><title>طباعة محضر الاجتماع</title>');
+            printWindow.document.write('<style>');
+            printWindow.document.write(`
+                body {
+                    font-family: 'Arial', sans-serif;
+                    direction: rtl;
+                    text-align: right;
+                    margin: 40px;
+                    color: #000;
+                }
+                h1 {
+                    text-align: center;
+                    font-size: 2em;
+                    margin-bottom: 1.5em;
+                }
+                h2 {
+                    font-size: 1.5em;
+                    margin-top: 1.5em;
+                    margin-bottom: 0.8em;
+                    border-bottom: 1px solid #ccc;
+                    padding-bottom: 5px;
+                }
+                h3 {
+                    font-size: 1.2em;
+                    margin-top: 1em;
+                    margin-bottom: 0.5em;
+                }
+                p, ul, ol {
+                    margin-bottom: 0.8em;
+                    line-height: 1.6;
+                }
+                ul, ol {
+                    padding-right: 25px;
+                }
+                ul li, ol li {
+                    margin-bottom: 0.3em;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 1em;
+                    margin-bottom: 1em;
+                }
+                table, th, td {
+                    border: 1px solid #000;
+                }
+                th, td {
+                    padding: 8px;
+                    text-align: right;
+                }
+                th {
+                    background-color: #f2f2f2;
+                }
+                hr {
+                    border: none;
+                    border-top: 1px dashed #ccc;
+                    margin: 30px 0;
+                }
+            `);
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(printContentHtml);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+            printWindow.onafterprint = function() {
+                printWindow.close(); // Close the print window after printing (or after user cancels)
+            };
+        }
+
+        // Set current date and time on load
+        window.onload = function() {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('meetingDate').value = now.toISOString().slice(0, 16);
+
+            const nextWeek = new Date(now);
+            nextWeek.setDate(now.getDate() + 7);
+            document.getElementById('nextMeetingDate').value = nextWeek.toISOString().slice(0, 10);
+        };
+    </script>
+</body>
+</html>
