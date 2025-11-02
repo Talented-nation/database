@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل تنفيذ الإجراءات - أكتوبر 2025</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-color: #95a5a6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a73e8, #6c5ce7);
+            color: white;
+            padding: 30px 0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .completed {
+            color: var(--secondary-color);
+        }
+        
+        .in-progress {
+            color: var(--warning-color);
+        }
+        
+        .not-started {
+            color: var(--danger-color);
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .chart-title {
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--dark-color);
+            font-size: 1.2rem;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .filters {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-item {
+            background: var(--light-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-completed {
+            background-color: #e8f5e9;
+            color: var(--secondary-color);
+        }
+        
+        .status-in-progress {
+            background-color: #fff3e0;
+            color: var(--warning-color);
+        }
+        
+        .status-not-started {
+            background-color: #ffebee;
+            color: var(--danger-color);
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: var(--light-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .month-comparison {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 20px;
+        }
+        
+        .month-card {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .month-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .month-stats {
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .month-stat {
+            text-align: center;
+        }
+        
+        .month-stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .month-stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .completion-badge {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-container, .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                min-width: 100%;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            .month-comparison {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>تحليل تنفيذ الإجراءات - أكتوبر 2025</h1>
+            <p class="subtitle">اعداد المديرة المساعدة أ.أميمة ابراهيم</p>
+            <div class="completion-badge">جميع الإجراءات مكتملة بنسبة 100%</div>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="overview">نظرة عامة</div>
+            <div class="tab" data-tab="charts">الرسوم البيانية</div>
+            <div class="tab" data-tab="details">تفاصيل الإجراءات</div>
+            <div class="tab" data-tab="comparison">مقارنة بين الشهور</div>
+        </div>
+        
+        <div class="tab-content active" id="overview">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number">22</div>
+                    <div class="stat-label">إجمالي الإجراءات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number completed">22</div>
+                    <div class="stat-label">إجراء مكتمل</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number in-progress">0</div>
+                    <div class="stat-label">إجراء قيد التنفيذ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">نسبة الإنجاز</div>
+                </div>
+            </div>
+            
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3 class="chart-title">توزيع الإجراءات حسب الحالة</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">توزيع الإجراءات حسب الفئة</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">الإجراءات خلال أسابيع الشهر</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">مقارنة تواريخ البدء والانتهاء</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="startEndChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="charts">
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3 class="chart-title">مقارنة الإجراءات المكتملة وغير المكتملة</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="completionChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">الإجراءات حسب الأسبوع</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="weekChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">الإجراءات المكتملة حسب الفئة</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="completedByCategoryChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">مقارنة مدة تنفيذ الإجراءات</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="durationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="details">
+            <div class="filters">
+                <input type="text" class="search-box" placeholder="ابحث في الإجراءات..." id="searchInput">
+                <div class="filter-group">
+                    <button class="filter-item active" data-filter="all">جميع الإجراءات</button>
+                    <button class="filter-item" data-filter="completed">المكتملة</button>
+                    <button class="filter-item" data-filter="in-progress">قيد التنفيذ</button>
+                    <button class="filter-item" data-filter="not-started">لم تبدأ</button>
+                </div>
+                <div class="filter-group">
+                    <button class="filter-item" data-category="training">تدريب</button>
+                    <button class="filter-item" data-category="evaluation">تقييم</button>
+                    <button class="filter-item" data-category="students">شؤون الطالبات</button>
+                    <button class="filter-item" data-category="teachers">شؤون المعلمات</button>
+                    <button class="filter-item" data-category="safety">صحة وسلامة</button>
+                    <button class="filter-item" data-category="research">بحث</button>
+                    <button class="filter-item" data-category="Community">شراكة</button>
+                </div>
+            </div>
+            
+            <table id="proceduresTable">
+                <thead>
+                    <tr>
+                        <th>الرقم</th>
+                        <th>الإجراءات</th>
+                        <th>تاريخ البدء</th>
+                        <th>تاريخ الانتهاء</th>
+                        <th>حالة التنفيذ</th>
+                        <th>الفئة</th>
+                    </tr>
+                </thead>
+                <tbody id="proceduresBody">
+                    <!-- سيتم ملء البيانات بواسطة JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="tab-content" id="comparison">
+            <div class="month-comparison">
+                <div class="month-card">
+                    <h3 class="month-title">سبتمبر 2025</h3>
+                    <div class="month-stats">
+                        <div class="month-stat">
+                            <div class="month-stat-number">44</div>
+                            <div class="month-stat-label">إجمالي الإجراءات</div>
+                        </div>
+                        <div class="month-stat">
+                            <div class="month-stat-number completed">42</div>
+                            <div class="month-stat-label">مكتمل</div>
+                        </div>
+                        <div class="month-stat">
+                            <div class="month-stat-number in-progress">2</div>
+                            <div class="month-stat-label">قيد التنفيذ</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="month-card">
+                    <h3 class="month-title">أكتوبر 2025</h3>
+                    <div class="month-stats">
+                        <div class="month-stat">
+                            <div class="month-stat-number">22</div>
+                            <div class="month-stat-label">إجمالي الإجراءات</div>
+                        </div>
+                        <div class="month-stat">
+                            <div class="month-stat-number completed">22</div>
+                            <div class="month-stat-label">مكتمل</div>
+                        </div>
+                        <div class="month-stat">
+                            <div class="month-stat-number in-progress">0</div>
+                            <div class="month-stat-label">قيد التنفيذ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3 class="chart-title">مقارنة نسبة الإنجاز بين الشهرين</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">مقارنة عدد الإجراءات حسب الحالة</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="statusComparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات الإجراءات لشهر أكتوبر 2025 - جميعها مكتملة
+        const octoberProcedures = [
+            { id: 1, action: "ورشة تدريبية وتعريفية لأولياء الامور حول المهارات والكفايات الأساسية في المواد الأساسية", start: "2025/10/1", end: "2025/10/1", status: "نفذ", category: "training" },
+            { id: 2, action: "تنفيذ آلية لتتبع مدى اكتساب الطالبات الكفايات الأساسية خلال الدروس مرتين في الفصل الدراسي", start: "2025/10/1", end: "2025/10/15", status: "نفذ", category:"evaluation"},
+            { id: 3, action: "تكريم المعلمات المتميزات في مجال الأعمال الكتابية بشكل دوري", start: "2025/10/1", end: "2025/10/20", status: "نفذ", category: "teachers" },
+            { id: 4, action: "متابعة الأعمال الكتابية من خلال استمارة متابعة الأعمال الكتابية", start: "2025/10/1", end: "2025/10/25", status: "نفذ", category: "evaluation" },
+            { id: 5, action: "تطبيق منهجية المعلمة الصغيرة في الحصص الدراسية في الحلقين الأولى والثانية", start: "2025/10/1", end: "2025/10/30", status: "نفذ", category: "teachers" },
+            { id: 6, action: "قياس أثر التدريب على المعلمات والزيارات الصفية في مجال توظيف الاستراتيجيات", start: "2025/10/1", end: "2025/10/18", status: "نفذ", category: "evaluation" },
+            { id: 7, action: "قياس أثر التدريب على المعلمات والزيارات الصفية في مجال توظيف التقويم", start: "2025/10/1", end: "2025/10/22", status: "نفذ", category: "evaluation" },
+            { id: 8, action: "قياس أثر التدريب على المعلمات والزيارات الصفية في مجال عمليات التعليم والتعلم", start: "2025/10/1", end: "2025/10/28", status: "نفذ", category: "evaluation" },
+            { id: 9, action: "عقد لقاءات فردية وجماعية مع أولياء أمور طالبات التربية الخاصة", start: "2025/10/1", end: "2025/10/12", status: "نفذ", category: "training" },
+            { id: 10, action: "دمج الطالبات في الحياة المدرسية من خلال المشاركة في الفعاليات والمناسبات الداخلية والخارجية ", start: "2025/10/1", end: "2025/10/14", status: "نفذ", category: "students" },
+            { id: 11, action: "اعداد نشرات تربوية تسهر في كيفية دعم فئات الطالبات", start: "2025/10/1", end: "2025/10/16", status: "نفذ", category: "teachers" },
+            { id: 12, action: "تنفيذ الحصص الارشادية للطالبات متدنيات التحصيل وتوجيههم برفع مستوى تحصيلهم", start: "2025/10/1", end: "2025/10/26", status: "نفذ", category: "students" },
+            { id: 13, action: "تنفيذ الاسبوع الثقافي الخاص بالتمكين الرقمي", start: "2025/10/1", end: "2025/10/24", status: "نفذ", category: "teachers" },
+            { id: 14, action: "إعداد اجتماعات دورية لمجلس الامهات", start: "2025/10/1", end: "2025/10/10", status: "نفذ", category: "teachers" },
+            { id: 15, action: "إعداد خطة للصحة والسلامة المدرسية ولجنة إدارة الأزمات", start: "2025/10/1", end: "2025/10/8", status: "نفذ", category: "safety" },
+            { id: 16, action: "متابعة الصيانة الدورية للمرافق المدرسية لتوفير بيئة آمنة خالية من المخاطر", start: "2025/10/1", end: "2025/10/5", status: "نفذ", category: "safety" },
+            { id: 17, action: "الصيانة الدورية لأجهزة الحريق ومبردات المياه", start: "2025/10/1", end: "2025/10/6", status: "نفذ", category: "safety" },
+            { id: 18, action: "متابعة استكمال المتطلبات اللازمة لبرامج التمكين الرقمي", start: "2025/10/1", end: "2025/10/30", status: "نفذ", category: "teachers" },
+            { id: 19, action: "تشكيل فريق الباحثة الصغيرة", start: "2025/10/1", end: "2025/10/1", status: "نفذ", category: "teachers" },
+            { id: 20, action: "إعداد حقيبة الباحثة الصغيرة", start: "2025/10/2", end: "2025/10/2", status: "نفذ", category: "teachers" },
+            { id: 21, action: "تحليل نتائج الزيارات الصفية لشهر اكتوبر", start: "2025/10/15", end: "2025/10/20", status: "نفذ", category: "evaluation" },
+            { id: 22, action: "تحليل أداء الطالبات في الاختبارات الشهرية", start: "2025/10/25", end: "2025/10/30", status: "نفذ", category: "evaluation" }
+        ];
+
+        // بيانات شهر سبتمبر للمقارنة
+        const septemberProcedures = [
+            { total: 44, completed: 42, inProgress: 2, completionRate: 95.5 }
+        ];
+
+        // وظيفة لعرض الإجراءات في الجدول
+        function renderProcedures(filteredProcedures = octoberProcedures) {
+            const tbody = document.getElementById('proceduresBody');
+            tbody.innerHTML = '';
+            
+            filteredProcedures.forEach(proc => {
+                const row = document.createElement('tr');
+                let statusClass = '';
+                if (proc.status === 'نفذ') {
+                    statusClass = 'status-completed';
+                } else if (proc.status === 'جاري') {
+                    statusClass = 'status-in-progress';
+                } else {
+                    statusClass = 'status-not-started';
+                }
+                
+                const categoryNames = {
+                    'training': 'تدريب',
+                    'evaluation': 'تقييم',
+                    'students': 'طالبات',
+                    'teachers': 'معلمات',
+                    'safety': 'صحة وسلامة',
+                    'research': 'بحث'
+                };
+                
+                row.innerHTML = `
+                    <td>${proc.id}</td>
+                    <td>${proc.action}</td>
+                    <td>${proc.start}</td>
+                    <td>${proc.end}</td>
+                    <td><span class="status ${statusClass}">${proc.status}</span></td>
+                    <td>${categoryNames[proc.category]}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // وظيفة للبحث والتصفية
+        function setupFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const filterButtons = document.querySelectorAll('.filter-item');
+            
+            // البحث النصي
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const filtered = octoberProcedures.filter(proc => 
+                    proc.action.toLowerCase().includes(searchTerm)
+                );
+                renderProcedures(filtered);
+            });
+            
+            // تصفية حسب الحالة والفئة
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // إزالة النشاط من جميع الأزرار
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // إضافة النشاط للزر المحدد
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    const category = this.getAttribute('data-category');
+                    
+                    let filtered = octoberProcedures;
+                    
+                    if (filter === 'completed') {
+                        filtered = octoberProcedures.filter(proc => proc.status === 'نفذ');
+                    } else if (filter === 'in-progress') {
+                        filtered = octoberProcedures.filter(proc => proc.status === 'جاري');
+                    } else if (filter === 'not-started') {
+                        filtered = octoberProcedures.filter(proc => proc.status === 'لم يبدأ');
+                    }
+                    
+                    if (category) {
+                        filtered = filtered.filter(proc => proc.category === category);
+                    }
+                    
+                    renderProcedures(filtered);
+                });
+            });
+        }
+
+        // وظيفة لإنشاء الرسوم البيانية
+        function createCharts() {
+            // تجميع البيانات للرسوم البيانية
+            const statusCounts = {
+                'نفذ': octoberProcedures.filter(p => p.status === 'نفذ').length,
+                'جاري': octoberProcedures.filter(p => p.status === 'جاري').length
+            };
+            
+            const categoryCounts = {};
+            octoberProcedures.forEach(proc => {
+                categoryCounts[proc.category] = (categoryCounts[proc.category] || 0) + 1;
+            });
+            
+            const weekData = {
+                'الأسبوع 1': octoberProcedures.filter(p => {
+                    const day = parseInt(p.start.split('/')[2]);
+                    return day >= 1 && day <= 7;
+                }).length,
+                'الأسبوع 2': octoberProcedures.filter(p => {
+                    const day = parseInt(p.start.split('/')[2]);
+                    return day >= 8 && day <= 14;
+                }).length,
+                'الأسبوع 3': octoberProcedures.filter(p => {
+                    const day = parseInt(p.start.split('/')[2]);
+                    return day >= 15 && day <= 21;
+                }).length,
+                'الأسبوع 4': octoberProcedures.filter(p => {
+                    const day = parseInt(p.start.split('/')[2]);
+                    return day >= 22 && day <= 31;
+                }).length
+            };
+            
+            // رسم بياني للحالة
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['مكتمل', 'قيد التنفيذ'],
+                    datasets: [{
+                        data: [statusCounts['نفذ'], statusCounts['جاري']],
+                        backgroundColor: ['#2ecc71', '#f39c12'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للفئات
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            const categoryNames = {
+                'training': 'تدريب',
+                'evaluation': 'تقييم',
+                'students': 'طالبات',
+                'teachers': 'معلمات',
+                'safety': 'صحة وسلامة',
+                'research': 'بحث'
+            };
+            
+            new Chart(categoryCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(categoryCounts).map(key => categoryNames[key]),
+                    datasets: [{
+                        label: 'عدد الإجراءات',
+                        data: Object.values(categoryCounts),
+                        backgroundColor: '#3498db',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للجدول الزمني
+            const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+            new Chart(timelineCtx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(weekData),
+                    datasets: [{
+                        label: 'عدد الإجراءات',
+                        data: Object.values(weekData),
+                        borderColor: '#9b59b6',
+                        backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للمقارنة بين المكتمل وغير المكتمل
+            const completionCtx = document.getElementById('completionChart').getContext('2d');
+            new Chart(completionCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['مكتمل (100%)', 'قيد التنفيذ (0%)'],
+                    datasets: [{
+                        data: [statusCounts['نفذ'], statusCounts['جاري']],
+                        backgroundColor: ['#2ecc71', '#f39c12'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للإجراءات حسب الأسبوع
+            const weekCtx = document.getElementById('weekChart').getContext('2d');
+            new Chart(weekCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(weekData),
+                    datasets: [{
+                        label: 'عدد الإجراءات',
+                        data: Object.values(weekData),
+                        backgroundColor: [
+                            '#3498db', '#2ecc71', '#9b59b6', '#e74c3c'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للمكتمل حسب الفئة
+            const completedByCategoryCtx = document.getElementById('completedByCategoryChart').getContext('2d');
+            const completedByCategory = {};
+            octoberProcedures.filter(p => p.status === 'نفذ').forEach(proc => {
+                completedByCategory[proc.category] = (completedByCategory[proc.category] || 0) + 1;
+            });
+            
+            new Chart(completedByCategoryCtx, {
+                type: 'polarArea',
+                data: {
+                    labels: Object.keys(completedByCategory).map(key => categoryNames[key]),
+                    datasets: [{
+                        data: Object.values(completedByCategory),
+                        backgroundColor: [
+                            '#3498db', '#2ecc71', '#9b59b6', '#e74c3c', '#f39c12'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للمدة
+            const durationCtx = document.getElementById('durationChart').getContext('2d');
+            
+            // حساب مدة كل إجراء (بأيام)
+            const durations = octoberProcedures.map(proc => {
+                const start = new Date(proc.start);
+                const end = new Date(proc.end);
+                const diffTime = Math.abs(end - start);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return diffDays;
+            });
+            
+            new Chart(durationCtx, {
+                type: 'bar',
+                data: {
+                    labels: octoberProcedures.map(p => p.id),
+                    datasets: [{
+                        label: 'مدة التنفيذ (أيام)',
+                        data: durations,
+                        backgroundColor: '#e74c3c',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'الأيام'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'رقم الإجراء'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني لتواريخ البدء والانتهاء
+            const startEndCtx = document.getElementById('startEndChart').getContext('2d');
+            
+            // تجميع الإجراءات حسب تاريخ البدء
+            const startDates = {};
+            const endDates = {};
+            
+            octoberProcedures.forEach(proc => {
+                const startDay = proc.start.split('/')[2];
+                const endDay = proc.end.split('/')[2];
+                
+                startDates[startDay] = (startDates[startDay] || 0) + 1;
+                endDates[endDay] = (endDates[endDay] || 0) + 1;
+            });
+            
+            // إنشاء مصفوفة لجميع الأيام في أكتوبر
+            const allDays = Array.from({length: 31}, (_, i) => (i + 1).toString());
+            
+            new Chart(startEndCtx, {
+                type: 'line',
+                data: {
+                    labels: allDays,
+                    datasets: [
+                        {
+                            label: 'تاريخ البدء',
+                            data: allDays.map(day => startDates[day] || 0),
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'تاريخ الانتهاء',
+                            data: allDays.map(day => endDates[day] || 0),
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للمقارنة بين الشهرين
+            const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+            new Chart(comparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['سبتمبر 2025', 'أكتوبر 2025'],
+                    datasets: [{
+                        label: 'نسبة الإنجاز (%)',
+                        data: [septemberProcedures[0].completionRate, 100],
+                        backgroundColor: ['#3498db', '#2ecc71'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'النسبة المئوية'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني لمقارنة الحالة بين الشهرين
+            const statusComparisonCtx = document.getElementById('statusComparisonChart').getContext('2d');
+            new Chart(statusComparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['مكتمل', 'قيد التنفيذ'],
+                    datasets: [
+                        {
+                            label: 'سبتمبر 2025',
+                            data: [septemberProcedures[0].completed, septemberProcedures[0].inProgress],
+                            backgroundColor: '#3498db',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'أكتوبر 2025',
+                            data: [statusCounts['نفذ'], statusCounts['جاري']],
+                            backgroundColor: '#2ecc71',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 5
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // وظيفة للتبديل بين علامات التبويب
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // إزالة النشاط من جميع علامات التبويب والمحتويات
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // إضافة النشاط للعلامة والمحتوى المحددين
+                    tab.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+
+        // تهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProcedures();
+            setupFilters();
+            createCharts();
+            setupTabs();
+        });
+    </script>
+</body>
+</html>
