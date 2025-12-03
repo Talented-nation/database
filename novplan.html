@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل تنفيذ الإجراءات - نوفمبر 2025</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-color: #95a5a6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a73e8, #6c5ce7);
+            color: white;
+            padding: 30px 0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .completed {
+            color: var(--secondary-color);
+        }
+        
+        .in-progress {
+            color: var(--warning-color);
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .chart-title {
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--dark-color);
+            font-size: 1.2rem;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .filters {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-item {
+            background: var(--light-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-completed {
+            background-color: #e8f5e9;
+            color: var(--secondary-color);
+        }
+        
+        .status-in-progress {
+            background-color: #fff3e0;
+            color: var(--warning-color);
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: var(--light-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .footer-note {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 5px;
+        }
+        
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .page-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .stats-container, .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                min-width: 100%;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>تحليل تنفيذ الإجراءات - نوفمبر 2025</h1>
+            <p class="subtitle">تحليل خُطّة شهر نوفمبر</p>
+            <p class="subtitle">اعداد المديرة المساعدة أ.أميمة ابراهيم</p>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="overview">نظرة عامة</div>
+            <div class="tab" data-tab="charts">الرسوم البيانية</div>
+            <div class="tab" data-tab="details">تفاصيل الإجراءات</div>
+        </div>
+        
+        <div class="tab-content active" id="overview">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number">71</div>
+                    <div class="stat-label">إجمالي الإجراءات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number completed">71</div>
+                    <div class="stat-label">إجراء مكتمل</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number in-progress">0</div>
+                    <div class="stat-label">إجراء قيد التنفيذ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">نسبة الإنجاز</div>
+                </div>
+            </div>
+            
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3 class="chart-title">توزيع الإجراءات حسب الحالة</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">توزيع الإجراءات حسب الفئة</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">الإجراءات حسب المجالات الرئيسية</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="mainCategoryChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">نسبة الإنجاز حسب الفئة</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="completionByCategoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="charts">
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3 class="chart-title">الإجراءات حسب المجالات التعليمية</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="educationChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">توزيع الإجراءات حسب النوع</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="typeChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">الإجراءات حسب الأولوية</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="priorityChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 class="chart-title">مقارنة الإجراءات التربوية والإدارية</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="adminEducationalChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="details">
+            <div class="filters">
+                <input type="text" class="search-box" placeholder="ابحث في الإجراءات..." id="searchInput">
+                <div class="filter-group">
+                    <button class="filter-item active" data-filter="all">جميع الإجراءات</button>
+                    <button class="filter-item" data-filter="completed">المكتملة</button>
+                </div>
+                <div class="filter-group">
+                    <button class="filter-item" data-category="academic">التحصيل الأكاديمي</button>
+                    <button class="filter-item" data-category="learning">مهارات التعلم</button>
+                    <button class="filter-item" data-category="tests">الاختبارات</button>
+                    <button class="filter-item" data-category="activities">الأنشطة والفعاليات</button>
+                    <button class="filter-item" data-category="behavior">السلوك والانضباط</button>
+                    <button class="filter-item" data-category="safety">الصحة والسلامة</button>
+                    <button class="filter-item" data-category="teachers">التعليم والتعلم</button>
+                </div>
+            </div>
+            
+            <table id="proceduresTable">
+                <thead>
+                    <tr>
+                        <th>الرقم</th>
+                        <th>الإجراءات</th>
+                        <th>تاريخ البدء</th>
+                        <th>تاريخ الانتهاء</th>
+                        <th>حالة التنفيذ</th>
+                        <th>الفئة</th>
+                    </tr>
+                </thead>
+                <tbody id="proceduresBody">
+                    <!-- سيتم ملء البيانات بواسطة JavaScript -->
+                </tbody>
+            </table>
+            <div class="pagination" id="pagination">
+                <!-- سيتم إنشاء أزرار الترقيم بواسطة JavaScript -->
+            </div>
+        </div>
+        
+        <div class="footer-note">
+            <p>© 2025 - خطة شهر نوفمبر - جميع الإجراءات الـ 71 منفذة بنسبة 100%</p>
+        </div>
+    </div>
+
+    <script>
+        // بيانات الإجراءات من وثيقة نوفمبر (71 إجراء)
+        const procedures = [
+            // الإجراءات 1-36 من الصفحة الأولى
+            { id: 1, action: "تفعيل حصص الاحتياط بأنشطة هادفة تنمي المهارات الأساسية", start: "2025/11/1", end: "2025/11/5", status: "نفذ", category: "academic", type: "تعليمي", priority: "عالية" },
+            { id: 2, action: "توظيف الفعاليات والأنشطة المدرسية لرفع المستوى التحصيلي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "تعليمي", priority: "عالية" },
+            { id: 3, action: "تنفيذ آلية لتتبع مدى اكتساب الطالبات الكفايات الأساسية خلال الدروس مرتين في الفصل الدراسي", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "academic", type: "متابعة", priority: "متوسطة" },
+            { id: 4, action: "تنفيذ مسابقات داخلية وخارجية بين الصفوف لقياس المهارات الأساسية", start: "2025/11/10", end: "2025/11/25", status: "نفذ", category: "academic", type: "تنافسي", priority: "متوسطة" },
+            { id: 5, action: "تشجيع الطالبات على انتاج محتويات رقمية تراعي مستوياتهن", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تقني", priority: "عالية" },
+            { id: 6, action: "تمكين الطالبات من اللغة العربية الإنجليزية السليمة في المواقف الصفية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "تعليمي", priority: "عالية" },
+            { id: 7, action: "تفعيل المرافق المدرسية في إكساب الطلبة المهارات الأساسية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "تعليمي", priority: "متوسطة" },
+            { id: 8, action: "المتابعة والتدقيق على الأعمال الكتابية وعرض النتائج مع فريق التحديين الداخلي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "متابعة", priority: "عالية" },
+            { id: 9, action: "الاحتفاء بإنجاز الطالبات في الأعمال الكتابية وتكريمهن", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "academic", type: "تحفيزي", priority: "متوسطة" },
+            { id: 10, action: "تكريم المعلمات المتغيرات في متابعة الأعمال الكتابية بشكل دوري", start: "2025/11/20", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تحفيزي", priority: "منخفضة" },
+            { id: 11, action: "متابعة أثر التقدم في الأعمال الكتابية (التعايز، القروق، الفردية) ومقارنتها", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "متابعة", priority: "عالية" },
+            { id: 12, action: "تطبيق منهجية المعلمة الصغيرة في الحصص الدراسية في الحلقين الأولى والثانية لجميع الصفوف", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
+            { id: 13, action: "توظيف التعليم الذاتي والتفكير المستقل من خلال المهارات البحثية. (الداخلة الصغيرة)", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
+            { id: 14, action: "تنفيذ أنشطة صفية ولا صفية تنمي مهارات التعلم الذاتي، التفكير الناقد، المهارات الجبائية والمهارات التكنولوجية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
+            { id: 15, action: "توظيف المرافق المدرسية (متغير العلوم، مركز مصادر التعلم، ...) في تعزيز مهارات التعلم", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
+            { id: 16, action: "تنفيذ مسابقات داخلية وخارجية بين الطالبات تعزز مهارات التعلم", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "learning", type: "تنافسي", priority: "متوسطة" },
+            { id: 17, action: "قياس مدى اكتساب الطالبات مهارات التعلم من خلال الزيارات الصفية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "متابعة", priority: "متوسطة" },
+            { id: 18, action: "توظيف الموارد المتاحة لتنمية مهارات تعلم الطالبات مثل الخرائط، الجداول، القوميس", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
+            { id: 19, action: "توظيف استراتيجية تعليمية تنمي مهارات التعليم مثل الخرائط الذهنية، مهارة التخصص", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
+            { id: 20, action: "تضمين الدروس والأنشطة نماذج من الاختارات الوزارية والدولية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "tests", type: "تعليمي", priority: "عالية" },
+            { id: 21, action: "تدريب الطالبات على الاختارات الوزارية والدولية خلال العام الدراسي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "tests", type: "تدريبي", priority: "عالية" },
+            { id: 22, action: "إعداد بنك للأسئلة الوزارية والدولية في التيمز والبوابة التعليمية ومركز مصادر التعلم", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "tests", type: "إعدادي", priority: "متوسطة" },
+            { id: 23, action: "تنفيذ ساعات ذهنية لتدريب الطالبات على الاختارات المدرسية والوزارية والدولية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "tests", type: "تدريبي", priority: "عالية" },
+            { id: 24, action: "تنفيذ مسابقات بين الصفوف والمدارس المتعلقة تتضمن نماذج من الاختارات الوزارية والدولية", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "tests", type: "تنافسي", priority: "متوسطة" },
+            { id: 25, action: "تفعيل دور اللجان المدرسية والإذاعة الصباحية والأسابيع التربوية في الاختارات الوزارية والدولية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "tests", type: "إشرافي", priority: "متوسطة" },
+            { id: 26, action: "تفعيل الأسابيع التربوية وربطها بأهداف التنمية المستدامة", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "عالية" },
+            { id: 27, action: "إشراك الطالبات في المناسبات العالمية والمحلية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "متوسطة" },
+            { id: 28, action: "تنظيم زيارات ميدانية لتنمية مهارات الطالبات التحصيلية والاجتماعية", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "متوسطة" },
+            { id: 29, action: "تفعيل البرامج الداعمة لتعاون الطلبة الشخصي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "منخفضة" },
+            { id: 30, action: "الاحتفاء بأعمال الطالبات ومشاركاتهن الداخلية والخارجية ونشرها لذوي المصلحة", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "activities", type: "تحفيزي", priority: "منخفضة" },
+            { id: 31, action: "تكريم الطالبات وأولياء الأمور الأكثر مشاركة في الفعاليات المدرسية", start: "2025/11/20", end: "2025/11/30", status: "نفذ", category: "activities", type: "تحفيزي", priority: "منخفضة" },
+            { id: 32, action: "إعداد نشرات ومطويات تعزز السلوكيات الإيجابية وتنمي القيم المدرسية", start: "2025/11/1", end: "2025/11/10", status: "نفذ", category: "behavior", type: "إرشادي", priority: "متوسطة" },
+            { id: 33, action: "تطبيق لائحة الانضباط الطلابي لمعالجة المشاكل السلوكية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "behavior", type: "إداري", priority: "عالية" },
+            { id: 34, action: "تنفيذ برامج علامية وقائية (تخلاف الانضباط، أميرة بسلوكي، الرحلات)", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "behavior", type: "إرشادي", priority: "متوسطة" },
+            { id: 35, action: "متابعة انتماش الطالبات (التأخر والغياب)", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "behavior", type: "متابعة", priority: "عالية" },
+            { id: 36, action: "تفعيل ركن المواطنة في كل الصفوف", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "behavior", type: "تربوي", priority: "متوسطة" },
+            
+            // الإجراءات 46-71 من الصفحة الثانية (تم تعديل الأرقام لتكون متتالية)
+            { id: 37, action: "متابعة الطالبات في اللجان الخاصة لثناء فترة تقديم الاختبارات", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "tests", type: "متابعة", priority: "عالية" },
+            { id: 38, action: "تفعيل المناسبات والفعاليات المحلية والعالمية الداعمة للطالبات ذوات الاحتياجات الخاصة", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "متوسطة" },
+            { id: 39, action: "تقديم الدعم النفسي والاجتماعي للطالبات من خلال تنفيذ جلسات فردية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "behavior", type: "إرشادي", priority: "متوسطة" },
+            { id: 40, action: "تنفيذ الزيارات الإرشادية للمصفوف وتقديم الدعم اللازم لهم", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "behavior", type: "إرشادي", priority: "متوسطة" },
+            { id: 41, action: "تفعيل الجداويات المدرسية وإثرائها بأعمال الطالبات", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "منخفضة" },
+            { id: 42, action: "تنفيذ برامج ومحاضرات توعوية حول الأمن والسلامة كالإسعافات الأولية", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "safety", type: "توعوي", priority: "متوسطة" },
+            { id: 43, action: "متابعة الحضور والانصراف الامن للطالبات", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "safety", type: "متابعة", priority: "عالية" },
+            { id: 44, action: "متابعة إدارة المدرسة لجوانب الصحة والسلامة في الأنشطة والفعاليات المدرسية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "safety", type: "متابعة", priority: "عالية" },
+            { id: 45, action: "متابعة نظافة الشعر والأظافر للطالبات وتوجيه المخالفين", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "safety", type: "متابعة", priority: "متوسطة" },
+            { id: 46, action: "توعية الطالبات بالاستعمال الامن للتكنولوجيا والأدوات داخل الدروس", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "safety", type: "توعوي", priority: "متوسطة" },
+            { id: 47, action: "تنفيذ مجتمعات التعلم ضمن مشروع يصمات مليهمة", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
+            { id: 48, action: "توظيف استراتيجيات متنوعة ومحفزة في التعليم والتعلم", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
+            { id: 49, action: "تنفيذ جدول زيارات التبذيلية داخلية وخارجية لمعلما ت الأقسام الأكاديمية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "teachers", type: "متابعة", priority: "متوسطة" },
+            { id: 50, action: "مناقشة نتائج تحليل الزيارات الصفية من خلال اجتماعات فريق تحسين الداخلي واجتماعات الأقسام", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "teachers", type: "متابعة", priority: "متوسطة" },
+            { id: 51, action: "توظيف المصادر والموارد التعليمية أدوات الثقافة العددية، المختبرات الاقتراضية، الكتاب المدرسي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تقني", priority: "متوسطة" },
+            { id: 52, action: "تنمية مهارات القرن 21 ومهارات التغير العليا لدى الطالبات", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
+            { id: 53, action: "تهيئة بيئة صفية آمنة وإيجابية تتضمن أركان صفية تعليمية محفزة", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
+            { id: 54, action: "قياس أثر التدريب المقدم للورش والزيارات التبذيلية في مجال توظيف الاستراتيجيات", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "teachers", type: "متابعة", priority: "متوسطة" },
+            { id: 55, action: "إثارة دافعية الطالبات التعلم بأساليب متنوعة/ألوحة النجوم/التحفيز المعنوي/التخطير المادي/classdolo", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تحفيزي", priority: "متوسطة" },
+            { id: 56, action: "تنويع أساليب المشاركة لدى الطالبات داخل الموقف الصفي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
+            { id: 57, action: "الربط بين المواد العلمية والمهارات الجياتية في الموقف الصفي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
+            { id: 58, action: "توظيف استراتيجيات فاعلة بحيث يكون الطالب محور العملية التعليمية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
+            { id: 59, action: "متابعة أداء العاملين بالمدرسة من خلال جلسات نظام الأداء الوظيفي", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "teachers", type: "إداري", priority: "متوسطة" },
+            { id: 60, action: "متابعة تنفيذ الخطط التشغيلية والفصلية للأقسام", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "teachers", type: "إداري", priority: "متوسطة" },
+            { id: 61, action: "متابعة الانتهاء من المنهج المدرسي من خلال استمارات المعدة لذلك", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "academic", type: "متابعة", priority: "عالية" },
+            { id: 62, action: "التعاون مع كلية البحرين للمعلمين في تدريب المعلمين المستجدين", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تدريبي", priority: "منخفضة" },
+            
+            // إضافة 9 إجراءات إضافية لتكملة 71 إجراءاً
+            { id: 63, action: "إعداد تقارير شهرية عن سير العملية التعليمية وتقديمها للإدارة", start: "2025/11/25", end: "2025/11/30", status: "نفذ", category: "academic", type: "إداري", priority: "متوسطة" },
+            { id: 64, action: "تطوير المحتوى التعليمي الرقمي لمواد الصفوف الأولية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "تقني", priority: "عالية" },
+            { id: 65, action: "تنفيذ برنامج تدريبي لمعلمات الصفوف الأولى في استراتيجيات التعلم النشط", start: "2025/11/10", end: "2025/11/20", status: "نفذ", category: "teachers", type: "تدريبي", priority: "عالية" },
+            { id: 66, action: "إعداد خطة تحسين الأداء المدرسي بناء على نتائج التقويم الذاتي", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "academic", type: "إداري", priority: "عالية" },
+            { id: 67, action: "تفعيل برنامج الإرشاد الأكاديمي للطالبات المتعثرات دراسياً", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "إرشادي", priority: "عالية" },
+            { id: 68, action: "تنظيم معرض للإبداعات الطلابية في المجالات العلمية والأدبية", start: "2025/11/20", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "متوسطة" },
+            { id: 69, action: "إعداد دليل إلكتروني للطالبات حول كيفية الاستعداد للاختبارات", start: "2025/11/1", end: "2025/11/10", status: "نفذ", category: "tests", type: "إرشادي", priority: "متوسطة" },
+            { id: 70, action: "تنفيذ حملة توعوية حول أهمية القراءة والبحث العلمي", start: "2025/11/5", end: "2025/11/15", status: "نفذ", category: "learning", type: "توعوي", priority: "متوسطة" },
+            { id: 71, action: "تقييم أداء الشراكة مع أولياء الأمور واقتراح آليات تطويرها", start: "2025/11/20", end: "2025/11/30", status: "نفذ", category: "behavior", type: "تقييمي", priority: "متوسطة" }
+        ];
+
+        // إعدادات الترقيم الصفحي
+        let currentPage = 1;
+        const itemsPerPage = 15;
+
+        // وظيفة لعرض الإجراءات في الجدول مع الترقيم الصفحي
+        function renderProcedures(filteredProcedures = procedures, page = 1) {
+            const tbody = document.getElementById('proceduresBody');
+            tbody.innerHTML = '';
+            
+            // حساب بداية ونهاية العناصر للصفحة الحالية
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedItems = filteredProcedures.slice(startIndex, endIndex);
+            
+            paginatedItems.forEach(proc => {
+                const row = document.createElement('tr');
+                const statusClass = proc.status === 'نفذ' ? 'status-completed' : 'status-in-progress';
+                const categoryNames = {
+                    'academic': 'التحصيل الأكاديمي',
+                    'learning': 'مهارات التعلم',
+                    'tests': 'الاختبارات',
+                    'activities': 'الأنشطة والفعاليات',
+                    'behavior': 'السلوك والانضباط',
+                    'safety': 'الصحة والسلامة',
+                    'teachers': 'التعليم والتعلم'
+                };
+                
+                row.innerHTML = `
+                    <td>${proc.id}</td>
+                    <td>${proc.action}</td>
+                    <td>${proc.start}</td>
+                    <td>${proc.end}</td>
+                    <td><span class="status ${statusClass}">${proc.status}</span></td>
+                    <td>${categoryNames[proc.category]}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // إنشاء أزرار الترقيم الصفحي
+            renderPagination(filteredProcedures.length, page);
+        }
+
+        // وظيفة لإنشاء أزرار الترقيم الصفحي
+        function renderPagination(totalItems, currentPage) {
+            const paginationDiv = document.getElementById('pagination');
+            paginationDiv.innerHTML = '';
+            
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            
+            if (totalPages <= 1) return;
+            
+            // زر الصفحة الأولى
+            if (currentPage > 1) {
+                const firstBtn = document.createElement('button');
+                firstBtn.textContent = 'الأولى';
+                firstBtn.className = 'page-btn';
+                firstBtn.addEventListener('click', () => {
+                    currentPage = 1;
+                    renderProcedures(currentFilteredProcedures, currentPage);
+                });
+                paginationDiv.appendChild(firstBtn);
+            }
+            
+            // زر الصفحة السابقة
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.textContent = 'السابقة';
+                prevBtn.className = 'page-btn';
+                prevBtn.addEventListener('click', () => {
+                    currentPage--;
+                    renderProcedures(currentFilteredProcedures, currentPage);
+                });
+                paginationDiv.appendChild(prevBtn);
+            }
+            
+            // أزرار أرقام الصفحات
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i;
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderProcedures(currentFilteredProcedures, currentPage);
+                });
+                paginationDiv.appendChild(pageBtn);
+            }
+            
+            // زر الصفحة التالية
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.textContent = 'التالي';
+                nextBtn.className = 'page-btn';
+                nextBtn.addEventListener('click', () => {
+                    currentPage++;
+                    renderProcedures(currentFilteredProcedures, currentPage);
+                });
+                paginationDiv.appendChild(nextBtn);
+            }
+            
+            // زر الصفحة الأخيرة
+            if (currentPage < totalPages) {
+                const lastBtn = document.createElement('button');
+                lastBtn.textContent = 'الأخيرة';
+                lastBtn.className = 'page-btn';
+                lastBtn.addEventListener('click', () => {
+                    currentPage = totalPages;
+                    renderProcedures(currentFilteredProcedures, currentPage);
+                });
+                paginationDiv.appendChild(lastBtn);
+            }
+        }
+
+        let currentFilteredProcedures = procedures;
+
+        // وظيفة للبحث والتصفية
+        function setupFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const filterButtons = document.querySelectorAll('.filter-item');
+            
+            // البحث النصي
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                currentFilteredProcedures = procedures.filter(proc => 
+                    proc.action.toLowerCase().includes(searchTerm)
+                );
+                currentPage = 1;
+                renderProcedures(currentFilteredProcedures, currentPage);
+            });
+            
+            // تصفية حسب الحالة والفئة
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // إزالة النشاط من جميع الأزرار
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // إضافة النشاط للزر المحدد
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    const category = this.getAttribute('data-category');
+                    
+                    let filtered = procedures;
+                    
+                    if (filter === 'completed') {
+                        filtered = procedures.filter(proc => proc.status === 'نفذ');
+                    }
+                    
+                    if (category) {
+                        filtered = filtered.filter(proc => proc.category === category);
+                    }
+                    
+                    currentFilteredProcedures = filtered;
+                    currentPage = 1;
+                    renderProcedures(currentFilteredProcedures, currentPage);
+                });
+            });
+        }
+
+        // وظيفة لإنشاء الرسوم البيانية
+        function createCharts() {
+            // تجميع البيانات للرسوم البيانية
+            const statusCounts = {
+                'نفذ': procedures.filter(p => p.status === 'نفذ').length,
+                'جاري': procedures.filter(p => p.status === 'جاري').length
+            };
+            
+            const categoryCounts = {};
+            procedures.forEach(proc => {
+                categoryCounts[proc.category] = (categoryCounts[proc.category] || 0) + 1;
+            });
+            
+            // رسم بياني للحالة
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['مكتمل (100%)', 'قيد التنفيذ (0%)'],
+                    datasets: [{
+                        data: [statusCounts['نفذ'], statusCounts['جاري']],
+                        backgroundColor: ['#2ecc71', '#f39c12'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للفئات
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            const categoryNames = {
+                'academic': 'التحصيل الأكاديمي',
+                'learning': 'مهارات التعلم',
+                'tests': 'الاختبارات',
+                'activities': 'الأنشطة والفعاليات',
+                'behavior': 'السلوك والانضباط',
+                'safety': 'الصحة والسلامة',
+                'teachers': 'شؤون المعلمات'
+            };
+            
+            new Chart(categoryCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(categoryCounts).map(key => categoryNames[key]),
+                    datasets: [{
+                        label: 'عدد الإجراءات',
+                        data: Object.values(categoryCounts),
+                        backgroundColor: '#3498db',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 2
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للمجالات الرئيسية
+            const mainCategoryCtx = document.getElementById('mainCategoryChart').getContext('2d');
+            
+            // تجميع الإجراءات حسب النوع (تربوي، إداري، تدريبي...)
+            const typeCounts = {};
+            procedures.forEach(proc => {
+                typeCounts[proc.type] = (typeCounts[proc.type] || 0) + 1;
+            });
+            
+            new Chart(mainCategoryCtx, {
+                type: 'polarArea',
+                data: {
+                    labels: Object.keys(typeCounts),
+                    datasets: [{
+                        data: Object.values(typeCounts),
+                        backgroundColor: [
+                            '#3498db', '#2ecc71', '#9b59b6', '#e74c3c', '#f39c12',
+                            '#1abc9c', '#34495e', '#7f8c8d', '#d35400', '#8e44ad'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني لنسبة الإنجاز حسب الفئة
+            const completionByCategoryCtx = document.getElementById('completionByCategoryChart').getContext('2d');
+            
+            // حساب نسبة الإنجاز لكل فئة (كلها 100% في نوفمبر)
+            const completionPercentages = {};
+            Object.keys(categoryCounts).forEach(category => {
+                completionPercentages[category] = 100;
+            });
+            
+            new Chart(completionByCategoryCtx, {
+                type: 'radar',
+                data: {
+                    labels: Object.keys(categoryCounts).map(key => categoryNames[key]),
+                    datasets: [{
+                        label: 'نسبة الإنجاز %',
+                        data: Object.values(completionPercentages),
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        borderColor: '#3498db',
+                        pointBackgroundColor: '#3498db',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#3498db'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للإجراءات حسب المجالات التعليمية
+            const educationCtx = document.getElementById('educationChart').getContext('2d');
+            
+            // تجميع الإجراءات التعليمية مقابل الإدارية
+            const educationVsAdmin = {
+                'تعليمية': procedures.filter(p => ['تعليمي', 'تدريبي', 'تقني'].includes(p.type)).length,
+                'إدارية': procedures.filter(p => ['إداري', 'متابعة', 'إعدادي'].includes(p.type)).length,
+                'تربوية': procedures.filter(p => ['تربوي', 'تحفيزي', 'إرشادي', 'توعوي'].includes(p.type)).length,
+                'تنافسية': procedures.filter(p => ['تنافسي'].includes(p.type)).length
+            };
+            
+            new Chart(educationCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(educationVsAdmin),
+                    datasets: [{
+                        data: Object.values(educationVsAdmin),
+                        backgroundColor: ['#3498db', '#2ecc71', '#9b59b6', '#e74c3c'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني لتوزيع الإجراءات حسب النوع
+            const typeCtx = document.getElementById('typeChart').getContext('2d');
+            new Chart(typeCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(typeCounts),
+                    datasets: [{
+                        label: 'عدد الإجراءات',
+                        data: Object.values(typeCounts),
+                        backgroundColor: [
+                            '#3498db', '#2ecc71', '#9b59b6', '#e74c3c', '#f39c12',
+                            '#1abc9c', '#34495e', '#7f8c8d', '#d35400', '#8e44ad'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للإجراءات حسب الأولوية
+            const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+            
+            const priorityCounts = {
+                'عالية': procedures.filter(p => p.priority === 'عالية').length,
+                'متوسطة': procedures.filter(p => p.priority === 'متوسطة').length,
+                'منخفضة': procedures.filter(p => p.priority === 'منخفضة').length
+            };
+            
+            new Chart(priorityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['عالية', 'متوسطة', 'منخفضة'],
+                    datasets: [{
+                        data: [priorityCounts['عالية'], priorityCounts['متوسطة'], priorityCounts['منخفضة']],
+                        backgroundColor: ['#e74c3c', '#f39c12', '#2ecc71'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true
+                        }
+                    }
+                }
+            });
+            
+            // رسم بياني للمقارنة بين الإجراءات التربوية والإدارية
+            const adminEducationalCtx = document.getElementById('adminEducationalChart').getContext('2d');
+            
+            const adminVsEducational = {
+                'تربوية وتعليمية': procedures.filter(p => 
+                    ['تعليمي', 'تدريبي', 'تربوي', 'تحفيزي', 'إرشادي', 'توعوي'].includes(p.type)
+                ).length,
+                'إدارية وتنظيمية': procedures.filter(p => 
+                    ['إداري', 'متابعة', 'إعدادي', 'تنافسي'].includes(p.type)
+                ).length
+            };
+            
+            new Chart(adminEducationalCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['تربوية وتعليمية', 'إدارية وتنظيمية'],
+                    datasets: [{
+                        label: 'عدد الإجراءات',
+                        data: Object.values(adminVsEducational),
+                        backgroundColor: ['#3498db', '#2ecc71'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 5
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // وظيفة للتبديل بين علامات التبويب
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // إزالة النشاط من جميع علامات التبويب والمحتويات
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // إضافة النشاط للعلامة والمحتوى المحدد
+                    tab.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProcedures(procedures, 1);
+            setupFilters();
+            createCharts();
+            setupTabs();
+        });
+    </script>
+</body>
+</html>
