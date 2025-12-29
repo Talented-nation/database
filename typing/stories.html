@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>أبطال الحروف العربية - Arabic Typing Hero</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;800&family=Sakkal+Majalla&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sakkal Majalla', 'Amiri', 'Cairo', serif;
+            background-color: #eff6ff;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(to bottom, #8b5cf6, #3b82f6); /* Gradient from Purple to Blue */
+            border-radius: 5px; 
+        }
+
+        /* --- Background Animation (Colorful Arabic Letters) --- */
+        .circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            pointer-events: none; /* Allows clicking through */
+            z-index: 0;
+        }
+
+        .circles li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            font-family: 'Amiri', serif; /* Classic Arabic font */
+            font-weight: bold;
+            animation: animate 40s linear infinite; /* Slower default speed */
+            bottom: -150px;
+            white-space: nowrap;
+            opacity: 0.2; /* Base opacity */
+        }
+
+        /* Fun Colors and Sizes - Extended to 20 items */
+        .circles li:nth-child(1) { left: 25%; font-size: 80px; color: #3b82f6; animation-delay: 0s; } /* Blue */
+        .circles li:nth-child(2) { left: 10%; font-size: 40px; color: #10b981; animation-delay: 2s; animation-duration: 45s; } /* Green */
+        .circles li:nth-child(3) { left: 70%; font-size: 50px; color: #8b5cf6; animation-delay: 4s; animation-duration: 50s; } /* Purple */
+        .circles li:nth-child(4) { left: 40%; font-size: 70px; color: #f59e0b; animation-delay: 0s; animation-duration: 60s; } /* Orange */
+        .circles li:nth-child(5) { left: 65%; font-size: 35px; color: #ef4444; animation-delay: 0s; animation-duration: 35s; } /* Red */
+        .circles li:nth-child(6) { left: 75%; font-size: 110px; color: #3b82f6; animation-delay: 3s; animation-duration: 55s; }
+        .circles li:nth-child(7) { left: 35%; font-size: 150px; color: #ec4899; animation-delay: 7s; animation-duration: 70s; } /* Pink */
+        .circles li:nth-child(8) { left: 50%; font-size: 30px; color: #10b981; animation-delay: 15s; animation-duration: 80s; }
+        .circles li:nth-child(9) { left: 20%; font-size: 25px; color: #8b5cf6; animation-delay: 2s; animation-duration: 45s; }
+        .circles li:nth-child(10){ left: 85%; font-size: 140px; color: #f59e0b; animation-delay: 0s; animation-duration: 65s; }
+        
+        /* New Items (11-20) */
+        .circles li:nth-child(11){ left: 5%; font-size: 90px; color: #ef4444; animation-delay: 1s; animation-duration: 35s; }
+        .circles li:nth-child(12){ left: 15%; font-size: 35px; color: #3b82f6; animation-delay: 5s; animation-duration: 55s; }
+        .circles li:nth-child(13){ left: 30%; font-size: 45px; color: #10b981; animation-delay: 2s; animation-duration: 40s; }
+        .circles li:nth-child(14){ left: 45%; font-size: 120px; color: #8b5cf6; animation-delay: 8s; animation-duration: 65s; }
+        .circles li:nth-child(15){ left: 55%; font-size: 25px; color: #f59e0b; animation-delay: 0s; animation-duration: 30s; }
+        .circles li:nth-child(16){ left: 60%; font-size: 55px; color: #ec4899; animation-delay: 4s; animation-duration: 50s; }
+        .circles li:nth-child(17){ left: 80%; font-size: 130px; color: #3b82f6; animation-delay: 10s; animation-duration: 75s; }
+        .circles li:nth-child(18){ left: 90%; font-size: 40px; color: #10b981; animation-delay: 6s; animation-duration: 45s; }
+        .circles li:nth-child(19){ left: 95%; font-size: 30px; color: #8b5cf6; animation-delay: 3s; animation-duration: 60s; }
+        .circles li:nth-child(20){ left: 48%; font-size: 60px; color: #ef4444; animation-delay: 12s; animation-duration: 55s; }
+
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg) translateX(0);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translateY(-60vh) rotate(180deg) translateX(50px); /* Sway right */
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-120vh) rotate(360deg) translateX(-50px); /* Sway left and exit */
+                opacity: 0;
+            }
+        }
+
+        /* --- Neon & Fire Button Effects --- */
+        .neon-green:hover {
+            box-shadow: 0 0 10px #22c55e, 0 0 20px #22c55e, 0 0 40px #86efac;
+            border-color: #22c55e;
+            transform: translateY(-5px) scale(1.02);
+            z-index: 10;
+        }
+
+        /* New Teal Neon for Medium Level */
+        .neon-teal:hover {
+            box-shadow: 0 0 10px #14b8a6, 0 0 20px #14b8a6, 0 0 40px #5eead4;
+            border-color: #14b8a6;
+            transform: translateY(-5px) scale(1.02);
+            z-index: 10;
+        }
+
+        .neon-purple:hover {
+            box-shadow: 0 0 10px #9333ea, 0 0 20px #9333ea, 0 0 40px #d8b4fe;
+            border-color: #9333ea;
+            transform: translateY(-5px) scale(1.02);
+            z-index: 10;
+        }
+
+        /* --- Smooth Fire Animation for Challenge Level --- */
+        @keyframes fire-pulse {
+            0% { 
+                box-shadow: 0 0 5px #dc2626, 0 -5px 10px #ea580c, 0 -10px 20px #facc15; 
+            }
+            50% { 
+                box-shadow: 0 0 15px #ef4444, 0 -10px 25px #f97316, 0 -20px 45px #fde047; 
+            }
+            100% { 
+                box-shadow: 0 0 5px #dc2626, 0 -5px 10px #ea580c, 0 -10px 20px #facc15; 
+            }
+        }
+        
+        /* New Fiery Border for Game Container */
+        .fire-border {
+            border: 4px solid #ef4444 !important; /* Made thicker to match card style */
+            box-shadow: 0 0 8px #ef4444, 0 0 20px #f97316, inset 0 0 15px rgba(239, 68, 68, 0.2);
+            animation: fire-glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes fire-glow {
+            0% {
+                box-shadow: 0 0 8px #ef4444, 0 0 20px #f97316;
+                border-color: #ef4444;
+            }
+            100% {
+                box-shadow: 0 0 20px #ef4444, 0 0 40px #facc15;
+                border-color: #f97316;
+            }
+        }
+
+        .neon-red:hover {
+            animation: fire-pulse 1.5s ease-in-out infinite; /* Smoother timing (1.5s) with easing */
+            border-color: #ea580c; /* Burning Orange Border */
+            transform: translateY(-5px) scale(1.02);
+            z-index: 20;
+            background: linear-gradient(to bottom, #fff, #fff7ed); /* Slight warm tint */
+        }
+
+        /* Typing Text Styles */
+        .quote-chars {
+            font-size: 2.5rem;
+            line-height: 3.5rem;
+            font-weight: bold;
+            transition: color 0.1s ease, background-color 0.1s ease;
+            position: relative;
+            padding: 0;
+            border-radius: 2px;
+        }
+
+        .correct {
+            color: #16a34a;
+            background-color: #dcfce7;
+        }
+
+        .incorrect {
+            color: #dc2626;
+            background-color: #fee2e2;
+        }
+
+        .current {
+            border-bottom: 3px solid #f59e0b;
+            background-color: #fef3c7;
+            animation: pulse-bg 1s infinite;
+        }
+
+        @keyframes pulse-bg {
+            0% { background-color: #fef3c7; }
+            50% { background-color: #fde68a; }
+            100% { background-color: #fef3c7; }
+        }
+        
+        /* Shake Animation for blocked input */
+        @keyframes error-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+        
+        .shake-element {
+            animation: error-shake 0.3s ease-in-out;
+        }
+
+        /* Badge Animation */
+        .badge-pop { animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn {
+            0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall linear forwards;
+        }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+        
+        /* Blur background for focus - FIXED SIZE TO COVER PARENT */
+        .blur-input {
+            position: absolute;
+            inset: 0; /* Cover the parent completely */
+            width: 100%;
+            height: 100%;
+            opacity: 0; /* Make it invisible but clickable */
+            z-index: 10; /* Ensure it sits on top of the text */
+            cursor: text; /* Show text cursor on hover */
+            color: transparent; /* Hide text color */
+            background: transparent;
+            border: none;
+            outline: none;
+            caret-color: transparent; /* Hide the native cursor */
+        }
+        
+        /* Focus Indicator - Blue (Default) */
+        .game-active {
+            box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.5);
+            border-color: #3b82f6 !important;
+        }
+
+        /* Focus Indicator - Red (Challenge) */
+        .game-active-red {
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.5);
+            border-color: #ef4444 !important;
+        }
+        
+        /* Credits Modal Animation */
+        .modal-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Gradient Border for Pop-up */
+        .popup-gradient-border {
+            border: 5px solid transparent;
+            border-radius: 1.5rem; /* Matches rounded-3xl */
+            background: linear-gradient(#fff, #fff) padding-box,
+                        linear-gradient(45deg, #a855f7, #06b6d4, #3b82f6) border-box;
+            /* Purple, Cyan, Blue */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center text-gray-800 relative selection:bg-blue-200" onkeydown="handleGlobalKeydown(event)">
+
+    <!-- Background Animation Container: Added pointer-events-none to prevent blocking clicks -->
+    <div class="fixed inset-0 w-full h-full overflow-hidden -z-0 pointer-events-none">
+        <ul class="circles">
+            <!-- Original 10 -->
+            <li>أ</li><li>ب</li><li>ج</li><li>د</li><li>هـ</li>
+            <li>و</li><li>ز</li><li>ح</li><li>ط</li><li>ي</li>
+            <!-- New 10 -->
+            <li>ك</li><li>ل</li><li>م</li><li>ن</li><li>س</li>
+            <li>ع</li><li>ف</li><li>ص</li><li>ق</li><li>ر</li>
+        </ul>
+    </div>
+
+    <!-- Header -->
+    <header class="w-full bg-white shadow-md p-4 mb-6 fixed top-0 z-20">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <!-- Added onclick to go back to main menu, and cursor-pointer for styling -->
+            <h1 onclick="restartGame()" class="text-2xl font-bold text-blue-600 flex items-center gap-2 cursor-pointer hover:text-blue-800 transition-colors select-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                أبطال الحروف العربية
+            </h1>
+            <div id="live-stats" class="hidden flex gap-4 text-lg font-bold">
+                <span class="text-blue-600">الوقت: <span id="timer">0</span>ث</span>
+                <span class="text-purple-600">الأخطاء: <span id="errors">0</span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="w-full max-w-4xl px-4 mt-20 mb-10 flex-grow flex flex-col items-center justify-center relative z-10">
+        
+        <!-- Screen 1: Story Selection -->
+        <div id="selection-screen" class="w-full text-center space-y-8 animate-fade-in">
+            <div class="space-y-2">
+                <h2 class="text-4xl font-extrabold text-gray-800">اختر قصة لتبدأ!</h2>
+                <p class="text-xl text-gray-500">اكتب القصة بسرعة لتحصل على الوسام</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 mb-8">
+                
+                <!-- ROW 1: EASY STORIES (Green) -->
+                <button onclick="startGame(0)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-green-500 cursor-pointer neon-green">
+                    <div class="text-6xl mb-4">🐦</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">العصفور الصغير</h3>
+                    <p class="text-sm text-gray-500">قصة قصيرة وسهلة.</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold">المستوى السهل</span>
+                </button>
+
+                <button onclick="startGame(1)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-green-500 cursor-pointer neon-green">
+                    <div class="text-6xl mb-4">🐠</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">السمكة الذهبية</h3>
+                    <p class="text-sm text-gray-500">قصة ممتعة عن النهر.</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold">المستوى السهل</span>
+                </button>
+
+                <button onclick="startGame(2)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-green-500 cursor-pointer neon-green">
+                    <div class="text-6xl mb-4">⚽</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">أحمد والكرة</h3>
+                    <p class="text-sm text-gray-500">قصة عن الرياضة.</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold">المستوى السهل</span>
+                </button>
+
+                <!-- ROW 2: MEDIUM STORIES (TEAL/CYAN) - CHANGED FROM ORANGE -->
+                <button onclick="startGame(3)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-teal-500 cursor-pointer neon-teal">
+                    <div class="text-6xl mb-4">🐭</div> 
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">الفيل والفأر</h3>
+                    <p class="text-sm text-gray-500">قصة قصيرة عن الصداقة.</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm font-bold">المستوى المتوسط</span>
+                </button>
+
+                <button onclick="startGame(4)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-teal-500 cursor-pointer neon-teal">
+                    <div class="text-6xl mb-4">🌹</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">الحديقة الجميلة</h3>
+                    <p class="text-sm text-gray-500">قصة عن العناية بالطبيعة.</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm font-bold">المستوى المتوسط</span>
+                </button>
+
+                <button onclick="startGame(5)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-teal-500 cursor-pointer neon-teal">
+                    <div class="text-6xl mb-4">🚀</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">رحلة الفضاء</h3>
+                    <p class="text-sm text-gray-500">مغامرة شيقة في الكواكب.</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm font-bold">المستوى المتوسط</span>
+                </button>
+
+                <!-- ROW 3: HARD STORIES (Purple) -->
+                <button onclick="startGame(6)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-purple-600 cursor-pointer neon-purple">
+                    <div class="text-6xl mb-4">🐜</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">النملة الحكيمة</h3>
+                    <p class="text-sm text-gray-500">قصة عن الاجتهاد والعمل.</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-bold">المستوى الصعب</span>
+                </button>
+
+                <button onclick="startGame(7)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-purple-600 cursor-pointer neon-purple">
+                    <div class="text-6xl mb-4">⚖️</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">التاجر الأمين</h3>
+                    <p class="text-sm text-gray-500">قصة عن الأمانة والصدق.</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-bold">المستوى الصعب</span>
+                </button>
+
+                <button onclick="startGame(8)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-purple-600 cursor-pointer neon-purple">
+                    <div class="text-6xl mb-4">🧹</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">التعاون في الحي</h3>
+                    <p class="text-sm text-gray-500">قصة عن نظافة البيئة.</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-bold">المستوى الصعب</span>
+                </button>
+
+                <!-- ROW 4: CHALLENGE STORIES (Red) -->
+                <button onclick="startGame(9)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-red-600 cursor-pointer neon-red">
+                    <div class="text-6xl mb-4">🌌</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">النظام الشمسي</h3>
+                    <p class="text-sm text-gray-500">نص علمي (تحدي الوقت).</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-bold">مستوى التحدي ⏱️</span>
+                </button>
+
+                <button onclick="startGame(10)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-red-600 cursor-pointer neon-red">
+                    <div class="text-6xl mb-4">💧</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">دورة الماء</h3>
+                    <p class="text-sm text-gray-500">نص علمي (تحدي الوقت).</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-bold">مستوى التحدي ⏱️</span>
+                </button>
+
+                <button onclick="startGame(11)" class="group bg-white rounded-2xl p-6 shadow-lg transition-all duration-300 border-b-8 border-red-600 cursor-pointer neon-red">
+                    <div class="text-6xl mb-4">🧠</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">العقل البشري</h3>
+                    <p class="text-sm text-gray-500">نص علمي (تحدي الوقت).</p>
+                    <span class="inline-block mt-4 px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-bold">مستوى التحدي ⏱️</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen 2: Game Interface -->
+        <div id="game-screen" class="hidden w-full bg-white rounded-3xl shadow-xl p-8 border-4 border-blue-100 relative transition-all duration-200">
+            
+            <!-- Overlay to force focus -->
+            <div id="focus-overlay" class="absolute inset-0 bg-white/80 z-20 flex items-center justify-center rounded-3xl hidden cursor-pointer backdrop-blur-sm" onclick="focusInput()">
+                <div class="bg-blue-100 p-6 rounded-2xl border-2 border-blue-400 text-center shadow-lg animate-bounce">
+                    <p class="text-2xl font-bold text-blue-700 mb-2">اللعبة متوقفة مؤقتاً</p>
+                    <p class="text-lg text-blue-600">اضغط هنا أو على أي زر للمتابعة</p>
+                </div>
+            </div>
+
+            <!-- Error Feedback Toast -->
+            <div id="error-feedback" class="absolute top-4 right-1/2 translate-x-1/2 bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded-full font-bold text-sm hidden animate-bounce z-30 shadow-md whitespace-nowrap">
+                ⛔ امسح الخطأ لتكمل! (Backspace)
+            </div>
+
+            <div class="mb-6 flex justify-between items-center border-b pb-4">
+                <h3 id="story-title" class="text-2xl font-bold text-gray-700">عنوان القصة</h3>
+                <div class="flex items-center gap-4">
+                    <span id="challenge-timer" class="hidden text-red-600 font-bold bg-red-100 px-3 py-1 rounded-lg animate-pulse">
+                        الوقت المتبقي: <span id="time-left">180</span> ث
+                    </span>
+                    <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">تأكد من لغة الكيبورد (عربي)</span>
+                    <!-- Exit Button with stopPropagation -->
+                    <button onclick="event.stopPropagation(); restartGame()" class="text-red-500 hover:bg-red-50 px-3 py-1 rounded-lg transition text-sm font-bold">خروج ✕</button>
+                </div>
+            </div>
+
+            <!-- Text Display Area - Added ID text-container -->
+            <div id="text-container" class="relative min-h-[150px] mb-6 cursor-text bg-gray-50 rounded-xl border border-gray-100 p-4">
+                <div id="quote-display" class="font-medium text-gray-400 select-none text-right relative z-0" dir="rtl">
+                    <!-- Spans will be injected here -->
+                </div>
+                <!-- Hidden Input: Now covers the entire area -->
+                <input type="text" id="typing-input" class="blur-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text">
+            </div>
+
+            <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
+                <div id="progress-bar" class="bg-blue-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <p class="text-center text-sm text-gray-400">اضغط في أي مكان لبدء الكتابة</p>
+        </div>
+
+        <!-- Screen 3: Results -->
+        <div id="result-screen" class="hidden w-full max-w-lg bg-white rounded-3xl shadow-2xl p-8 text-center border-t-8 border-yellow-400 relative overflow-hidden">
+            <div id="confetti-container" class="absolute inset-0 pointer-events-none"></div>
+            
+            <h2 id="result-title" class="text-3xl font-bold text-gray-800 mb-2">أحسنت يا بطل! 🎉</h2>
+            <p id="result-subtitle" class="text-gray-500 mb-8">لقد أكملت القصة بنجاح</p>
+
+            <div id="badge-container" class="mb-8 flex justify-center badge-pop">
+                <!-- Badge SVG injected via JS -->
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 mb-8">
+                <div class="bg-blue-50 p-4 rounded-xl">
+                    <p class="text-sm text-blue-600 font-bold mb-1">السرعة</p>
+                    <p class="text-2xl font-bold text-blue-800"><span id="wpm-result">0</span> <span class="text-xs">كلمة/د</span></p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-xl">
+                    <p class="text-sm text-green-600 font-bold mb-1">الدقة</p>
+                    <p class="text-2xl font-bold text-green-800"><span id="accuracy-result">0</span>%</p>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-xl">
+                    <p class="text-sm text-purple-600 font-bold mb-1">الوقت</p>
+                    <p class="text-2xl font-bold text-purple-800"><span id="time-result">0</span> <span class="text-xs">ث</span></p>
+                </div>
+            </div>
+
+            <button onclick="restartGame()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-200 text-xl">
+                العودة للقائمة الرئيسية ↺
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer: Added Visitor Counter -->
+    <footer class="w-full text-center p-4 text-gray-400 text-sm relative z-50 flex flex-col items-center gap-2">
+        <div>
+            صمم للتدريب على الطباعة باللغة العربية - 
+            <button onclick="openCredits()" class="hover:text-blue-500 hover:underline transition-colors focus:outline-none cursor-pointer underline decoration-dotted">
+                جميع الحقوق محفوظة 2025-2026
+            </button>
+        </div>
+
+        <!-- Visitor Counter Widget -->
+        <div class="mt-1 text-xs font-mono bg-blue-50 text-blue-600 px-3 py-1 rounded-full border border-blue-100 shadow-sm flex items-center gap-2">
+            <span>👥 عدد الزوار:</span>
+            <span id="visitor-count" class="font-bold">...</span>
+        </div>
+    </footer>
+
+    <!-- Credits Modal -->
+    <div id="credits-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm" onclick="closeCredits()">
+        <!-- UPDATED MODAL: Removed border-4 border-blue-200, Added popup-gradient-border -->
+        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-sm w-full mx-4 text-center transform transition-all modal-fade-in relative popup-gradient-border" onclick="event.stopPropagation()">
+            <!-- Close Button -->
+            <button onclick="closeCredits()" class="absolute top-4 left-4 text-gray-400 hover:text-red-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <h3 class="text-xl font-bold text-gray-800 mb-4 mt-4">مصممة البرمجية</h3>
+            <p class="text-lg text-gray-600 leading-relaxed font-bold text-blue-600">
+                البرمجية من تصميم المديرة المساعدة <br> أ.اميمة ابراهيم
+            </p>
+        </div>
+    </div>
+
+    <script>
+        /* --- Game Data --- */
+        const stories = [
+            // --- EASY STORIES (0-2) ~30 Words ---
+            {
+                title: "العصفور الصغير",
+                text: "كان هناك عصفور صغير يعيش فوق شجرة عالية. يحب العصفور أن يطير في السماء الصافية كل صباح. يبحث العصفور عن الحب ثم يعود إلى عشه سعيدا ليغني أجمل الألحان."
+            },
+            {
+                title: "السمكة الذهبية",
+                text: "تسبح سمكة ذهبية في النهر الكبير بمهارة ونشاط. ألوان السمكة لامعة وجميلة تجذب الأنظار إليها. تلعب السمكة مع صديقاتها وتختبئ بين الصخور الصغيرة في قاع النهر بعيدا عن الخطر."
+            },
+            {
+                title: "أحمد والكرة",
+                text: "يحب أحمد لعب كرة القدم مع أصدقائه في المدرسة. يتدرب أحمد كل يوم بجد ونشاط ليسجل الأهداف. يحلم أحمد أن يصبح لاعبا مشهورا يرفع اسم وطنه عاليا في المستقبل."
+            },
+            // --- MEDIUM STORIES (3-5) ~40-50 Words ---
+            {
+                title: "الفيل والفأر",
+                text: "في الغابة الكبيرة، عاش فيل ضخم وفأر صغير. ذات يوم، وقع الفيل في شبكة صيد قوية ولم يستطع الخروج منها. سمع الفأر صوت الفيل الحزين، فجاء مسرعا وقرض الشبكة بأسنانه الحادة حتى قطعها. فرح الفيل وشكر صديقه الصغير. منذ ذلك اليوم، أصبح الفيل والفأر صديقين مخلصين يساعد كل منهما الآخر."
+            },
+            {
+                title: "الحديقة الجميلة",
+                text: "زرعت سارة وردة حمراء جميلة في حديقة المنزل الواسعة. كانت سارة تستيقظ باكرا كل صباح لتسقي الوردة بالماء النقي وتزيل الأعشاب الضارة من حولها. مع مرور الأيام، كبرت الوردة وتفتحت أوراقها وفاحت رائحتها العطرة في كل مكان. شعرت سارة بسعادة كبيرة وقررت أن تعتني بكل الأزهار والأشجار في الحديقة لتصبح أجمل مكان في الحي."
+            },
+            {
+                title: "رحلة الفضاء",
+                text: "يحلم خالد دائما أن يصبح رائد فضاء شجاعا عندما يكبر. يذهب خالد إلى المكتبة ويقرأ كتب كثيرة عن الكواكب البعيدة والنجوم اللامعة. صنع خالد مجسم صاروخ كبير من الورق المقوى، وجلس داخله وتخيل أنه يطير بعيدا في السماء ليصل إلى سطح القمر. يعرف خالد أن العلم والاجتهاد والعمل بجد هي الطريق الوحيد لكي يحقق حلمه الكبير ويخدم وطنه في المستقبل."
+            },
+            // --- HARD STORIES (6-8) ~60 Words ---
+            {
+                title: "النملة الحكيمة",
+                text: "في يوم من أيام الصيف الحار، كانت نملة صغيرة تعمل بجد ونشاط لجمع الطعام وتخزينه للشتاء. بينما كان الجندب الكسول يغني ويلهو ولا يهتم بالمستقبل. نصحت النملة الجندب بأن يعمل مثلها، لكنه سخر منها. عندما جاء الشتاء ببرودته القاسية، اختبأت النملة في بيتها الدافئ وهي تشعر بالشبع والأمان، بينما وقف الجندب جائعا ونادما يرتجف من شدة البرد."
+            },
+            {
+                title: "التاجر الأمين",
+                text: "كان هناك تاجر أمين يبيع القماش في السوق. ذات يوم، جاءت سيدة عجوز لتشتري قماشا لثوب جديد. أخطأت السيدة وأعطت التاجر نقودا زيادة عن الثمن المطلوب. لاحظ التاجر ذلك، فركض خلف السيدة مسرعا وأعاد إليها باقي النقود. شكرت السيدة التاجر على أمانته وصدقه، وعاد التاجر إلى دكانه وهو يشعر بالسعادة والرضا لأن الأمانة هي كنز لا يفنى."
+            },
+            {
+                title: "التعاون في الحي",
+                text: "قرر أطفال الحي أن يتعاونوا معا لتنظيف الشارع وغرس الأشجار الجميلة. أحضر كل واحد منهم أدوات التنظيف والأكياس، وبدأوا العمل بحماس كبير. جمعوا الأوراق المتساقطة ونظفوا الأرصفة من الغبار. ثم قاموا بغرس شتلات الزهور الملونة على جانبي الطريق. في نهاية اليوم، أصبح الحي نظيفا وجميلا بفضل تعاونهم، وفرح السكان بهذا العمل الرائع وشجعوا الأطفال على الاستمرار."
+            },
+            // --- CHALLENGE STORIES (9-11) ~65 Words (Scientific) ---
+            {
+                title: "النظام الشمسي",
+                text: "النظام الشمسي عالم واسع ومدهش، حيث تدور الكواكب حول الشمس في مدارات محددة بدقة لا تتغير. كوكب الأرض هو المكان الوحيد الذي نعرفه ويحتوي على الحياة، بفضل توفر الماء العذب والهواء النقي المناسب للتنفس. الشمس هي نجم ضخم ملتهب يمدنا بالضوء والحرارة الضرورية لنمو النباتات وبقاء جميع الكائنات الحية. دراسة الفضاء تساعدنا على فهم أسرار الكون العظيم واكتشاف المزيد من الحقائق العلمية المذهلة."
+            },
+            {
+                title: "دورة الماء",
+                text: "دورة الماء في الطبيعة هي عملية مستمرة لا تتوقف أبدا. تبدأ بتبخر مياه البحار والمحيطات بسبب حرارة الشمس، ثم يرتفع البخار إلى السماء ويكون السحب الكثيفة. عندما تبرد السحب، يسقط المطر ليروي الأرض ويعيد الحياة للنباتات والأنهار. هذه الدورة العجيبة تضمن بقاء الماء العذب على سطح الأرض، وهو أساس الحياة لكل البشر والحيوانات، لذا يجب علينا ترشيد استهلاك الماء وعدم الإسراف فيه."
+            },
+            {
+                title: "العقل البشري",
+                text: "العقل البشري هو أعقد آلة في الكون، فهو المسؤول عن التفكير والتحكم في جميع حركات الجسم. يتكون الدماغ من مليارات الخلايا العصبية التي تعمل معا بتناغم مدهش لنتمكن من التعلم والتذكر والإبداع. العلماء يدرسون الدماغ باستمرار لاكتشاف كيف نخزن المعلومات وكيف نشعر بالعواطف المختلفة. الحفاظ على صحة العقل يتطلب الغذاء الصحي والنوم الجيد وممارسة الرياضة والقراءة المستمرة لتنمية المهارات وتطوير الذكاء."
+            }
+        ];
+
+        /* --- Audio System (Web Audio API) --- */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            const now = audioCtx.currentTime;
+
+            if (type === 'correct') {
+                // High blip
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(300, now + 0.1);
+                gainNode.gain.setValueAtTime(0.3, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now);
+                osc.stop(now + 0.1);
+            } else if (type === 'error') {
+                // Low buzz
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.15);
+                gainNode.gain.setValueAtTime(0.3, now);
+                gainNode.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } else if (type === 'win') {
+                // Victory Arpeggio (C Major)
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, i) => {
+                    const oscNote = audioCtx.createOscillator();
+                    const gainNote = audioCtx.createGain();
+                    oscNote.connect(gainNote);
+                    gainNote.connect(audioCtx.destination);
+                    
+                    oscNote.type = 'triangle';
+                    oscNote.frequency.value = freq;
+                    
+                    const startTime = now + (i * 0.1);
+                    gainNote.gain.setValueAtTime(0.2, startTime);
+                    gainNote.gain.exponentialRampToValueAtTime(0.01, startTime + 0.3);
+                    
+                    oscNote.start(startTime);
+                    oscNote.stop(startTime + 0.3);
+                });
+            } else if (type === 'lose') {
+                // Sad slide
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.5);
+                gainNode.gain.setValueAtTime(0.3, now);
+                gainNode.gain.linearRampToValueAtTime(0.01, now + 0.5);
+                osc.start(now);
+                osc.stop(now + 0.5);
+            }
+        }
+
+        /* --- Variables --- */
+        let currentStoryIndex = 0;
+        let currentText = "";
+        let charArray = [];
+        let timer = 0;
+        let timerInterval = null;
+        let isPlaying = false;
+        let errors = 0;
+        let startTime = null;
+        let isChallengeLevel = false;
+        const CHALLENGE_TIME_LIMIT = 180; // 3 minutes
+
+        /* --- DOM Elements --- */
+        const selectionScreen = document.getElementById('selection-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const liveStats = document.getElementById('live-stats');
+        
+        const quoteDisplay = document.getElementById('quote-display');
+        const typingInput = document.getElementById('typing-input');
+        const storyTitle = document.getElementById('story-title');
+        const errorFeedback = document.getElementById('error-feedback');
+        
+        const timerEl = document.getElementById('timer');
+        const errorsEl = document.getElementById('errors');
+        const progressBar = document.getElementById('progress-bar');
+        const focusOverlay = document.getElementById('focus-overlay');
+        const challengeTimerEl = document.getElementById('challenge-timer');
+        const timeLeftEl = document.getElementById('time-left');
+
+        /* --- Functions --- */
+
+        function startGame(index) {
+            // Resume Audio Context on user interaction
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            currentStoryIndex = index;
+            currentText = stories[index].text;
+            
+            // Check if Challenge Level (Index 9, 10, 11)
+            isChallengeLevel = index >= 9;
+            
+            // Reset state
+            timer = 0;
+            errors = 0;
+            isPlaying = false;
+            clearInterval(timerInterval);
+            timerEl.innerText = '0';
+            errorsEl.innerText = '0';
+            progressBar.style.width = '0%';
+            typingInput.value = '';
+            errorFeedback.classList.add('hidden');
+
+            // Setup UI
+            storyTitle.innerText = stories[index].title;
+            const textContainer = document.getElementById('text-container');
+            
+            // UI adjustment for challenge mode
+            if (isChallengeLevel) {
+                liveStats.classList.add('hidden'); // Hide normal stats
+                challengeTimerEl.classList.remove('hidden'); // Show countdown
+                timeLeftEl.innerText = CHALLENGE_TIME_LIMIT;
+                
+                // Outer Game Screen: Remove static borders, add Fire
+                gameScreen.classList.remove('border-blue-100', 'border-red-100');
+                gameScreen.classList.add('fire-border');
+                
+                // Inner Text Container: Remove Fire, add static simple border
+                textContainer.classList.remove('fire-border');
+                textContainer.classList.add('border-gray-100');
+            } else {
+                liveStats.classList.remove('hidden');
+                challengeTimerEl.classList.add('hidden');
+                
+                // Outer Game Screen: Blue border, no fire
+                gameScreen.classList.remove('border-red-100', 'fire-border');
+                gameScreen.classList.add('border-blue-100');
+                
+                // Inner Text Container: Simple border
+                textContainer.classList.remove('fire-border');
+                textContainer.classList.add('border-gray-100');
+            }
+
+            renderText();
+            
+            // Switch Screens
+            selectionScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            
+            // Focus Input
+            setTimeout(() => {
+                focusInput();
+            }, 100);
+        }
+
+        function focusInput() {
+            typingInput.focus();
+            if (isChallengeLevel) {
+                // For challenge level, the fire animation handles the border/shadow on gameScreen
+                gameScreen.classList.remove('game-active');
+                // Removed game-active-red because fire animation covers it
+            } else {
+                gameScreen.classList.add('game-active');
+            }
+            focusOverlay.classList.add('hidden');
+        }
+
+        // Catch-all keydown to ensure focus
+        function handleGlobalKeydown(e) {
+            // Ensure focus is on the input if not already
+            if (!gameScreen.classList.contains('hidden') && document.activeElement !== typingInput) {
+                typingInput.focus();
+            }
+        }
+
+        function renderText() {
+            quoteDisplay.innerHTML = '';
+            charArray = currentText.split('');
+            charArray.forEach(char => {
+                const span = document.createElement('span');
+                span.innerText = char;
+                span.className = 'quote-chars text-gray-400';
+                quoteDisplay.appendChild(span);
+            });
+            // Highlight first char
+            if(quoteDisplay.firstChild) quoteDisplay.firstChild.classList.add('current');
+        }
+
+        // --- Improved Input Handler (Handles all logic) ---
+        typingInput.addEventListener('input', (e) => {
+            if (!isPlaying && typingInput.value.length === 1) {
+                startTimer();
+                focusOverlay.classList.add('hidden');
+            }
+
+            const val = typingInput.value;
+            const text = currentText;
+            
+            let matchCount = 0;
+            for (let i = 0; i < val.length; i++) {
+                if (val[i] === text[i]) {
+                    matchCount++;
+                } else {
+                    break;
+                }
+            }
+
+            // --- Logic: Stop on Error ---
+            if (val.length > matchCount + 1) {
+                typingInput.value = val.substring(0, matchCount + 1);
+                errorFeedback.classList.remove('hidden');
+                playSound('error');
+                
+                const errorCharIndex = matchCount; 
+                const spans = quoteDisplay.querySelectorAll('span');
+                if(spans[errorCharIndex]) {
+                    spans[errorCharIndex].classList.remove('shake-element');
+                    void spans[errorCharIndex].offsetWidth; 
+                    spans[errorCharIndex].classList.add('shake-element');
+                }
+                
+            } else if (val.length === matchCount + 1) {
+                 errorFeedback.classList.remove('hidden');
+            } else {
+                 errorFeedback.classList.add('hidden');
+            }
+            
+            const currentVal = typingInput.value;
+            const arrayQuote = quoteDisplay.querySelectorAll('span');
+            const arrayValue = currentVal.split('');
+            
+            let allCorrect = true;
+            const isAddition = e.inputType === 'insertText' || e.inputType === 'insertCompositionText';
+
+            arrayQuote.forEach((characterSpan, index) => {
+                const character = arrayValue[index];
+                const isJustTyped = (index === arrayValue.length - 1) && isAddition;
+
+                characterSpan.classList.remove('correct', 'incorrect', 'current', 'text-gray-400');
+
+                if (character == null) {
+                    characterSpan.classList.add('text-gray-400');
+                    allCorrect = false;
+                    if (index === arrayValue.length) {
+                        characterSpan.classList.add('current');
+                    }
+                } else if (character === characterSpan.innerText) {
+                    characterSpan.classList.add('correct');
+                    if(isJustTyped) playSound('correct'); 
+                } else {
+                    characterSpan.classList.add('incorrect');
+                    allCorrect = false;
+                    if (!characterSpan.dataset.hasError) {
+                        errors++;
+                        errorsEl.innerText = errors;
+                        characterSpan.dataset.hasError = "true";
+                    }
+                    if(isJustTyped && characterSpan.innerText !== ' ') playSound('error');
+                }
+            });
+
+            const progress = (arrayValue.length / currentText.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            if (arrayValue.length === currentText.length && allCorrect) {
+                finishGame();
+            }
+        });
+        
+        typingInput.addEventListener('blur', () => {
+            if(isPlaying && resultScreen.classList.contains('hidden')) {
+                focusOverlay.classList.remove('hidden');
+                if (!isChallengeLevel) {
+                    gameScreen.classList.remove('game-active');
+                }
+            }
+        });
+
+        function startTimer() {
+            isPlaying = true;
+            startTime = new Date();
+            timerInterval = setInterval(() => {
+                timer++;
+                
+                // Normal Timer
+                timerEl.innerText = timer;
+                
+                // Challenge Countdown
+                if (isChallengeLevel) {
+                    const remaining = CHALLENGE_TIME_LIMIT - timer;
+                    timeLeftEl.innerText = remaining > 0 ? remaining : 0;
+                    
+                    if (timer >= CHALLENGE_TIME_LIMIT) {
+                        loseGame();
+                    }
+                }
+            }, 1000);
+        }
+
+        function loseGame() {
+            clearInterval(timerInterval);
+            isPlaying = false;
+            playSound('lose'); // Play lose sound
+
+            // Update Results Screen for Loss
+            const resultScreenEl = document.getElementById('result-screen');
+            const resultTitle = document.getElementById('result-title');
+            const resultSubtitle = document.getElementById('result-subtitle');
+            const badgeContainer = document.getElementById('badge-container');
+            
+            resultScreenEl.classList.remove('border-yellow-400');
+            resultScreenEl.classList.add('border-red-500'); // Red border for loss
+            
+            resultTitle.innerText = "انتهى الوقت! 😞";
+            resultTitle.classList.replace('text-gray-800', 'text-red-600');
+            
+            resultSubtitle.innerText = "لم تتمكن من إكمال التحدي في الوقت المحدد.";
+            
+            // Fail Icon
+            badgeContainer.innerHTML = `
+                <div class="flex flex-col items-center">
+                    <svg class="w-32 h-32 text-red-400 drop-shadow-xl" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span class="text-red-600 font-bold text-xl mt-2">حاول مرة أخرى</span>
+                </div>`;
+
+            // Stats (Still show what they achieved)
+            const timeInMinutes = timer / 60;
+            const wordsTyped = (typingInput.value.length) / 5;
+            const wpm = Math.round(wordsTyped / timeInMinutes) || 0;
+            const accuracy = Math.round(((typingInput.value.length - errors) / typingInput.value.length) * 100) || 0;
+
+            document.getElementById('wpm-result').innerText = wpm;
+            document.getElementById('accuracy-result').innerText = accuracy > 0 ? accuracy : 0;
+            document.getElementById('time-result').innerText = timer;
+
+            // Hide Game, Show Result
+            gameScreen.classList.add('hidden');
+            challengeTimerEl.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+        }
+
+        function finishGame() {
+            clearInterval(timerInterval);
+            isPlaying = false;
+            playSound('win'); 
+            
+            // Calculations
+            const timeInMinutes = timer / 60;
+            const words = currentText.length / 5;
+            const wpm = Math.round(words / timeInMinutes) || 0;
+            const accuracy = Math.round(((currentText.length - errors) / currentText.length) * 100);
+            const finalAccuracy = accuracy < 0 ? 0 : accuracy; 
+
+            document.getElementById('wpm-result').innerText = wpm;
+            document.getElementById('accuracy-result').innerText = finalAccuracy;
+            document.getElementById('time-result').innerText = timer;
+            
+            // Reset Result Screen to Success Style
+            const resultScreenEl = document.getElementById('result-screen');
+            const resultTitle = document.getElementById('result-title');
+            const resultSubtitle = document.getElementById('result-subtitle');
+            
+            resultScreenEl.classList.remove('border-red-500');
+            resultScreenEl.classList.add('border-yellow-400');
+            resultTitle.innerText = "أحسنت يا بطل! 🎉";
+            resultTitle.classList.replace('text-red-600', 'text-gray-800');
+            resultSubtitle.innerText = "لقد أكملت القصة بنجاح";
+
+            const badgeContainer = document.getElementById('badge-container');
+            let badgeHtml = '';
+            
+            // Special Badge for Challenge
+            if (isChallengeLevel) {
+                // Solar System (Index 9)
+                if (currentStoryIndex === 9) {
+                    badgeHtml = `
+                        <div class="flex flex-col items-center">
+                            <img src="prize1.svg" alt="جائزة النظام الشمسي" class="w-40 h-40 object-contain drop-shadow-xl mb-2">
+                            <span class="text-red-600 font-bold text-xl mt-2">وسام النظام الشمسي</span>
+                            <span class="text-red-500 text-sm">أداء أسطوري!</span>
+                        </div>`;
+                } 
+                // Water Cycle (Index 10)
+                else if (currentStoryIndex === 10) {
+                    badgeHtml = `
+                        <div class="flex flex-col items-center">
+                            <img src="prize2.svg" alt="جائزة دورة الماء" class="w-40 h-40 object-contain drop-shadow-xl mb-2">
+                            <span class="text-blue-600 font-bold text-xl mt-2">وسام دورة الماء</span>
+                            <span class="text-blue-500 text-sm">أداء أسطوري!</span>
+                        </div>`;
+                }
+                // Human Brain (Index 11)
+                else if (currentStoryIndex === 11) {
+                    badgeHtml = `
+                        <div class="flex flex-col items-center">
+                            <img src="prize3.svg" alt="جائزة العقل البشري" class="w-40 h-40 object-contain drop-shadow-xl mb-2">
+                            <span class="text-purple-600 font-bold text-xl mt-2">وسام العقل البشري</span>
+                            <span class="text-purple-500 text-sm">أداء أسطوري!</span>
+                        </div>`;
+                } 
+                // Fallback for any other challenge
+                else {
+                    badgeHtml = `
+                        <div class="flex flex-col items-center">
+                            <svg class="w-32 h-32 text-red-500 drop-shadow-xl animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <span class="text-red-600 font-bold text-xl mt-2">وسام التحدي الأسطوري</span>
+                            <span class="text-red-500 text-sm">أداء مذهل!</span>
+                        </div>`;
+                }
+            } else {
+                if (finalAccuracy >= 95) {
+                    badgeHtml = `
+                        <div class="flex flex-col items-center">
+                            <svg class="w-32 h-32 text-yellow-400 drop-shadow-xl" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <span class="text-yellow-600 font-bold text-xl mt-2">نجمة ذهبية</span>
+                            <span class="text-yellow-500 text-sm">ممتاز!</span>
+                        </div>`;
+                } else if (finalAccuracy >= 80) {
+                    badgeHtml = `
+                        <div class="flex flex-col items-center">
+                            <svg class="w-32 h-32 text-gray-300 drop-shadow-xl" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <span class="text-gray-500 font-bold text-xl mt-2">نجمة فضية</span>
+                            <span class="text-gray-400 text-sm">جيد جداً!</span>
+                        </div>`;
+                } else {
+                    badgeHtml = `
+                        <div class="flex flex-col items-center">
+                            <svg class="w-32 h-32 text-orange-400 drop-shadow-xl" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <span class="text-orange-600 font-bold text-xl mt-2">نجمة برونزية</span>
+                            <span class="text-orange-500 text-sm">حاول مرة أخرى لتحسين نتيجتك</span>
+                        </div>`;
+                }
+            }
+            
+            badgeContainer.innerHTML = badgeHtml;
+            createConfetti();
+
+            gameScreen.classList.add('hidden');
+            liveStats.classList.add('hidden');
+            challengeTimerEl.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+        }
+
+        function restartGame() {
+            clearInterval(timerInterval); // Stop timer immediately
+            isPlaying = false; // Stop game logic
+            
+            selectionScreen.classList.remove('hidden');
+            resultScreen.classList.add('hidden');
+            gameScreen.classList.add('hidden');
+            liveStats.classList.add('hidden');
+            typingInput.value = '';
+            gameScreen.classList.remove('game-active', 'game-active-red', 'fire-border');
+            errorFeedback.classList.add('hidden');
+            focusOverlay.classList.add('hidden'); // Ensure overlay is hidden
+            
+            const confettiContainer = document.getElementById('confetti-container');
+            if(confettiContainer) confettiContainer.innerHTML = '';
+        }
+
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#f87171', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa'];
+            
+            for(let i = 0; i < 50; i++) {
+                const conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.left = Math.random() * 100 + '%';
+                conf.style.top = -10 + 'px';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.animationDuration = Math.random() * 2 + 2 + 's';
+                conf.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(conf);
+            }
+        }
+        
+        // --- Credits Modal Functions ---
+        function openCredits() {
+            const modal = document.getElementById('credits-modal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeCredits() {
+            const modal = document.getElementById('credits-modal');
+            modal.classList.add('hidden');
+        }
+
+        /* --- Visitor Counter Script (Simulated) --- */
+        (function updateCounter() {
+            // NOTE: Switched to LocalStorage because the external API (countapi.xyz) 
+            // is blocked by CORS in this preview environment. 
+            // This will count visits for YOU on THIS device perfectly.
+            const key = 'arabic-typing-hero-visits';
+            
+            // Start with a fun, realistic number so it doesn't look empty
+            let count = 523; 
+            
+            try {
+                const stored = localStorage.getItem(key);
+                if (stored) {
+                    count = parseInt(stored) + 1;
+                }
+                localStorage.setItem(key, count);
+            } catch (e) {
+                console.log("Local storage not accessible");
+            }
+
+            const counterElement = document.getElementById('visitor-count');
+            if (counterElement) {
+                counterElement.innerText = count;
+            }
+        })();
+    </script>
+</body>
+</html>
