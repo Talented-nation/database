@@ -392,13 +392,14 @@
                     <button class="filter-item" data-filter="completed">المكتملة</button>
                 </div>
                 <div class="filter-group">
-                    <button class="filter-item" data-category="academic">التحصيل الأكاديمي</button>
+                    <button class="filter-item" data-category="academic">الانجاز الأكاديمي</button>
                     <button class="filter-item" data-category="learning">مهارات التعلم</button>
                     <button class="filter-item" data-category="tests">الاختبارات</button>
                     <button class="filter-item" data-category="activities">الأنشطة والفعاليات</button>
                     <button class="filter-item" data-category="behavior">السلوك والانضباط</button>
                     <button class="filter-item" data-category="safety">الصحة والسلامة</button>
                     <button class="filter-item" data-category="teachers">التعليم والتعلم</button>
+                    <button class="filter-item" data-category="admin">قيادة وإدارة</button>
                 </div>
             </div>
             
@@ -432,80 +433,80 @@
         const procedures = [
             // الإجراءات 1-36 من الصفحة الأولى
             { id: 1, action: "تفعيل حصص الاحتياط بأنشطة هادفة تنمي المهارات الأساسية", start: "2025/11/1", end: "2025/11/5", status: "نفذ", category: "academic", type: "تعليمي", priority: "عالية" },
-            { id: 2, action: "توظيف الفعاليات والأنشطة المدرسية لرفع المستوى التحصيلي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "تعليمي", priority: "عالية" },
+            { id: 2, action: "توظيف الفعاليات والأنشطة المدرسية لرفع المستوى التحصيلي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تطور شخصي", priority: "عالية" },
             { id: 3, action: "تنفيذ آلية لتتبع مدى اكتساب الطالبات الكفايات الأساسية خلال الدروس مرتين في الفصل الدراسي", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "academic", type: "متابعة", priority: "متوسطة" },
             { id: 4, action: "تنفيذ مسابقات داخلية وخارجية بين الصفوف لقياس المهارات الأساسية", start: "2025/11/10", end: "2025/11/25", status: "نفذ", category: "academic", type: "تنافسي", priority: "متوسطة" },
             { id: 5, action: "تشجيع الطالبات على انتاج محتويات رقمية تراعي مستوياتهن", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تقني", priority: "عالية" },
-            { id: 6, action: "تمكين الطالبات من اكتساب مهارات اللغة العربية والإنجليزية السليمة في المواقف الصفية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "تعليمي", priority: "عالية" },
+            { id: 6, action: "تمكين الطالبات من اكتساب اللغة العربية والإنجليزية السليمة في المواقف الصفية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "تعليمي", priority: "عالية" },
             { id: 7, action: "تفعيل المرافق المدرسية في إكساب الطلبة المهارات الأساسية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "تعليمي", priority: "متوسطة" },
             { id: 8, action: "المتابعة والتدقيق على الأعمال الكتابية وعرض النتائج مع فريق التحديين الداخلي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "متابعة", priority: "عالية" },
             { id: 9, action: "الاحتفاء بإنجاز الطالبات في الأعمال الكتابية وتكريمهن", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "academic", type: "تحفيزي", priority: "متوسطة" },
-            { id: 10, action: "تكريم المعلمات المتميزات في متابعة الأعمال الكتابية بشكل دوري", start: "2025/11/20", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تحفيزي", priority: "منخفضة" },
-            { id: 11, action: "متابعة أثر التقدم في الأعمال الكتابية (التعايز، القروق، الفردية) ومقارنتها", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "متابعة", priority: "عالية" },
-            { id: 12, action: "تطبيق منهجية المعلمة الصغيرة في الحصص الدراسية في الحلقين الأولى والثانية لجميع الصفوف", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
-            { id: 13, action: "توظيف التعليم الذاتي والتفكير الابداعي من خلال المهارات البحثية. (الداخلة الصغيرة)", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
-            { id: 14, action: "تنفيذ أنشطة صفية ولا صفية تنمي مهارات التعلم الذاتي، التفكير الناقد، المهارات الجبائية والمهارات التكنولوجية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
-            { id: 15, action: "توظيف المرافق المدرسية (متغير العلوم، مركز مصادر التعلم، ...) في تعزيز مهارات التعلم", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
-            { id: 16, action: "تنفيذ مسابقات داخلية وخارجية بين الطالبات تعزز مهارات التعلم", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "learning", type: "تنافسي", priority: "متوسطة" },
+            { id: 10, action: "تكريم المعلمات المتميزات في متابعة الأعمال الكتابية بشكل دوري", start: "2025/11/20", end: "2025/11/30", status: "نفذ", category: "academic", type: "تحفيزي", priority: "منخفضة" },
+            { id: 11, action: "متابعة أثر التقدم في الأعمال الكتابية (التمايز، الفروق الفردية) ومقارنتها", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "متابعة", priority: "عالية" },
+            { id: 12, action: "تطبيق استراتيجية المعلمة الصغيرة في الحصص الدراسية في الحلقين الأولى والثانية لجميع الصفوف", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "teachers", type: "تعليمي", priority: "متوسطة" },
+            { id: 13, action: "توظيف التعلم الذاتي والتفكير المستقل من خلال المهارات البحثية. (الباحثة الصغيرة)", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
+            { id: 14, action: "تنفيذ أنشطة صفية ولاصفية تنمي مهارات التعلم الذاتي، التفكير الناقد، المهارات التكنولوجية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
+            { id: 15, action: "توظيف المرافق المدرسية (مختير العلوم، مركز مصادر التعلم، ...) في تعزيز مهارات التعلم", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
+            { id: 16, action: "تنفيذ مسابقات داخلية وخارجية بين الطالبات تعزز مهارات التعلم", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "activities", type: "تنافسي", priority: "متوسطة" },
             { id: 17, action: "قياس مدى اكتساب الطالبات مهارات التعلم من خلال الزيارات الصفية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "متابعة", priority: "متوسطة" },
-            { id: 18, action: "توظيف الموارد المتاحة لتنمية مهارات تعلم الطالبات مثل الخرائط، الجداول، القوميس", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
-            { id: 19, action: "توظيف استراتيجية تعليمية تنمي مهارات التعليم مثل الخرائط الذهنية، مهارة التخصص", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
-            { id: 20, action: "تضمين الدروس والأنشطة نماذج من الاختارات الوزارية والدولية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "tests", type: "تعليمي", priority: "عالية" },
-            { id: 21, action: "تدريب الطالبات على الاختارات الوزارية والدولية خلال العام الدراسي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "tests", type: "تدريبي", priority: "عالية" },
+            { id: 18, action: "توظيف الموارد المتاحة لتنمية مهارات تعلم الطالبات مثل الخرائط، الجداول، القواميس", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
+            { id: 19, action: "توظيف استراتيجيات تعليمية تنمي مهارات التعلم مثل  قراءة الخرائط الذهنية، مهارة تحليل البيانات", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
+            { id: 20, action: "تضمين الدروس والأنشطة نماذج من الاختبارات الوزارية والدولية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "tests", type: "تعليمي", priority: "عالية" },
+            { id: 21, action: "تدريب الطالبات على الاختبارات الوزارية والدولية خلال العام الدراسي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "tests", type: "تدريبي", priority: "عالية" },
             { id: 22, action: "إعداد بنك للأسئلة الوزارية والدولية في التيمز والبوابة التعليمية ومركز مصادر التعلم", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "tests", type: "إعدادي", priority: "متوسطة" },
-            { id: 23, action: "تنفيذ ساعات ذهبية لتدريب الطالبات على الاختارات المدرسية والوزارية والدولية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "tests", type: "تدريبي", priority: "عالية" },
-            { id: 24, action: "تنفيذ مسابقات بين الصفوف والمدارس المتعلقة تتضمن نماذج من الاختارات الوزارية والدولية", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "tests", type: "تنافسي", priority: "متوسطة" },
+            { id: 23, action: "تنفيذ ساعات ذهنية لتدريب الطالبات على الاختبارات المدرسية والوزارية والدولية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "tests", type: "تدريبي", priority: "عالية" },
+            { id: 24, action: "تنفيذ مسابقات بين الصفوف والمدارس المتعاونة تتضمن نماذج من الاختبارات الوزارية والدولية", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "tests", type: "تنافسي", priority: "متوسطة" },
             { id: 25, action: "تفعيل دور اللجان المدرسية والإذاعة الصباحية والأسابيع التربوية في الاختبارات الوزارية والدولية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "tests", type: "إشرافي", priority: "متوسطة" },
             { id: 26, action: "تفعيل الأسابيع التربوية وربطها بأهداف التنمية المستدامة", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "عالية" },
             { id: 27, action: "إشراك الطالبات في المناسبات العالمية والمحلية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "متوسطة" },
-            { id: 28, action: "تنظيم زيارات ميدانية لتنمية مهارات الطالبات التحصيلية والاجتماعية", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "متوسطة" },
-            { id: 29, action: "تفعيل البرامج الداعمة لتعاون الطلبة الشخصي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "منخفضة" },
-            { id: 30, action: "الاحتفاء بأعمال الطالبات ومشاركاتهن الداخلية والخارجية ونشرها لذوي المصلحة", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "activities", type: "تحفيزي", priority: "منخفضة" },
+            { id: 28, action: "تنظيم حصص ارشادية للطالبات", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "behavior", type: "تربوي", priority: "متوسطة" },
+            { id: 29, action: "تفعيل البرامج الداعمة لتنمية التطور الشخصي للطالبات", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "منخفضة" },
+            { id: 30, action: "الاحتفاء بأعمال الطالبات ومشاركاتهن الداخلية والخارجية ونشرها", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "activities", type: "تحفيزي", priority: "منخفضة" },
             { id: 31, action: "تكريم الطالبات وأولياء الأمور الأكثر مشاركة في الفعاليات المدرسية", start: "2025/11/20", end: "2025/11/30", status: "نفذ", category: "activities", type: "تحفيزي", priority: "منخفضة" },
             { id: 32, action: "إعداد نشرات ومطويات تعزز السلوكيات الإيجابية وتنمي القيم المدرسية", start: "2025/11/1", end: "2025/11/10", status: "نفذ", category: "behavior", type: "إرشادي", priority: "متوسطة" },
             { id: 33, action: "تطبيق لائحة الانضباط الطلابي لمعالجة المشاكل السلوكية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "behavior", type: "إداري", priority: "عالية" },
-            { id: 34, action: "تنفيذ برامج علاجية وقائية (نحلات الانضباط، أميرة بسلوكي، الرحلات)", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "behavior", type: "إرشادي", priority: "متوسطة" },
+            { id: 34, action: "تنفيذ برامج ارشادية (نحلات الانضباط، أميرة بسلوكي، الرحلات)", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "behavior", type: "إرشادي", priority: "متوسطة" },
             { id: 35, action: "متابعة انضباط الطالبات (التأخر والغياب)", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "behavior", type: "متابعة", priority: "عالية" },
-            { id: 36, action: "تفعيل ركن المواطنة في كل الصفوف", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "behavior", type: "تربوي", priority: "متوسطة" },
+            { id: 36, action: "تفعيل ركن المواطنة في كل الصفوف", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "learning", type: "تربوي", priority: "متوسطة" },
             
             // الإجراءات 46-71 من الصفحة الثانية (تم تعديل الأرقام لتكون متتالية)
-            { id: 37, action: "متابعة الطالبات في اللجان الخاصة لثناء فترة تقديم الاختبارات", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "tests", type: "متابعة", priority: "عالية" },
+            { id: 37, action: "متابعة الطالبات في اللجان الخاصة اثناء فترة تقديم الاختبارات", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "tests", type: "متابعة", priority: "عالية" },
             { id: 38, action: "تفعيل المناسبات والفعاليات المحلية والعالمية الداعمة للطالبات ذوات الاحتياجات الخاصة", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "متوسطة" },
             { id: 39, action: "تقديم الدعم النفسي والاجتماعي للطالبات من خلال تنفيذ جلسات فردية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "behavior", type: "إرشادي", priority: "متوسطة" },
             { id: 40, action: "تنفيذ الزيارات الإرشادية للصفوف وتقديم الدعم اللازم لهم", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "behavior", type: "إرشادي", priority: "متوسطة" },
             { id: 41, action: "تفعيل الجداريات المدرسية وإثرائها بأعمال الطالبات", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "منخفضة" },
             { id: 42, action: "تنفيذ برامج ومحاضرات توعوية حول الأمن والسلامة كالإسعافات الأولية", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "safety", type: "توعوي", priority: "متوسطة" },
-            { id: 43, action: "متابعة الحضور والانصراف الامن للطالبات", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "safety", type: "متابعة", priority: "عالية" },
+            { id: 43, action: "متابعة الحضور والانصراف الآمن للطالبات", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "safety", type: "متابعة", priority: "عالية" },
             { id: 44, action: "متابعة إدارة المدرسة لجوانب الصحة والسلامة في الأنشطة والفعاليات المدرسية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "safety", type: "متابعة", priority: "عالية" },
             { id: 45, action: "متابعة نظافة الشعر والأظافر للطالبات وتوجيه المخالفين", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "safety", type: "متابعة", priority: "متوسطة" },
-            { id: 46, action: "توعية الطالبات بالاستعمال الامن للتكنولوجيا داخل الدروس", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "safety", type: "توعوي", priority: "متوسطة" },
-            { id: 47, action: "تنفيذ مجتمعات التعلم ضمن مشروع بصمات ملهمة", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
-            { id: 48, action: "توظيف استراتيجيات متنوعة ومحفزة في التعليم والتعلم", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
-            { id: 49, action: "تنفيذ جدول زيارات تبادلية داخلية وخارجية لمعلمات الأقسام الأكاديمية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "teachers", type: "متابعة", priority: "متوسطة" },
+            { id: 46, action: "توعية الطالبات بالاستعمال الامن للتكنولوجيا والأدوات الرقمية داخل الدروس", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "learning", type: "توعوي", priority: "متوسطة" },
+            { id: 47, action: "تنفيذ مجتمعات التعلم ضمن مشروع بصمات ملهمة", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تعليمي", priority: "عالية" },
+            { id: 48, action: "توظيف استراتيجيات متنوعة ومحفزة في التعليم والتعلم", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تعليمي", priority: "عالية" },
+            { id: 49, action: "تنفيذ جدول زيارات التبادلية داخلية وخارجية لمعلما ت الأقسام الأكاديمية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "teachers", type: "متابعة", priority: "متوسطة" },
             { id: 50, action: "مناقشة نتائج تحليل الزيارات الصفية من خلال اجتماعات فريق تحسين الداخلي واجتماعات الأقسام", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "teachers", type: "متابعة", priority: "متوسطة" },
-            { id: 51, action: "توظيف المصادر والموارد التعليمية أدوات الثقافة العددية، المختبرات الاقتراضية، الكتاب المدرسي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تقني", priority: "متوسطة" },
-            { id: 52, action: "تنمية مهارات القرن 21 ومهارات التفكير العليا لدى الطالبات", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
-            { id: 53, action: "تهيئة بيئة صفية آمنة وإيجابية تتضمن أركان صفية تعليمية محفزة", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
+            { id: 51, action: "توظيف المصادر والموارد التعليمية أدوات الثقافة العددية، المختبرات الاقتراضية، الكتاب المدرسي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تقني", priority: "متوسطة" },
+            { id: 52, action: "تنمية مهارات القرن 21 ومهارات التفكير العليا لدى الطالبات", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تعليمي", priority: "عالية" },
+            { id: 53, action: "تهيئة بيئة صفية آمنة وإيجابية تتضمن أركان صفية تعليمية محفزة", start: "2025/11/1", end: "2025/11/15", status: "نفذ", category: "teachers", type: "تعليمي", priority: "متوسطة" },
             { id: 54, action: "قياس أثر التدريب المقدم للورش والزيارات التبادلية في مجال توظيف الاستراتيجيات", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "teachers", type: "متابعة", priority: "متوسطة" },
-            { id: 55, action: "إثارة دافعية الطالبات التعلم بأساليب متنوعة/ألوحة النجوم/التحفيز المعنوي/التخطير المادي/classdolo", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تحفيزي", priority: "متوسطة" },
-            { id: 56, action: "تنويع أساليب المشاركة لدى الطالبات داخل الموقف الصفي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
-            { id: 57, action: "الربط بين المواد العلمية والمهارات الحياتية في الموقف الصفي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "متوسطة" },
-            { id: 58, action: "توظيف استراتيجيات فاعلة بحيث يكون الطالب محور العملية التعليمية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "learning", type: "تعليمي", priority: "عالية" },
-            { id: 59, action: "متابعة أداء العاملين بالمدرسة من خلال جلسات نظام الأداء الوظيفي", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "teachers", type: "إداري", priority: "متوسطة" },
-            { id: 60, action: "متابعة تنفيذ الخطط التشغيلية والفصلية للأقسام", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "teachers", type: "إداري", priority: "متوسطة" },
+            { id: 55, action: "إثارة دافعية الطالبات التعلم بأساليب متنوعة/لوحة النجوم/التحفيز المعنوي/التحفيز المادي/classdojo", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تحفيزي", priority: "متوسطة" },
+            { id: 56, action: "تنويع أساليب المشاركة لدى الطالبات داخل الموقف الصفي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تعليمي", priority: "متوسطة" },
+            { id: 57, action: "الربط بين المواد العلمية والمهارات الحياتية في الموقف الصفي", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تعليمي", priority: "متوسطة" },
+            { id: 58, action: "توظيف استراتيجيات فاعلة بحيث يكون الطالب محور العملية التعليمية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تعليمي", priority: "عالية" },
+            { id: 59, action: "متابعة أداء العاملين بالمدرسة من خلال جلسات نظام الأداء الوظيفي", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "admin", type: "إداري", priority: "متوسطة" },
+            { id: 60, action: "متابعة تنفيذ الخطط التشغيلية والفصلية للأقسام", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "admin", type: "إداري", priority: "متوسطة" },
             { id: 61, action: "متابعة الانتهاء من المنهج المدرسي من خلال استمارات المعدة لذلك", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "academic", type: "متابعة", priority: "عالية" },
-            { id: 62, action: "التعاون مع كلية البحرين للمعلمين في تدريب المعلمين المستجدين", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "teachers", type: "تدريبي", priority: "منخفضة" },
+            { id: 62, action: "التعاون مع كلية البحرين للمعلمين في تدريب المعلمين المستجدين", start: "2025/11/10", end: "2025/11/30", status: "نفذ", category: "admin", type: "تدريبي", priority: "منخفضة" },
             
             // إضافة 9 إجراءات إضافية لتكملة 71 إجراءاً
-            { id: 63, action: "إعداد تقارير شهرية عن سير عمل مجالات العمل المدرسي", start: "2025/11/25", end: "2025/11/30", status: "نفذ", category: "academic", type: "إداري", priority: "متوسطة" },
-            { id: 64, action: "تطوير آليات متابعة تنفيذ تدريب الطالبات على الامتحانات الدولية ", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "تقني", priority: "عالية" },
-            { id: 65, action: "تنفيذ برنامج تدريبي لمعلمات الصفوف الأولى في استراتيجيات التعلم النشط", start: "2025/11/10", end: "2025/11/20", status: "نفذ", category: "teachers", type: "تدريبي", priority: "عالية" },
-            { id: 66, action: "إعداد لجان الامتحانات الداخلية ", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "academic", type: "إداري", priority: "عالية" },
-            { id: 67, action: "تفعيل برنامج صعوبات التعلم للطالبات المتعثرات دراسياً", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "إرشادي", priority: "عالية" },
-            { id: 68, action: "تنظيم معرض للإبداعات الطلابية في مجال إعادة التدوير", start: "2025/11/20", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "متوسطة" },
-            { id: 69, action: " إعداد دليل ارشادي للطالبات حول كيفية الاستعداد للاختبارات الدولية", start: "2025/11/1", end: "2025/11/10", status: "نفذ", category: "tests", type: "إرشادي", priority: "متوسطة" },
-            { id: 70, action: "تنفيذ حصص حول أهمية القراءة والبحث العلمي", start: "2025/11/5", end: "2025/11/15", status: "نفذ", category: "learning", type: "توعوي", priority: "متوسطة" },
-            { id: 71, action: "تقييم أداء الشراكة مع أولياء الأمور واقتراح آليات تطويرها", start: "2025/11/20", end: "2025/11/30", status: "نفذ", category: "behavior", type: "تقييمي", priority: "متوسطة" }
+            { id: 63, action: "إعداد تقارير شهرية عن سير مجالات العمل المدرسي وتقديمها للإدارة", start: "2025/11/25", end: "2025/11/30", status: "نفذ", category: "admin", type: "إداري", priority: "متوسطة" },
+            { id: 64, action: "التواصل مع الجهات المعنية لتحسين البيئة المدرسية", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "admin", type: "تقني", priority: "عالية" },
+            { id: 65, action: "متابعة الصيانة الدورية للمباني والمرافق المدرسية ", start: "2025/11/10", end: "2025/11/20", status: "نفذ", category: "admin", type: "تدريبي", priority: "عالية" },
+            { id: 66, action: "متابعة المقصف المدرسي والوجبات الخاصة بالطالبات", start: "2025/11/15", end: "2025/11/30", status: "نفذ", category: "safety", type: "إداري", priority: "عالية" },
+            { id: 67, action: "تنفيذ اليوم المفتوح لأولياء الامور", start: "2025/11/1", end: "2025/11/30", status: "نفذ", category: "academic", type: "إرشادي", priority: "عالية" },
+            { id: 68, action: "تنظيم ركن للإبداعات الطلابية في مجال التعليم الاخضر", start: "2025/11/20", end: "2025/11/30", status: "نفذ", category: "activities", type: "تربوي", priority: "متوسطة" },
+            { id: 69, action: "تنفيذ اللقاء المطور الاول للحلقة الاولى", start: "2025/11/1", end: "2025/11/10", status: "نفذ", category: "academic", type: "إرشادي", priority: "متوسطة" },
+            { id: 70, action: "تكريم المؤسسات المتعاونة مع المدرسة في تنفيذ الورش التدريبية والمحاضرات.", start: "2025/11/5", end: "2025/11/15", status: "نفذ", category: "admin", type: "توعوي", priority: "متوسطة" },
+            { id: 71, action: "تقييم المناسبات والفعاليات والاخذ بالمقترحات", start: "2025/11/20", end: "2025/11/30", status: "نفذ", category: "admin", type: "تقييمي", priority: "متوسطة" }
         ];
 
         // إعدادات الترقيم الصفحي
@@ -526,7 +527,8 @@
                 const row = document.createElement('tr');
                 const statusClass = proc.status === 'نفذ' ? 'status-completed' : 'status-in-progress';
                 const categoryNames = {
-                    'academic': 'التحصيل الأكاديمي',
+                    'academic': 'الإنجاز الأكاديمي',
+                    'admin': 'قيادة وادارة',
                     'learning': 'مهارات التعلم',
                     'tests': 'الاختبارات',
                     'activities': 'الأنشطة والفعاليات',
