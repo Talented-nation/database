@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة قفزة الضفدع - عوامل الأعداد</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Lalezar (Gaming/Display) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lalezar&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom Animations */
+        @keyframes jump {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-40px) scale(1.1); } /* Higher jump for visual clarity */
+            100% { transform: translateY(0) scale(1); }
+        }
+        .animate-jump {
+            animation: jump 0.5s ease-in-out;
+        }
+        
+        @keyframes drown {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+            30% { transform: translateY(10px) scale(0.9) rotate(5deg); opacity: 1; }
+            100% { transform: translateY(60px) scale(0) rotate(45deg); opacity: 0; }
+        }
+        .animate-drown {
+            animation: drown 1.5s ease-in forwards;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce-in {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .animate-bounce-in {
+            animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        /* New Water Animations */
+        @keyframes drift {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-20px, 15px); }
+            100% { transform: translate(0, 0); }
+        }
+        .animate-drift {
+            animation: drift 8s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+            100% { opacity: 0.3; transform: scale(1); }
+        }
+        
+        /* Proper Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        
+        body {
+            font-family: 'Lalezar', cursive;
+            margin: 0;
+            overflow: hidden; /* Prevent scrollbars from animations */
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        // --- Helper: Convert numbers to Arabic Numerals ---
+        const toArabicNumerals = (n) => {
+            return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+        };
+
+        // --- Icons Components (Replacements for Lucide-React) ---
+        const Play = ({ size = 24, fill = "none", className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        );
+
+        const RotateCcw = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+            </svg>
+        );
+
+        const Heart = ({ size = 24, fill = "none", className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+        );
+
+        const Trophy = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M12 15a7 7 0 0 0 7-7V2H5v6a7 7 0 0 0 7 7z"></path>
+                <path d="M8 22v-3a4 4 0 0 1 4-4v0a4 4 0 0 1 4 4v3"></path>
+            </svg>
+        );
+
+        // --- Main Game Component ---
+        const FrogFactorGame = () => {
+            // Game State
+            const [gameState, setGameState] = useState('start'); // start, playing, gameover, levelcomplete
+            const [targetNumber, setTargetNumber] = useState(0);
+            const [leaves, setLeaves] = useState([]);
+            const [score, setScore] = useState(0);
+            const [lives, setLives] = useState(3);
+            const [frogIndex, setFrogIndex] = useState(-1); // -1 is starting rock
+            const [isDrowning, setIsDrowning] = useState(false); // New state for drowning animation
+            const [message, setMessage] = useState('');
+            const [level, setLevel] = useState(1);
+
+            // Helper: Get factors of a number
+            const getFactors = (num) => {
+                const factors = [];
+                for (let i = 1; i <= num; i++) {
+                if (num % i === 0) factors.push(i);
+                }
+                return factors;
+            };
+
+            // Sound Effect Functions
+            const playJumpSound = () => {
+                const audio = new Audio('https://cdn.jsdelivr.net/gh/Talented-nation/database@e0c6e921cbaa272d875b7514d637183225c1396e/leap.mp3');
+                audio.volume = 0.5;
+                audio.play().catch(e => console.log("Audio play failed", e));
+            };
+
+            const playSplashSound = () => {
+                const audio = new Audio('https://cdn.jsdelivr.net/gh/Talented-nation/database@5fad89b67a21b1ea932faabef4dd1be7cca6c716/splosh.mp3');
+                audio.volume = 0.6;
+                audio.play().catch(e => console.log("Audio play failed", e));
+            };
+
+            // Helper: Generate a level
+            const generateLevel = useCallback((currentLevel) => {
+                const min = 4 + currentLevel;
+                const max = 20 + (currentLevel * 5); 
+                let num = Math.floor(Math.random() * (max - min + 1)) + min;
+                
+                while (getFactors(num).length <= 2 && num < 90) {
+                num = Math.floor(Math.random() * (max - min + 1)) + min;
+                }
+
+                setTargetNumber(num);
+
+                const correctFactors = getFactors(num);
+                const correctCount = correctFactors.length;
+                
+                // Increase leaves count for higher levels (Level 3+)
+                const totalLeaves = currentLevel >= 3 ? 12 : 9; 
+                const wrongCount = totalLeaves - correctCount;
+                const distractors = [];
+                
+                while (distractors.length < wrongCount) {
+                let r = Math.floor(Math.random() * max) + 1;
+                if (num % r !== 0 && !distractors.includes(r)) {
+                    distractors.push(r);
+                }
+                }
+
+                let levelLeaves = [...correctFactors, ...distractors].map((val, idx) => ({
+                id: idx,
+                value: val,
+                isFactor: num % val === 0,
+                status: 'active', // active, sunk, correct
+                }));
+
+                levelLeaves.sort(() => Math.random() - 0.5);
+                levelLeaves = levelLeaves.map((leaf, index) => ({...leaf, id: index}));
+
+                setLeaves(levelLeaves);
+                setFrogIndex(-1); // Reset frog to rock
+                setIsDrowning(false);
+                setMessage('اختر ورقة للقفز!');
+            }, []);
+
+            // Start Game
+            const startGame = () => {
+                setScore(0);
+                setLives(3);
+                setLevel(1);
+                setGameState('playing');
+                setIsDrowning(false);
+                generateLevel(1);
+            };
+
+            // Handle Leaf Click
+            const handleLeafClick = (index) => {
+                if (gameState !== 'playing' || isDrowning) return;
+                
+                const selectedLeaf = leaves[index];
+
+                if (selectedLeaf.status !== 'active') return;
+
+                if (selectedLeaf.isFactor) {
+                // Correct Move
+                playJumpSound(); // Play sound effect
+                const newLeaves = [...leaves];
+                newLeaves[index].status = 'correct';
+                setLeaves(newLeaves);
+                setFrogIndex(index);
+                setScore(prev => prev + 10);
+                setMessage('أحسنت! عامل صحيح.');
+
+                const remainingFactors = newLeaves.filter(l => l.isFactor && l.status === 'active');
+                if (remainingFactors.length === 0) {
+                    setTimeout(() => {
+                        setMessage('مرحى! أكملت المستوى.');
+                        setGameState('levelcomplete');
+                    }, 800);
+                }
+
+                } else {
+                    // Wrong Move - Jump and Drown logic
+                    playSplashSound(); // Play splash sound
+                    const newLeaves = [...leaves];
+                    newLeaves[index].status = 'sunk';
+                    setLeaves(newLeaves);
+                    
+                    // Move frog to the sinking leaf immediately
+                    setFrogIndex(index);
+                    setIsDrowning(true);
+                    
+                    if (lives <= 1) {
+                        // Last life lost - Game Over Sequence
+                        setLives(0);
+                        setMessage('للأسف! غرق الضفدع!');
+                        
+                        // Wait for animation before showing game over
+                        setTimeout(() => {
+                            setGameState('gameover');
+                            setIsDrowning(false);
+                        }, 1500);
+                    } else {
+                        // Lose a life and respawn Sequence
+                        setMessage('للأسف! ليس من العوامل.');
+                        
+                        setTimeout(() => {
+                            setLives(prev => prev - 1);
+                            setFrogIndex(-1); // Respawn at start rock
+                            setIsDrowning(false);
+                            setMessage('حاول مجدداً.');
+
+                            // --- NEW FEATURE: Replace sunk leaf with a new distractor ---
+                            setLeaves(currentLeaves => {
+                                const updatedLeaves = [...currentLeaves];
+                                const maxVal = 20 + (level * 5);
+                                let randomVal;
+                                let isValid = false;
+                                let attempts = 0;
+
+                                // Attempt to find a unique non-factor number
+                                while (!isValid && attempts < 20) {
+                                    randomVal = Math.floor(Math.random() * maxVal) + 1;
+                                    // Check if it's NOT a factor and NOT currently displayed
+                                    const isFactor = targetNumber % randomVal === 0;
+                                    const isDuplicate = updatedLeaves.some(l => l.value === randomVal && l.status === 'active');
+                                    
+                                    if (!isFactor && !isDuplicate) {
+                                        isValid = true;
+                                    }
+                                    attempts++;
+                                }
+                                
+                                // Fallback if random generation fails (rare)
+                                if (!isValid) randomVal = targetNumber + 1 + Math.floor(Math.random() * 10);
+
+                                // Replace the sunk leaf at 'index' with the new value and reactivate it
+                                updatedLeaves[index] = {
+                                    ...updatedLeaves[index],
+                                    value: randomVal,
+                                    isFactor: false, // Ensure it's not a correct answer
+                                    status: 'active' // Make it visible again
+                                };
+                                return updatedLeaves;
+                            });
+                            // -----------------------------------------------------------
+
+                        }, 1500);
+                    }
+                }
+            };
+
+            const nextLevel = () => {
+                setLevel(prev => prev + 1);
+                setGameState('playing');
+                generateLevel(level + 1);
+            };
+
+            // Assets
+            const FrogSVG = () => (
+                <img src="https://talented-nation.github.io/database/frog.png" alt="الضفدع" className="w-full h-full object-contain drop-shadow-lg" />
+            );
+
+            const LilyPadSVG = ({ value, status }) => {
+                let imgClass = "w-full h-full object-contain drop-shadow-lg transition-all duration-300";
+                
+                if (status === 'correct') {
+                    imgClass += " brightness-125 saturate-150 drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]";
+                }
+
+                return (
+                <div className="relative w-full h-full flex items-center justify-center transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                    <img 
+                        src="https://talented-nation.github.io/database/leaf.png" 
+                        alt="ورقة لوتس" 
+                        className={imgClass}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white drop-shadow-md">
+                            {toArabicNumerals(value)}
+                        </span>
+                    </div>
+                </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen font-sans flex flex-col items-center p-4 relative overflow-hidden" dir="rtl">
+                
+                    {/* Advanced Water Background - Solid Version */}
+                    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                        {/* Main Background - Solid Color */}
+                        <div className="absolute inset-0 bg-[#5ECEFC]"></div>
+                        
+                        {/* Floating Decorative Loot Items - Coordinates defined explicitly in style */}
+                        {/* Item 1: Top Left - Near */}
+                        <div className="absolute w-16 h-16 opacity-80" style={{ top: '28%', left: '20%', animation: 'float 6s ease-in-out infinite' }}>
+                            <img src="https://talented-nation.github.io/database/loot.webp" alt="عنصر طاف" className="w-full h-full object-contain drop-shadow-md" />
+                        </div>
+                        
+                        {/* Item 2: Bottom Right - Near */}
+                        <div className="absolute w-16 h-16 opacity-70" style={{ bottom: '28%', right: '20%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' }}>
+                            <img src="https://talented-nation.github.io/database/loot.webp" alt="عنصر طاف" className="w-full h-full object-contain drop-shadow-md" />
+                        </div>
+
+                        {/* Item 3: Top Right - Near */}
+                        <div className="absolute w-16 h-16 opacity-60" style={{ top: '20%', right: '25%', animation: 'float 8s ease-in-out infinite', animationDelay: '2s' }}>
+                            <img src="https://talented-nation.github.io/database/loot.webp" alt="عنصر طاف" className="w-full h-full object-contain drop-shadow-md" />
+                        </div>
+
+                        {/* Item 4: Bottom Left - Near */}
+                        <div className="absolute w-16 h-16 opacity-50" style={{ bottom: '20%', left: '25%', animation: 'float 5s ease-in-out infinite', animationDelay: '0.5s' }}>
+                            <img src="https://talented-nation.github.io/database/loot.webp" alt="عنصر طاف" className="w-full h-full object-contain drop-shadow-md" />
+                        </div>
+                        
+                        {/* Enhanced Circular Ripples (Background) */}
+                        <div className="absolute inset-0 opacity-25">
+                             <div className="absolute top-1/4 left-1/4 w-32 h-32 border-2 border-white/50 rounded-full animate-ping" style={{animationDuration: '4s'}}></div>
+                             <div className="absolute bottom-1/3 right-1/3 w-48 h-48 border-2 border-white/40 rounded-full animate-ping" style={{animationDuration: '5s', animationDelay: '2s'}}></div>
+                             <div className="absolute top-2/3 left-10 w-24 h-24 border border-white/40 rounded-full animate-ping" style={{animationDuration: '6s', animationDelay: '1s'}}></div>
+                             <div className="absolute bottom-10 right-10 w-40 h-40 border border-white/30 rounded-full animate-ping" style={{animationDuration: '7s', animationDelay: '3s'}}></div>
+                             <div className="absolute top-10 right-1/2 w-20 h-20 border border-white/30 rounded-full animate-ping" style={{animationDuration: '5.5s', animationDelay: '0.5s'}}></div>
+                        </div>
+                    </div>
+
+                    {/* Header - Combined Title and Instructions */}
+                    <header className="w-full max-w-4xl bg-white/80 backdrop-blur-md rounded-2xl shadow-lg p-3 md:p-4 mb-2 md:mb-6 z-10 flex flex-col md:flex-row justify-between items-center relative border-b-4 border-sky-400 gap-3">
+                        
+                        {/* Right Side: Title */}
+                        <div className="flex items-center gap-4 w-full md:w-auto justify-center md:justify-start z-20">
+                            <h1 className="text-2xl md:text-3xl font-bold text-sky-800 flex items-center gap-2 whitespace-nowrap">
+                                🐸 قفزة الضفدع
+                            </h1>
+                        </div>
+                        
+                        {/* Center: Dynamic Instruction Area (Absolute Center on Desktop) */}
+                        <div className="w-full md:w-auto md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 flex justify-center z-10 order-last md:order-none">
+                            {(gameState === 'playing' || gameState === 'gameover') && gameState !== 'start' ? (
+                                <div className="flex flex-col items-center animate-fade-in">
+                                    <div className="flex items-center justify-center gap-3 bg-emerald-100 px-6 py-2 rounded-xl border-2 border-emerald-200 shadow-sm transform hover:scale-105 transition-transform">
+                                        <span className="text-lg md:text-xl text-emerald-800 font-bold whitespace-nowrap">أوجد عوامل العدد:</span>
+                                        <span className="text-3xl md:text-4xl text-emerald-600">
+                                            {toArabicNumerals(targetNumber)}
+                                        </span>
+                                    </div>
+                                    {message && <span className="text-sm text-orange-600 font-bold mt-1 px-2 bg-white/90 rounded-full shadow-sm animate-pulse">{message}</span>}
+                                </div>
+                            ) : (
+                                <span className="hidden md:block text-lg text-sky-600 font-bold opacity-50">ابدأ اللعبة</span>
+                            )}
+                        </div>
+                        
+                        {/* Left Side: Score & Lives */}
+                        <div className="flex gap-4 md:gap-6 text-xl md:text-2xl font-bold w-full md:w-auto justify-center md:justify-end bg-sky-50 md:bg-transparent p-2 md:p-0 rounded-xl z-20">
+                            <div className="flex items-center gap-2 text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full shadow-sm">
+                                <Trophy size={20} className="md:w-7 md:h-7" />
+                                <span>{toArabicNumerals(score)}</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-red-500 bg-red-100 px-3 py-1 rounded-full shadow-sm">
+                                {[...Array(3)].map((_, i) => (
+                                    <Heart key={i} size={20} fill={i < lives ? "currentColor" : "none"} className={`md:w-7 md:h-7 ${i < lives ? "text-red-500" : "text-gray-300"}`} />
+                                ))}
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Game Area */}
+                    <main className="w-full max-w-2xl flex-1 flex flex-col items-center justify-center z-10 relative">
+                        
+                        {/* Start Screen */}
+                        {gameState === 'start' && (
+                            <div className="bg-white p-8 rounded-3xl shadow-2xl text-center max-w-md border-8 border-sky-300">
+                                <div className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 animate-bounce-short">
+                                    <FrogSVG />
+                                </div>
+                                <h2 className="text-4xl font-bold text-gray-800 mb-4">مغامرة العوامل</h2>
+                                <p className="text-gray-600 mb-6 text-xl">ساعد الضفدع في القفز فقط على الأوراق التي تحتوي على <span className="font-bold text-emerald-600">عوامل العدد المطلوب</span>.</p>
+                                <button 
+                                    onClick={startGame}
+                                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-2xl font-bold py-4 rounded-xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2"
+                                >
+                                    <Play size={28} fill="currentColor" /> ابدأ اللعب
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Game Over Screen */}
+                        {gameState === 'gameover' && (
+                            <div className="absolute z-50 inset-0 flex items-center justify-center p-4">
+                                <div className="bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl text-center max-w-md border-8 border-red-300 animate-fade-in">
+                                    <h2 className="text-4xl font-bold text-red-600 mb-2">انتهت اللعبة!</h2>
+                                    <p className="text-gray-600 mb-6 text-xl">لقد غرق الضفدع المسكين.</p>
+                                    <div className="text-5xl font-bold text-gray-800 mb-8 bg-gray-100 p-4 rounded-xl">
+                                        النتيجة النهائية: <span>{toArabicNumerals(score)}</span>
+                                    </div>
+                                    <button 
+                                        onClick={startGame}
+                                        className="w-full bg-sky-500 hover:bg-sky-600 text-white text-2xl font-bold py-4 rounded-xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2"
+                                    >
+                                        <RotateCcw size={28} /> المحاولة مرة أخرى
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Level Complete Screen */}
+                        {gameState === 'levelcomplete' && (
+                            <div className="bg-white p-8 rounded-3xl shadow-2xl text-center max-w-md border-8 border-yellow-300 animate-bounce-in">
+                                <h2 className="text-4xl font-bold text-yellow-600 mb-2">ممتاز!</h2>
+                                <p className="text-gray-600 mb-6 text-xl">لقد وجدت جميع عوامل العدد <span className="mx-1 text-2xl">{toArabicNumerals(targetNumber)}</span></p>
+                                <button 
+                                    onClick={nextLevel}
+                                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-2xl font-bold py-4 rounded-xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2"
+                                >
+                                    المستوى التالي <Play size={28} fill="currentColor" />
+                                </button>
+                            </div>
+                        )}
+
+                        {/* The Pond Grid */}
+                        {(gameState === 'playing' || gameState === 'gameover') && (
+                            <div className={`grid ${leaves.length > 9 ? 'grid-cols-3 md:grid-cols-4 gap-2 md:gap-6' : 'grid-cols-3 gap-4 md:gap-8'} w-full p-4 transition-opacity duration-500 ${gameState === 'gameover' ? 'opacity-50 blur-sm' : ''}`}>
+                                {leaves.map((leaf, index) => (
+                                    <div 
+                                        key={leaf.id} 
+                                        className={`relative ${leaves.length > 9 ? 'w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32' : 'w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48'} mx-auto`}
+                                        onClick={() => handleLeafClick(index)}
+                                    >
+                                        {/* Leaf Component */}
+                                        <div className={`w-full h-full transition-all duration-500 ${leaf.status === 'sunk' ? 'opacity-0 scale-50' : 'opacity-100'}`}>
+                                            <LilyPadSVG value={leaf.value} status={leaf.status} />
+                                        </div>
+
+                                        {/* The Frog */}
+                                        {frogIndex === index && (
+                                            // Added pb-6 to raise the frog visually so it looks centered on the perspective of the leaf
+                                            <div className={`absolute inset-0 z-20 pointer-events-none flex items-center justify-center ${leaves.length > 9 ? 'pb-4' : 'pb-6'} ${isDrowning ? 'animate-drown' : 'animate-jump'}`}>
+                                                <div className="w-[65%] h-[65%]">
+                                                    <FrogSVG />
+                                                </div>
+                                            </div>
+                                        )}
+                                        
+                                        {/* Splash Effect when sunk */}
+                                        {leaf.status === 'sunk' && (
+                                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                <div className="w-full h-full border-4 border-sky-300 rounded-full animate-ping opacity-75"></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Start Rock (Visual anchor for the frog initially) */}
+                        {gameState === 'playing' && frogIndex === -1 && (
+                            <div className="fixed top-1/2 -translate-y-1/2 right-4 md:right-32 w-28 h-28 md:w-40 md:h-40 z-20 transition-opacity duration-500">
+                                <div className="relative w-full h-full flex items-center justify-center">
+                                    <img src="https://talented-nation.github.io/database/rock.png" alt="بداية" className="w-full h-full object-contain drop-shadow-xl" />
+                                </div>
+                                {/* Adjusted position: Centered frog relative to rock container with slight upward offset to sit 'on' it */}
+                                <div className="absolute inset-0 flex items-center justify-center pb-6">
+                                    <div className="w-20 h-20 md:w-24 md:h-24">
+                                        <FrogSVG />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                    </main>
+
+                    <footer className="w-full text-center p-4 text-sky-700 text-sm font-semibold opacity-70 relative z-10">
+                        {/* Removed footer text here */}
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<FrogFactorGame />);
+    </script>
+</body>
+</html>

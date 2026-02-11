@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>لعبة قفزة الضفدع - عوامل الأعداد</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Lalezar (Gaming/Display) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lalezar&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom Animations */
+        @keyframes jump {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-40px) scale(1.1); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        .animate-jump {
+            animation: jump 0.5s ease-in-out;
+        }
+        
+        @keyframes drown {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+            30% { transform: translateY(10px) scale(0.9) rotate(5deg); opacity: 1; }
+            100% { transform: translateY(60px) scale(0) rotate(45deg); opacity: 0; }
+        }
+        .animate-drown {
+            animation: drown 1.5s ease-in forwards;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce-in {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .animate-bounce-in {
+            animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        
+        /* Proper Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        
+        body {
+            font-family: 'Lalezar', cursive;
+            margin: 0;
+            overflow: hidden; /* Prevent scrollbars */
+            letter-spacing: 0.5px;
+            background-color: #45AC41; 
+        }
+    </style>
+</head>
+<body class="bg-[#45AC41]">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useRef } = React;
+
+        const toArabicNumerals = (n) => {
+            if (n === undefined || n === null) return "";
+            return n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+        };
+
+        // Helper function moved outside component to be stable
+        const getFactors = (num) => {
+            if (!num) return [];
+            const factors = [];
+            for (let i = 1; i <= num; i++) {
+                if (num % i === 0) factors.push(i);
+            }
+            return factors;
+        };
+
+        const Play = ({ size = 24, fill = "none", className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        );
+
+        const RotateCcw = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+            </svg>
+        );
+
+        const Heart = ({ size = 24, fill = "none", className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+        );
+
+        const Trophy = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M12 15a7 7 0 0 0 7-7V2H5v6a7 7 0 0 0 7 7z"></path>
+                <path d="M8 22v-3a4 4 0 0 1 4-4v0a4 4 0 0 1 4 4v3"></path>
+            </svg>
+        );
+
+        const FrogFactorGame = () => {
+            const ROWS = 3;
+            const MAX_LEVELS = 5;
+            const ROUNDS_PER_LEVEL = 5;
+
+            const [gameState, setGameState] = useState('start'); 
+            const [targetNumber, setTargetNumber] = useState(0);
+            const [leaves, setLeaves] = useState([]);
+            const [score, setScore] = useState(0);
+            const [lives, setLives] = useState(3);
+            const [frogIndex, setFrogIndex] = useState(-1);
+            const [isDrowning, setIsDrowning] = useState(false);
+            const [message, setMessage] = useState('');
+            const [level, setLevel] = useState(1);
+            const [round, setRound] = useState(1);
+            const [numCols, setNumCols] = useState(4);
+            const [activeCol, setActiveCol] = useState(0);
+            
+            // Ref to track numbers used in the current game session to prevent duplicates
+            const usedNumbersRef = useRef([]);
+
+            const playJumpSound = () => {
+                const audio = new Audio('https://cdn.jsdelivr.net/gh/Talented-nation/database@e0c6e921cbaa272d875b7514d637183225c1396e/leap.mp3');
+                audio.volume = 0.5;
+                audio.play().catch(e => {});
+            };
+
+            const playSplashSound = () => {
+                const audio = new Audio('https://cdn.jsdelivr.net/gh/Talented-nation/database@5fad89b67a21b1ea932faabef4dd1be7cca6c716/splosh.mp3');
+                audio.volume = 0.6;
+                audio.play().catch(e => {});
+            };
+
+            const generateLevel = useCallback((currentLevel, currentRound) => {
+                let num;
+                const colsForLevel = 4;
+                setNumCols(colsForLevel);
+                const totalSlots = colsForLevel * ROWS;
+                
+                let validNumFound = false;
+                let attempts = 0;
+
+                // Loop to find a number that hasn't been used yet
+                while (!validNumFound && attempts < 200) {
+                    attempts++;
+                    
+                    // --- CHANGED LOGIC START: GRADUAL DIFFICULTY ---
+                    let min, max;
+
+                    if (currentLevel === 1) {
+                        min = 4; max = 20;  // Level 1: Very Small Numbers (4-20)
+                    } else if (currentLevel === 2) {
+                        min = 21; max = 40; // Level 2: Small Numbers (21-40)
+                    } else if (currentLevel === 3) {
+                        min = 41; max = 60; // Level 3: Medium Numbers (41-60)
+                    } else if (currentLevel === 4) {
+                        min = 61; max = 80; // Level 4: Larger Numbers (61-80)
+                    } else {
+                        min = 81; max = 100; // Level 5: Largest Numbers (81-100)
+                    }
+
+                    // Generate random number in range
+                    num = Math.floor(Math.random() * (max - min + 1)) + min;
+                    
+                    // Get factors to check validity
+                    const factors = getFactors(num);
+                    const factorsLen = factors.length;
+
+                    // Validation:
+                    // 1. Must not be prime (need at least 3 factors: 1, n, and something else) to be fun
+                    // 2. Must not have more factors than slots available minus 2 (room for distractors)
+                    if (factorsLen < 3 || factorsLen > totalSlots - 2) {
+                        continue; 
+                    }
+                    // --- CHANGED LOGIC END ---
+
+                    // Check if used before
+                    if (!usedNumbersRef.current.includes(num)) {
+                        validNumFound = true;
+                    }
+                }
+                
+                // Add to used list
+                usedNumbersRef.current.push(num);
+
+                setTargetNumber(num);
+                const correctFactors = getFactors(num);
+                
+                // Initialize grid with null
+                let tempLeaves = new Array(totalSlots).fill(null);
+                
+                // --- Placement Strategy: Place ALL factors ---
+                
+                // 1. Identify indices for the last column to ensure at least one factor is there (Win Condition)
+                const lastColIndices = [];
+                for (let r = 0; r < ROWS; r++) {
+                    lastColIndices.push(r * colsForLevel + (colsForLevel - 1));
+                }
+                
+                // 2. Separate factors needed for the last column vs others
+                // Pick one random factor to guarantee reaching the end
+                const mustHaveEndFactor = correctFactors[Math.floor(Math.random() * correctFactors.length)];
+                const otherFactors = correctFactors.filter(f => f !== mustHaveEndFactor);
+
+                // Place the guaranteed factor in a random spot in the last column
+                const endSpot = lastColIndices[Math.floor(Math.random() * lastColIndices.length)];
+                tempLeaves[endSpot] = { value: mustHaveEndFactor, isFactor: true, status: 'active', id: endSpot };
+
+                // 3. Place all remaining factors in random empty slots throughout the grid
+                const emptyIndices = tempLeaves.map((_, i) => i).filter(i => tempLeaves[i] === null);
+                
+                // Shuffle empty indices to place factors randomly
+                for (let i = emptyIndices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [emptyIndices[i], emptyIndices[j]] = [emptyIndices[j], emptyIndices[i]];
+                }
+
+                otherFactors.forEach((factor, idx) => {
+                    if (idx < emptyIndices.length) {
+                        const spot = emptyIndices[idx];
+                        tempLeaves[spot] = { value: factor, isFactor: true, status: 'active', id: spot };
+                    }
+                });
+
+                // 4. Fill remaining spots with distractors
+                for (let i = 0; i < totalSlots; i++) {
+                    if (tempLeaves[i] === null) {
+                        let d;
+                        let distractorAttempts = 0;
+                        const maxDistractor = num + 15; // Distractors are close to the number
+                        do {
+                            d = Math.floor(Math.random() * maxDistractor) + 1;
+                            distractorAttempts++;
+                        } while ((num % d === 0 || tempLeaves.some(l => l && l.value === d)) && distractorAttempts < 50);
+                        
+                        // Fallback if random gen fails
+                        if (distractorAttempts >= 50) {
+                            d = num + i + 1; 
+                            while (num % d === 0) d++;
+                        }
+                        
+                        tempLeaves[i] = { value: d, isFactor: false, status: 'active', id: i };
+                    }
+                }
+
+                // Final safety check to mark factors correctly (in case a distractor accidentally became a factor)
+                tempLeaves = tempLeaves.map(leaf => {
+                    if (leaf && num % leaf.value === 0) {
+                        return { ...leaf, isFactor: true };
+                    }
+                    return leaf;
+                });
+
+                setLeaves(tempLeaves);
+                setFrogIndex(-1);
+                setIsDrowning(false);
+                setActiveCol(0);
+                setMessage(`المستوى ${toArabicNumerals(currentLevel)} - جولة ${toArabicNumerals(currentRound)}`);
+            }, []);
+
+            const startGame = () => {
+                setScore(0);
+                setLives(3);
+                setLevel(1);
+                setRound(1);
+                setGameState('playing');
+                setIsDrowning(false);
+                usedNumbersRef.current = []; // Clear used numbers history on new game
+                generateLevel(1, 1);
+            };
+
+            const handleLeafClick = (index) => {
+                if (gameState !== 'playing' || isDrowning) return;
+
+                const leafCol = index % numCols;
+                const selectedLeaf = leaves[index];
+                
+                // Guard clause if leaf data is missing
+                if (!selectedLeaf) return;
+
+                if (selectedLeaf.status !== 'active' && selectedLeaf.status !== 'correct') return;
+
+                if (selectedLeaf.isFactor) {
+                    playJumpSound();
+                    
+                    let factorsLeft = leaves.filter(l => l.isFactor && l.status !== 'correct').length;
+
+                    if (selectedLeaf.status === 'active') {
+                        const newLeaves = [...leaves];
+                        newLeaves[index] = { ...newLeaves[index], status: 'correct' };
+                        setLeaves(newLeaves);
+                        setScore(prev => prev + 10);
+                        
+                        // Decrement local counter since we just found one
+                        factorsLeft = factorsLeft - 1;
+                    } 
+                    
+                    setFrogIndex(index);
+                    setActiveCol(leafCol);
+
+                    if (factorsLeft === 0) {
+                        // Win condition: ALL factors found
+                        setMessage('مرحى! جمعت كل العوامل!');
+                        setTimeout(() => {
+                            handleRoundComplete();
+                        }, 1000);
+                    } else {
+                        // Still factors remaining
+                        if (leafCol === numCols - 1) {
+                            setMessage('أحسنت! لكن ابحث عن باقي العوامل.');
+                        } else {
+                            setMessage('أحسنت! ابحث عن المزيد.');
+                        }
+                    }
+
+                } else {
+                    playSplashSound();
+                    const newLeaves = [...leaves];
+                    newLeaves[index] = { ...newLeaves[index], status: 'sunk' };
+                    setLeaves(newLeaves);
+                    
+                    setFrogIndex(index);
+                    setIsDrowning(true);
+                    
+                    if (lives <= 1) {
+                        setLives(0);
+                        setMessage('للأسف! غرق الضفدع!');
+                        setTimeout(() => {
+                            setGameState('gameover');
+                            setIsDrowning(false);
+                        }, 1500);
+                    } else {
+                        setMessage(`خطأ! ${toArabicNumerals(selectedLeaf.value)} ليس من عوامل ${toArabicNumerals(targetNumber)}`);
+                        setTimeout(() => {
+                            setLives(prev => prev - 1);
+                            setFrogIndex(-1); 
+                            setIsDrowning(false);
+                            setActiveCol(0); 
+                            setMessage('حاول مجدداً.');
+
+                            setLeaves(currentLeaves => {
+                                const updated = [...currentLeaves];
+                                let newVal = targetNumber + Math.floor(Math.random() * 20) + 1;
+                                while (targetNumber % newVal === 0) newVal++; 
+                                
+                                updated[index] = {
+                                    ...updated[index],
+                                    value: newVal,
+                                    isFactor: false,
+                                    status: 'active'
+                                };
+                                return updated;
+                            });
+
+                        }, 2000);
+                    }
+                }
+            };
+
+            const handleRoundComplete = () => {
+                if (round < ROUNDS_PER_LEVEL) {
+                    // Next Round in same level
+                    setRound(prev => prev + 1);
+                    setGameState('playing'); 
+                    // Small delay to reset grid visually
+                    setTimeout(() => generateLevel(level, round + 1), 500);
+                } else {
+                    // Level Complete
+                    if (level < MAX_LEVELS) {
+                        setGameState('levelcomplete');
+                    } else {
+                        setGameState('gamewon'); // Game totally finished
+                    }
+                }
+            };
+
+            const nextLevel = () => {
+                const nextLvl = level + 1;
+                setLevel(nextLvl);
+                setRound(1);
+                setGameState('playing');
+                generateLevel(nextLvl, 1);
+            };
+
+            const FrogSVG = () => (
+                <img src="https://talented-nation.github.io/database/frog.png" alt="الضفدع" className="w-full h-full object-contain" />
+            );
+
+            const LilyPadSVG = ({ value, status }) => {
+                let imgClass = "w-full h-full object-contain transition-all duration-300";
+                if (status === 'correct') {
+                    imgClass += " brightness-125 saturate-150";
+                }
+                return (
+                    <div className="relative w-full h-full flex items-center justify-center transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                        <img src="https://talented-nation.github.io/database/leaf.png" alt="ورقة لوتس" className={imgClass} />
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <span className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
+                                {toArabicNumerals(value)}
+                            </span>
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="h-screen w-screen font-sans flex flex-col items-center p-2 relative overflow-hidden bg-[#45AC41]" dir="rtl">
+                    
+                    {/* Header */}
+                    <header className="w-full max-w-4xl bg-white/90 backdrop-blur-md rounded-2xl px-4 py-2 mt-2 mb-2 z-10 flex flex-wrap justify-between items-center gap-2 shrink-0 shadow-lg">
+                        <div className="flex flex-col items-start">
+                            <h1 className="text-lg md:text-2xl font-bold text-sky-800 flex items-center gap-2 whitespace-nowrap">
+                                🐸 قفزة الضفدع
+                            </h1>
+                            {(gameState === 'playing' || gameState === 'gameover') && (
+                                <div className="text-xs md:text-sm font-bold text-gray-500">
+                                    المستوى {toArabicNumerals(level)} | جولة {toArabicNumerals(round)}/{toArabicNumerals(ROUNDS_PER_LEVEL)}
+                                </div>
+                            )}
+                        </div>
+                        
+                        <div className="flex-1 flex justify-center min-w-[150px]">
+                            {(gameState === 'playing' || gameState === 'gameover') && gameState !== 'start' ? (
+                                <div className="flex flex-col items-center animate-fade-in">
+                                    <div className="flex items-center justify-center gap-2 bg-emerald-100 px-4 py-1 rounded-xl shadow-inner">
+                                        <span className="text-sm md:text-lg text-emerald-800 font-bold whitespace-nowrap">أوجد عوامل:</span>
+                                        <span className="text-2xl md:text-4xl text-emerald-600 font-black">
+                                            {toArabicNumerals(targetNumber)}
+                                        </span>
+                                    </div>
+                                    {message && <span className="text-xs md:text-sm text-orange-600 font-bold mt-1 px-2 bg-white/90 rounded-full animate-pulse whitespace-nowrap">{message}</span>}
+                                </div>
+                            ) : null}
+                        </div>
+                        
+                        <div className="flex gap-2 md:gap-4 text-lg md:text-2xl font-bold items-center">
+                            <div className="flex items-center gap-1 text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full shadow-sm">
+                                <Trophy size={18} className="md:w-6 md:h-6" />
+                                <span>{toArabicNumerals(score)}</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-red-500 bg-red-100 px-2 py-1 rounded-full shadow-sm">
+                                {[...Array(3)].map((_, i) => (
+                                    <Heart key={i} size={16} fill={i < lives ? "currentColor" : "none"} className={`md:w-6 md:h-6 ${i < lives ? "text-red-500" : "text-gray-300"}`} />
+                                ))}
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Game Area - Flex-1 to fill remaining space */}
+                    <main className="w-full max-w-4xl flex-1 relative flex flex-col items-center justify-center min-h-0 p-2">
+                        
+                        {/* Background Container - NOW INSIDE MAIN & FITTED */}
+                        <div className="absolute inset-0 z-0 rounded-3xl overflow-hidden bg-[#45AC41] m-1 md:m-2 shadow-2xl border-4 border-emerald-600/30">
+                            {/* Background Image constrained to this box - Resized to fit exactly */}
+                            <div className="absolute inset-0 bg-center opacity-80" style={{ backgroundImage: "url('https://talented-nation.github.io/database/bg.png')", backgroundSize: '100% 100%' }}></div>
+                            
+                            {/* Lotus Decorations - Reverted Positions */}
+                            <div className="absolute w-12 h-12 md:w-16 md:h-16 opacity-80" style={{ top: '15%', left: '10%', animation: 'float 6s ease-in-out infinite' }}>
+                                <img src="https://talented-nation.github.io/database/lotus.png" className="w-full h-full object-contain" />
+                            </div>
+                            <div className="absolute w-12 h-12 md:w-16 md:h-16 opacity-70" style={{ bottom: '15%', right: '10%', animation: 'float 7s ease-in-out infinite', animationDelay: '1s' }}>
+                                <img src="https://talented-nation.github.io/database/lotus.png" className="w-full h-full object-contain" />
+                            </div>
+                            <div className="absolute w-10 h-10 md:w-14 md:h-14 opacity-60" style={{ top: '10%', right: '20%', animation: 'float 8s ease-in-out infinite', animationDelay: '2s' }}>
+                                <img src="https://talented-nation.github.io/database/lotus.png" className="w-full h-full object-contain" />
+                            </div>
+                            <div className="absolute w-10 h-10 md:w-14 md:h-14 opacity-50" style={{ bottom: '10%', left: '20%', animation: 'float 5s ease-in-out infinite', animationDelay: '0.5s' }}>
+                                <img src="https://talented-nation.github.io/database/lotus.png" className="w-full h-full object-contain" />
+                            </div>
+                            
+                            {/* Ripples */}
+                            <div className="absolute inset-0 opacity-25">
+                                <div className="absolute top-1/4 left-1/4 w-32 h-32 border-2 border-white/50 rounded-full animate-ping" style={{animationDuration: '4s'}}></div>
+                                <div className="absolute bottom-1/3 right-1/3 w-48 h-48 border-2 border-white/40 rounded-full animate-ping" style={{animationDuration: '5s', animationDelay: '2s'}}></div>
+                            </div>
+                        </div>
+
+                        {/* Game Content Wrapper - Z-index > 0 to sit on top of bg */}
+                        <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
+                            
+                            {gameState === 'start' && (
+                                <div className="bg-white p-6 md:p-8 rounded-3xl text-center max-w-sm animate-bounce-in shadow-2xl">
+                                    <div className="w-20 h-20 md:w-32 md:h-32 mx-auto mb-4 animate-bounce-short">
+                                        <FrogSVG />
+                                    </div>
+                                    <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-2">مغامرة العوامل</h2>
+                                    <p className="text-gray-600 mb-4 text-lg">ساعد الضفدع في القفز للوصول للضفة الأخرى.</p>
+                                    <div className="bg-emerald-50 p-3 rounded-lg mb-4 text-sm text-emerald-800 font-bold">
+                                        {toArabicNumerals(MAX_LEVELS)} مستويات مثيرة - {toArabicNumerals(ROUNDS_PER_LEVEL)} جولات في كل مستوى!
+                                    </div>
+                                    <button onClick={startGame} className="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xl md:text-2xl font-bold py-3 rounded-xl transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
+                                        <Play size={24} fill="currentColor" /> ابدأ اللعب
+                                    </button>
+                                </div>
+                            )}
+
+                            {gameState === 'gameover' && (
+                                <div className="absolute z-50 inset-0 flex items-center justify-center p-4">
+                                    <div className="bg-white/95 backdrop-blur-sm p-6 md:p-8 rounded-3xl text-center max-w-sm animate-fade-in shadow-2xl">
+                                        <h2 className="text-3xl md:text-4xl font-bold text-red-600 mb-2">انتهت اللعبة!</h2>
+                                        <p className="text-gray-600 mb-4 text-lg">لقد غرق الضفدع المسكين.</p>
+                                        <div className="text-4xl font-bold text-gray-800 mb-6 bg-gray-100 p-3 rounded-xl">
+                                            النتيجة: <span>{toArabicNumerals(score)}</span>
+                                        </div>
+                                        <button onClick={startGame} className="w-full bg-sky-500 hover:bg-sky-600 text-white text-xl font-bold py-3 rounded-xl transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-lg">
+                                            <RotateCcw size={24} /> المحاولة مرة أخرى
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {gameState === 'levelcomplete' && (
+                                <div className="bg-white p-6 md:p-8 rounded-3xl text-center max-w-sm animate-bounce-in shadow-2xl">
+                                    <h2 className="text-3xl md:text-4xl font-bold text-yellow-600 mb-2">رائع!</h2>
+                                    <p className="text-gray-600 mb-2 text-lg">أكملت المستوى {toArabicNumerals(level)} بنجاح!</p>
+                                    <div className="mb-4 text-emerald-600 font-bold">استعد للمستوى التالي..</div>
+                                    <button onClick={nextLevel} className="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xl font-bold py-3 rounded-xl transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-lg">
+                                        المستوى التالي <Play size={24} fill="currentColor" />
+                                    </button>
+                                </div>
+                            )}
+                            
+                            {gameState === 'gamewon' && (
+                                <div className="bg-white p-6 md:p-8 rounded-3xl text-center max-w-sm animate-bounce-in shadow-2xl">
+                                    <div className="w-24 h-24 mx-auto mb-4 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-500">
+                                        <Trophy size={48} />
+                                    </div>
+                                    <h2 className="text-3xl md:text-4xl font-bold text-emerald-600 mb-2">مبروك!</h2>
+                                    <p className="text-gray-600 mb-4 text-lg">أنت بطل العوامل! أكملت جميع المستويات.</p>
+                                    <div className="text-4xl font-bold text-gray-800 mb-6 bg-gray-100 p-3 rounded-xl">
+                                        النتيجة النهائية: <span>{toArabicNumerals(score)}</span>
+                                    </div>
+                                    <button onClick={startGame} className="w-full bg-sky-500 hover:bg-sky-600 text-white text-xl font-bold py-3 rounded-xl transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-lg">
+                                        <RotateCcw size={24} /> العب مجدداً
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* The Pond Grid - Fitted Container */}
+                            {(gameState === 'playing' || gameState === 'gameover') && (
+                                <div className={`grid grid-cols-4 gap-1 md:gap-2 w-fit mx-auto h-full p-2 md:p-4 transition-opacity duration-500 justify-items-center content-center max-h-full`}>
+                                    {leaves.map((leaf, index) => {
+                                        const col = index % numCols;
+                                        const opacityClass = 'opacity-100 scale-100';
+                                        
+                                        // Dynamic sizing for leaves to fit screen - Reduced size
+                                        const sizeClass = "w-[15vw] h-[15vw] max-w-[120px] max-h-[120px] min-w-[50px] min-h-[50px]";
+
+                                        return (
+                                            <div 
+                                                key={leaf.id} 
+                                                className={`relative ${sizeClass} transition-all duration-500 ${opacityClass}`}
+                                                onClick={() => handleLeafClick(index)}
+                                            >
+                                                <div className={`w-full h-full transition-all duration-500 ${leaf.status === 'sunk' ? 'opacity-0 scale-50' : 'opacity-100'}`}>
+                                                    <LilyPadSVG value={leaf.value} status={leaf.status} />
+                                                </div>
+
+                                                {frogIndex === index && (
+                                                    <div className={`absolute inset-0 z-20 pointer-events-none flex items-center justify-center pb-[10%] ${isDrowning ? 'animate-drown' : 'animate-jump'}`}>
+                                                        <div className="w-[65%] h-[65%]">
+                                                            <FrogSVG />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                
+                                                {leaf.status === 'sunk' && (
+                                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                        <div className="w-full h-full border-4 border-sky-300 rounded-full animate-ping opacity-75"></div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+
+                            {/* Start Rock - Fitted Position & pointer-events-none to fix click blocking */}
+                            {gameState === 'playing' && frogIndex === -1 && (
+                                <div className="absolute top-1/2 -translate-y-1/2 -right-4 md:-right-8 lg:-right-20 w-[15vw] h-[15vw] max-w-[120px] max-h-[120px] min-w-[60px] min-h-[60px] z-20 transition-opacity duration-500 flex items-center justify-center pointer-events-none">
+                                    <div className="relative w-full h-full flex items-center justify-center">
+                                        <img src="https://talented-nation.github.io/database/rock.png" alt="بداية" className="w-full h-full object-contain" />
+                                    </div>
+                                    <div className="absolute inset-0 flex items-center justify-center pb-[20%]">
+                                        <div className="w-[70%] h-[70%]">
+                                            <FrogSVG />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                    </main>
+                    
+                    {/* Tiny Footer Spacer if needed */}
+                    <div className="h-2 shrink-0"></div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<FrogFactorGame />);
+    </script>
+</body>
+</html>
