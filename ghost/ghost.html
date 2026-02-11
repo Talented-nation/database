@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>متاهة الأشباح والرياضيات</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #050505;
+            --wall-color: #2c3e50;
+            --path-color: #1a1a1a;
+            --ui-bg: rgba(20, 20, 20, 0.95);
+            --text-color: #ecf0f1;
+            --accent-color: #e74c3c;
+            --highlight: #f1c40f;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Tajawal', sans-serif;
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #game-container {
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            border: 2px solid #333;
+            background: #000;
+        }
+
+        canvas {
+            display: block;
+            background-color: var(--path-color);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: opacity 0.3s;
+        }
+
+        .hidden {
+            display: none !important;
+            pointer-events: none;
+        }
+
+        h1 {
+            color: var(--accent-color);
+            text-shadow: 2px 2px 0 #000;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 { color: var(--highlight); }
+
+        p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; }
+
+        button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-family: 'Tajawal', sans-serif;
+            cursor: pointer;
+            border-radius: 50px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            transition: transform 0.2s;
+            touch-action: manipulation;
+        }
+
+        button:active { transform: scale(0.95); }
+
+        #question-modal {
+            background: var(--ui-bg);
+            border: 2px solid var(--accent-color);
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #fff;
+            direction: rtl;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .option-btn {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            box-shadow: none;
+            margin-top: 0;
+        }
+
+        .option-btn:hover { background: #455d75; }
+
+        #hud {
+            width: 100%; 
+            max-width: 800px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            margin-bottom: 10px; 
+            background-color: var(--ui-bg); 
+            border-bottom: 1px solid #333; 
+            z-index: 15;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+            pointer-events: auto;
+        }
+        
+        #lives-display {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .heart-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        #controls {
+            position: fixed; 
+            bottom: 30px;
+            left: 30px; 
+            display: grid;
+            grid-template-columns: 70px 70px 70px;
+            grid-template-rows: 70px 70px;
+            gap: 5px;
+            z-index: 100;
+            opacity: 0.6;
+            touch-action: none;
+        }
+
+        .d-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            user-select: none;
+            cursor: pointer;
+            touch-action: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: background 0.1s, transform 0.1s;
+        }
+        
+        .d-btn:active, .d-btn.active { 
+            background: rgba(255, 255, 255, 0.4); 
+            transform: scale(0.9);
+        }
+        
+        .up { grid-column: 2; grid-row: 1; }
+        .left { grid-column: 1; grid-row: 2; }
+        .down { grid-column: 2; grid-row: 2; }
+        .right { grid-column: 3; grid-row: 2; }
+
+        #game-over-ghost {
+            font-size: 8rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .ui-icon {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .inline-icon {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            object-fit: contain;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="hud">
+        <span id="score-display">النقاط: ٠</span>
+        <span id="lives-display"></span>
+        <span id="level-display">المستوى: ١ / ١٠</span>
+    </div>
+
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- Start Screen -->
+        <div id="start-screen" class="overlay">
+            <h1>🏰 متاهة الأشباح</h1>
+            <p>أنت تائه في قلعة مسكونة مظلمة! 🌑</p>
+            <p>ابحث عن المفتاح 🗝️ للهروب عبر البوابة 🚪.</p>
+            <p>لديك 10 مستويات فقط للنجاة.</p>
+            <p>احذر من الأشباح! <img src="ghost.svg" class="inline-icon" alt="Ghost"> حل المسائل لإنقاذ روحك.</p>
+            <button onclick="startGame()">ابــدأ اللعــبة</button>
+        </div>
+
+        <!-- Question Modal -->
+        <div id="question-modal" class="overlay hidden">
+            <img src="ghost.svg" class="ui-icon" alt="Ghost">
+            <h2 style="color: #e74c3c;">الشبح يحاول الإمساك بك!</h2>
+            <p>حل المسألة لتنجو بحياتك:</p>
+            <div id="math-problem" class="question-text">...</div>
+            <div id="answers-container" class="options-grid">
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="overlay hidden">
+            <div id="game-over-ghost">☠️</div>
+            <h1 style="color: #c0392b;">Game Over</h1>
+            <p>لقد حصد الشبح روحك...</p>
+            <p id="final-score">النقاط النهائية: ٠</p>
+            <button onclick="resetGame()">حاول مرة أخرى</button>
+        </div>
+
+        <!-- Win Level Screen -->
+        <div id="level-screen" class="overlay hidden">
+            <div style="font-size: 4rem;">🗝️</div>
+            <h2>أحسنت!</h2>
+            <p>لقد نجوت من هذا الطابق.</p>
+            <button onclick="nextLevel()">الطابق التالي</button>
+        </div>
+        
+        <!-- Victory Screen -->
+        <div id="victory-screen" class="overlay hidden">
+            <div style="font-size: 5rem;">🏆</div>
+            <h1 style="color: #f1c40f;">مبـروك!</h1>
+            <p>لقد أنهيت جميع المستويات العشرة وهربت من القلعة!</p>
+            <p style="font-size: 1.5rem; color: #f1c40f;" id="final-victory-score">النقاط النهائية: ٠</p>
+            <button onclick="resetGame()">العب مجدداً</button>
+        </div>
+    </div>
+
+    <div id="controls">
+        <div id="btn-up" class="d-btn up">▲</div>
+        <div id="btn-left" class="d-btn left">◀</div>
+        <div id="btn-down" class="d-btn down">▼</div>
+        <div id="btn-right" class="d-btn right">▶</div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const mazeCanvas = document.createElement('canvas');
+        const mazeCtx = mazeCanvas.getContext('2d');
+        
+        const TILE_SIZE = 40; 
+        let COLS, ROWS;
+        const MAX_LEVELS = 10;
+        let flashlightGradient = null; 
+
+        // Load Images
+        const ghostImg = new Image();
+        ghostImg.src = 'ghost.svg';
+
+        const playerImg = new Image();
+        playerImg.src = 'boy.svg';
+
+        // Load Audio
+        const gameOverAudio = new Audio('https://cdn.jsdelivr.net/gh/Talented-nation/database@f4fb875fea9611b989f3ca1b036648a10f390577/haha.mp3');
+        const heartLossAudio = new Audio('https://cdn.jsdelivr.net/gh/Talented-nation/database@f4fb875fea9611b989f3ca1b036648a10f390577/oof.mp3');
+        const keyFoundAudio = new Audio('https://cdn.jsdelivr.net/gh/Talented-nation/database@f760722803a721abec975353cd82b0335da2a01b/key.mp3');
+        const correctAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3');
+        const doorOpenAudio = new Audio('https://cdn.jsdelivr.net/gh/Talented-nation/database@f760722803a721abec975353cd82b0335da2a01b/door.mp3');
+        const bgMusic = new Audio('https://cdn.jsdelivr.net/gh/Talented-nation/database@f760722803a721abec975353cd82b0335da2a01b/bg1.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = 0.5;
+        
+        const sprites = {
+            player: playerImg,
+            ghost: ghostImg,
+            key: null,
+            door: null
+        };
+
+        function prerenderEmoji(emoji) {
+            const el = document.createElement('canvas');
+            el.width = TILE_SIZE;
+            el.height = TILE_SIZE;
+            const c = el.getContext('2d');
+            c.font = `${TILE_SIZE * 0.75}px Arial`;
+            c.textAlign = 'center';
+            c.textBaseline = 'middle';
+            c.fillText(emoji, TILE_SIZE/2, TILE_SIZE/2 + 2);
+            return el;
+        }
+
+        function toArabicNum(n) {
+            if(n === undefined || n === null) return "٠";
+            return n.toString().replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]);
+        }
+
+        function resizeCanvas() {
+            let w = window.innerWidth || document.documentElement.clientWidth || 400;
+            let h = window.innerHeight || document.documentElement.clientHeight || 400;
+            
+            let width = Math.min(w - 20, 800);
+            let height = Math.min(h - 20, 600);
+            
+            COLS = Math.floor(width / TILE_SIZE);
+            ROWS = Math.floor(height / TILE_SIZE);
+            
+            if (COLS < 5) COLS = 5;
+            if (ROWS < 5) ROWS = 5;
+            if (COLS % 2 === 0) COLS--;
+            if (ROWS % 2 === 0) ROWS--;
+
+            canvas.width = COLS * TILE_SIZE;
+            canvas.height = ROWS * TILE_SIZE;
+            mazeCanvas.width = canvas.width;
+            mazeCanvas.height = canvas.height;
+            
+            const hud = document.getElementById('hud');
+            if (hud) hud.style.maxWidth = canvas.width + 'px';
+            
+            setupFlashlightGradient();
+            
+            sprites.key = prerenderEmoji('🗝️');
+            sprites.door = prerenderEmoji('🚪');
+        }
+        
+        resizeCanvas();
+
+        let gameState = {
+            level: 1,
+            score: 0,
+            lives: 3,
+            isPaused: true,
+            grid: [],
+            player: { x: 1, y: 1 },
+            ghosts: [],
+            keyFound: false,
+            exit: { x: 0, y: 0 },
+            keyPos: { x: 0, y: 0 },
+            lastMoveTime: 0
+        };
+
+        const inputState = { up: false, down: false, left: false, right: false };
+
+        function generateMaze() {
+            gameState.grid = Array(ROWS).fill().map(() => Array(COLS).fill(1));
+            const stack = [];
+            const start = { x: 1, y: 1 };
+            gameState.grid[start.y][start.x] = 0;
+            stack.push(start);
+
+            const dirs = [{ x: 0, y: -2 }, { x: 0, y: 2 }, { x: -2, y: 0 }, { x: 2, y: 0 }];
+
+            while (stack.length > 0) {
+                const current = stack[stack.length - 1];
+                dirs.sort(() => Math.random() - 0.5);
+                let moved = false;
+                for (let d of dirs) {
+                    const nx = current.x + d.x;
+                    const ny = current.y + d.y;
+                    if (nx > 0 && nx < COLS - 1 && ny > 0 && ny < ROWS - 1 && gameState.grid[ny][nx] === 1) {
+                        gameState.grid[ny][nx] = 0; 
+                        gameState.grid[current.y + d.y/2][current.x + d.x/2] = 0;
+                        stack.push({ x: nx, y: ny });
+                        moved = true;
+                        break;
+                    }
+                }
+                if (!moved) stack.pop();
+            }
+
+            gameState.exit = { x: COLS - 2, y: ROWS - 2 };
+            gameState.grid[gameState.exit.y][gameState.exit.x] = 0;
+
+            let keySet = false;
+            while(!keySet) {
+                let rx = Math.floor(Math.random() * COLS);
+                let ry = Math.floor(Math.random() * ROWS);
+                if (gameState.grid[ry][rx] === 0 && (rx !== 1 || ry !== 1) && (rx !== gameState.exit.x || ry !== gameState.exit.y)) {
+                    gameState.keyPos = { x: rx, y: ry };
+                    keySet = true;
+                }
+            }
+        }
+        
+        function prerenderMaze() {
+            mazeCtx.fillStyle = '#050505';
+            mazeCtx.fillRect(0, 0, mazeCanvas.width, mazeCanvas.height);
+            for (let y = 0; y < ROWS; y++) {
+                for (let x = 0; x < COLS; x++) {
+                    if (gameState.grid[y][x] === 1) {
+                        mazeCtx.fillStyle = '#2c3e50';
+                        mazeCtx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                        mazeCtx.strokeStyle = '#34495e';
+                        mazeCtx.lineWidth = 2;
+                        mazeCtx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    } else {
+                         mazeCtx.fillStyle = '#111';
+                         mazeCtx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    }
+                }
+            }
+        }
+
+        function generateMathProblem() {
+            const types = ['add', 'sub', 'mul', 'div', 'logic'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            let qText = "", correct = 0;
+
+            const names = ["أحمد", "سارة", "خالد", "ليلى", "عمر"];
+            const femaleNames = ["سارة", "ليلى"];
+            const items = ["تفاحات", "أقلام", "كتب", "دنانير", "كرات"];
+            const name = names[Math.floor(Math.random() * names.length)];
+            const item = items[Math.floor(Math.random() * items.length)];
+            const isFemale = femaleNames.includes(name);
+
+            if (type === 'add') {
+                let n1 = Math.floor(Math.random() * 500) + 100;
+                let n2 = Math.floor(Math.random() * 400) + 50;
+                qText = `لدى ${name} ${toArabicNum(n1)} من ال${item}، ${isFemale ? "واشترت" : "واشترى"} ${toArabicNum(n2)} أخرى. كم أصبح المجموع؟`;
+                correct = n1 + n2;
+            } else if (type === 'sub') {
+                let n1 = Math.floor(Math.random() * 500) + 200;
+                let n2 = Math.floor(Math.random() * 150) + 10;
+                qText = `كان مع ${name} ${toArabicNum(n1)} من ال${item}، ${isFemale ? "وأعطت" : "وأعطى"} ${isFemale ? "صديقتها" : "صديقه"} ${toArabicNum(n2)}. كم تبقى مع${isFemale?'ها':'ه'}؟`;
+                correct = n1 - n2;
+            } else if (type === 'mul') {
+                let n1 = Math.floor(Math.random() * 12) + 3;
+                let n2 = Math.floor(Math.random() * 10) + 2;
+                let container = ["علبة", "كيس", "صندوق"][Math.floor(Math.random()*3)];
+                qText = `${isFemale ? "اشترت" : "اشترى"} ${name} ${toArabicNum(n1)} ${container}، في كل ${container} ${toArabicNum(n2)} ${item}. ما العدد الكلي؟`;
+                correct = n1 * n2;
+            } else if (type === 'div') {
+                let n2 = Math.floor(Math.random() * 8) + 2; 
+                let ans = Math.floor(Math.random() * 12) + 2; 
+                let n1 = n2 * ans; 
+                qText = `${isFemale ? "تريد" : "يريد"} ${name} توزيع ${toArabicNum(n1)} ${item} بالتساوي على ${toArabicNum(n2)} أشخاص. كم نصيب كل شخص؟`;
+                correct = ans;
+            } else {
+                let h = Math.floor(Math.random() * 10) + 1;
+                let m = [0, 15, 30, 45][Math.floor(Math.random()*4)];
+                let dur = [15, 30, 45, 60][Math.floor(Math.random()*4)];
+                let totalM = m + dur;
+                let endH = h + Math.floor(totalM / 60);
+                let endM = totalM % 60;
+                let endMStr = endM === 0 ? "00" : endM;
+                let mStr = m === 0 ? "00" : m;
+                const timeStr = `${toArabicNum(h)}:${toArabicNum(mStr)}`;
+                qText = `${isFemale ? "بدأت" : "بدأ"} ${name} المذاكرة الساعة ${timeStr}. واستمر${isFemale?'ت':''} لمدة ${toArabicNum(dur)} دقيقة. متى انتهى${isFemale?'ت':''}`;
+                correct = `${toArabicNum(endH)}:${toArabicNum(endMStr)}`;
+            }
+
+            let answers = [correct];
+            while (answers.length < 4) {
+                let w;
+                if (typeof correct === 'number') {
+                    let variance = Math.floor(Math.random() * 20) - 10;
+                    if (variance === 0) variance = 5;
+                    w = correct + variance;
+                    if (w < 0) w = 0;
+                } else {
+                    let h = Math.floor(Math.random() * 12) + 1;
+                    let m = [0, 15, 30][Math.floor(Math.random()*3)];
+                    w = `${toArabicNum(h)}:${toArabicNum(m === 0 ? "00" : m)}`;
+                }
+                if (!answers.includes(w)) answers.push(w);
+            }
+            
+            const formattedAnswers = answers.map(a => (typeof a === 'number') ? toArabicNum(a) : a);
+            const formattedCorrect = (typeof correct === 'number') ? toArabicNum(correct) : correct;
+            formattedAnswers.sort(() => Math.random() - 0.5);
+            
+            return { question: qText, options: formattedAnswers, correct: formattedCorrect };
+        }
+
+        function spawnGhosts(count) {
+            gameState.ghosts = [];
+            for (let i = 0; i < count; i++) {
+                let placed = false;
+                while (!placed) {
+                    let rx = Math.floor(Math.random() * COLS);
+                    let ry = Math.floor(Math.random() * ROWS);
+                    if (gameState.grid[ry][rx] === 0 && (Math.abs(rx - gameState.player.x) > 5)) {
+                        gameState.ghosts.push({ x: rx, y: ry });
+                        placed = true;
+                    }
+                }
+            }
+        }
+
+        function moveGhosts() {
+            gameState.ghosts.forEach(g => {
+                if (Math.random() < 0.15) {
+                    let dx = 0, dy = 0;
+                    if (Math.random() < 0.6) {
+                        if (gameState.player.x > g.x) dx = 1;
+                        else if (gameState.player.x < g.x) dx = -1;
+                        else if (gameState.player.y > g.y) dy = 1;
+                        else if (gameState.player.y < g.y) dy = -1;
+                    } else {
+                        const dirs = [{x:1,y:0}, {x:-1,y:0}, {x:0,y:1}, {x:0,y:-1}];
+                        let d = dirs[Math.floor(Math.random() * dirs.length)];
+                        dx = d.x; dy = d.y;
+                    }
+                    let nx = g.x + dx;
+                    let ny = g.y + dy;
+                    if (ny >= 0 && ny < ROWS && nx >= 0 && nx < COLS && gameState.grid[ny][nx] === 0) {
+                        g.x = nx; g.y = ny;
+                    }
+                }
+            });
+        }
+
+        function checkCollisions() {
+            for (let i = 0; i < gameState.ghosts.length; i++) {
+                let g = gameState.ghosts[i];
+                if (g.x === gameState.player.x && g.y === gameState.player.y) {
+                    triggerCombat(i);
+                    return;
+                }
+            }
+            if (!gameState.keyFound && gameState.player.x === gameState.keyPos.x && gameState.player.y === gameState.keyPos.y) {
+                keyFoundAudio.play().catch(e => console.error("Audio play failed:", e));
+                gameState.keyFound = true;
+                gameState.score += 50;
+                updateHUD();
+            }
+            if (gameState.player.x === gameState.exit.x && gameState.player.y === gameState.exit.y) {
+                if (gameState.keyFound) {
+                    doorOpenAudio.play().catch(e => console.error("Audio play failed:", e));
+                    gameState.isPaused = true;
+                    if (gameState.level >= MAX_LEVELS) {
+                         bgMusic.pause();
+                         bgMusic.currentTime = 0;
+                         document.getElementById('victory-screen').classList.remove('hidden');
+                         document.getElementById('final-victory-score').innerText = "النقاط النهائية: " + toArabicNum(gameState.score);
+                    } else {
+                        document.getElementById('level-screen').classList.remove('hidden');
+                    }
+                }
+            }
+        }
+
+        function triggerCombat(ghostIndex) {
+            gameState.isPaused = true;
+            inputState.up = inputState.down = inputState.left = inputState.right = false; 
+            const problem = generateMathProblem();
+            const modal = document.getElementById('question-modal');
+            const problemText = document.getElementById('math-problem');
+            const answersDiv = document.getElementById('answers-container');
+            problemText.innerText = problem.question;
+            answersDiv.innerHTML = '';
+
+            problem.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    if (opt === problem.correct) {
+                        correctAudio.play().catch(e => console.error("Audio play failed:", e));
+                        modal.classList.add('hidden');
+                        gameState.ghosts.splice(ghostIndex, 1); 
+                        gameState.score += 100;
+                        updateHUD();
+                        gameState.isPaused = false;
+                        gameLoop();
+                    } else {
+                        heartLossAudio.play().catch(e => console.error("Audio play failed:", e));
+                        gameState.lives--;
+                        updateHUD();
+                        if (gameState.lives > 0) {
+                            gameState.player = { x: 1, y: 1 };
+                            modal.classList.add('hidden');
+                            gameState.isPaused = false;
+                            gameLoop();
+                        } else {
+                            modal.classList.add('hidden');
+                            gameOver();
+                        }
+                    }
+                };
+                answersDiv.appendChild(btn);
+            });
+            modal.classList.remove('hidden');
+        }
+
+        function gameOver() {
+            // Stop background music
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+
+            // Play game over audio
+            gameOverAudio.play().catch(e => console.error("Audio play failed:", e));
+            
+            document.getElementById('game-over-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = "النقاط النهائية: " + toArabicNum(gameState.score);
+        }
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            gameState.level = 1;
+            gameState.score = 0;
+            gameState.lives = 3;
+            
+            // Start background music
+            bgMusic.currentTime = 0;
+            bgMusic.play().catch(e => console.error("Bg music failed:", e));
+            
+            startLevel();
+        }
+
+        function resetGame() {
+            document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('victory-screen').classList.add('hidden');
+            startGame();
+        }
+
+        function nextLevel() {
+            if (document.getElementById('level-screen').classList.contains('hidden')) return;
+            document.getElementById('level-screen').classList.add('hidden');
+            gameState.level++;
+            startLevel();
+        }
+        
+        function setupFlashlightGradient() {
+            if (canvas.width === 0 || canvas.height === 0) return; 
+            const RADIUS_INNER = TILE_SIZE * 1.5; 
+            const RADIUS_OUTER = TILE_SIZE * 5; 
+            flashlightGradient = ctx.createRadialGradient(0, 0, RADIUS_INNER, 0, 0, RADIUS_OUTER);
+            flashlightGradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            flashlightGradient.addColorStop(0.8, 'rgba(0, 0, 0, 0.9)');
+            flashlightGradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
+        }
+
+        function startLevel() {
+            resizeCanvas(); 
+            gameState.grid = [];
+            gameState.ghosts = [];
+            gameState.player = { x: 1, y: 1 };
+            gameState.keyFound = false;
+            inputState.up = inputState.down = inputState.left = inputState.right = false;
+            setupFlashlightGradient(); 
+            generateMaze();
+            prerenderMaze(); 
+            spawnGhosts(Math.min(gameState.level + 2, 8)); 
+            gameState.isPaused = false;
+            updateHUD();
+            gameState.lastMoveTime = Date.now();
+            gameLoop();
+        }
+
+        function updateHUD() {
+            let livesHtml = '';
+            for (let i = 0; i < 3; i++) {
+                const src = i < gameState.lives ? 'heart.svg' : 'empty.svg';
+                livesHtml += `<img src="${src}" class="heart-icon" alt="heart">`;
+            }
+            document.getElementById('lives-display').innerHTML = livesHtml;
+            document.getElementById('score-display').innerText = `النقاط: ${toArabicNum(gameState.score)}`;
+            document.getElementById('level-display').innerText = `المستوى: ${toArabicNum(gameState.level)} / ${toArabicNum(MAX_LEVELS)} ${gameState.keyFound ? '🗝️' : ''}`;
+        }
+        
+        function setupInput(id, dir) {
+            const btn = document.getElementById(id);
+            btn.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                btn.setPointerCapture(e.pointerId);
+                inputState[dir] = true;
+                btn.classList.add('active');
+            });
+            const endMove = (e) => {
+                e.preventDefault();
+                inputState[dir] = false;
+                btn.classList.remove('active');
+            };
+            btn.addEventListener('pointerup', endMove);
+            btn.addEventListener('pointerleave', endMove);
+            btn.addEventListener('pointercancel', endMove);
+        }
+
+        setupInput('btn-up', 'up');
+        setupInput('btn-down', 'down');
+        setupInput('btn-left', 'left');
+        setupInput('btn-right', 'right');
+
+        window.addEventListener('keydown', (e) => {
+            if(gameState.isPaused) return;
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) e.preventDefault();
+            switch(e.key) {
+                case 'ArrowUp': inputState.up = true; break;
+                case 'ArrowDown': inputState.down = true; break;
+                case 'ArrowLeft': inputState.left = true; break;
+                case 'ArrowRight': inputState.right = true; break;
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if(gameState.isPaused) return;
+            switch(e.key) {
+                case 'ArrowUp': inputState.up = false; break;
+                case 'ArrowDown': inputState.down = false; break;
+                case 'ArrowLeft': inputState.left = false; break;
+                case 'ArrowRight': inputState.right = false; break;
+            }
+        });
+
+        function update() {
+            if (gameState.isPaused) return;
+            const now = Date.now();
+            const MOVE_DELAY = 60; 
+            if (now - gameState.lastMoveTime > MOVE_DELAY) {
+                let dx = 0, dy = 0;
+                if (inputState.up) dy = -1;
+                else if (inputState.down) dy = 1;
+                else if (inputState.left) dx = -1;
+                else if (inputState.right) dx = 1;
+                if (dx !== 0 || dy !== 0) {
+                    let nx = gameState.player.x + dx;
+                    let ny = gameState.player.y + dy;
+                    if (gameState.grid[ny][nx] === 0) {
+                        gameState.player.x = nx;
+                        gameState.player.y = ny;
+                        checkCollisions(); 
+                    }
+                    gameState.lastMoveTime = now;
+                }
+            }
+            if (Math.random() < 0.05) { 
+                moveGhosts();
+                checkCollisions();
+            }
+        }
+
+        function draw() {
+            if (mazeCanvas.width > 0 && mazeCanvas.height > 0) {
+                ctx.drawImage(mazeCanvas, 0, 0);
+            }
+            if (!gameState.keyFound && sprites.key) {
+                ctx.drawImage(sprites.key, gameState.keyPos.x * TILE_SIZE, gameState.keyPos.y * TILE_SIZE);
+            }
+            if (sprites.door) {
+                ctx.drawImage(sprites.door, gameState.exit.x * TILE_SIZE, gameState.exit.y * TILE_SIZE);
+            }
+            
+            // Draw Ghosts (Using image)
+            if (sprites.ghost && (sprites.ghost.complete || sprites.ghost.height > 0)) {
+                gameState.ghosts.forEach(g => {
+                    ctx.drawImage(sprites.ghost, 
+                                  g.x * TILE_SIZE, 
+                                  g.y * TILE_SIZE,
+                                  TILE_SIZE, TILE_SIZE);
+                });
+            }
+
+            // Draw Player (Using image)
+            if (sprites.player && (sprites.player.complete || sprites.player.height > 0)) {
+                ctx.drawImage(sprites.player, 
+                              gameState.player.x * TILE_SIZE, 
+                              gameState.player.y * TILE_SIZE,
+                              TILE_SIZE, TILE_SIZE);
+            }
+            
+            if (flashlightGradient) {
+                const offset = TILE_SIZE / 2;
+                const px = gameState.player.x * TILE_SIZE + offset;
+                const py = gameState.player.y * TILE_SIZE + offset;
+                ctx.save();
+                ctx.translate(px, py);
+                ctx.fillStyle = flashlightGradient;
+                ctx.fillRect(-px, -py, canvas.width, canvas.height);
+                ctx.restore();
+            } else {
+                ctx.fillStyle = 'rgba(0,0,0,0.8)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function gameLoop() {
+            if (!gameState.isPaused) {
+                update();
+                draw();
+                requestAnimationFrame(gameLoop);
+            }
+        }
+    </script>
+</body>
+</html>
