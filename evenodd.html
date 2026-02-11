@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة الأعداد الفردية والزوجية - المستوى الأول</title>
+    <!-- تضمين Tailwind CSS لسهولة التصميم الجذاب -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- تضمين مكتبة Confetti (مكتبة خفيفة ومشهورة) -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* إضافة خط Inter الجذاب */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7; /* خلفية فاتحة ومريحة */
+        }
+        .game-grid {
+            display: grid;
+            gap: 1px; /* فواصل صغيرة بين الخلايا */
+            margin: 20px auto;
+            border: 2px solid #3b82f6; /* إطار أزرق للوحة */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* ظل خفيف */
+            border-radius: 8px;
+            overflow: hidden; /* لإخفاء الزوايا الحادة للخلايا عند الحواف */
+            max-width: fit-content; /* يجعل الجدول يتوسط الشاشة بشكل أفضل */
+        }
+        .cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.1s, transform 0.1s;
+            font-weight: 600;
+            color: #333;
+            height: 40px; /* ارتفاع ثابت للخلية */
+            font-size: 1.125rem; /* text-lg */
+            /* مهم: تعيين اتجاه الأرقام لضمان عرضها بشكل صحيح */
+            direction: ltr; 
+        }
+        .cell:hover:not(.odd-clicked):not(.even-clicked) {
+            transform: scale(1.05); /* تأثير تكبير بسيط عند المرور */
+            opacity: 0.9;
+        }
+        /* الألوان المطلوبة */
+        .odd-clicked { /* الأعداد الفردية - اللون الأزرق (odd) */
+            background-color: #3b82f6; /* أزرق داكن */
+            color: white;
+        }
+        .even-clicked { /* الأعداد الزوجية - اللون الأحمر (even) */
+            background-color: #ef4444; /* أحمر ساطع */
+            color: white;
+        }
+
+        /* أنماط أزرار التحكم في الألوان */
+        .color-button {
+            border-radius: 9999px; /* rounded-full */
+            font-weight: 700; /* font-bold */
+            transition: transform 0.1s, box-shadow 0.1s;
+            padding: 10px 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .color-button.selected {
+            transform: scale(1.15); /* تكبير الزر المختار */
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.8), 0 0 0 6px var(--color-ring);
+        }
+        .color-button.blue.selected {
+            --color-ring: #3b82f6; /* أزرق */
+        }
+        .color-button.red.selected {
+            --color-ring: #ef4444; /* أحمر */
+        }
+        
+        /* رسالة الخطأ أو التحقق تظهر بشكل أنيق */
+        .message-box {
+            background-color: #fef3c7;
+            border: 1px solid #fcd34d;
+            color: #b45309;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .win-message {
+            background-color: #d1fae5;
+            border: 2px solid #34d399;
+            color: #065f46;
+            padding: 30px;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 20px;
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex flex-col items-center">
+
+    <div id="game-container" class="w-full max-w-4xl bg-white p-6 rounded-xl shadow-2xl">
+        <h1 class="text-4xl font-bold text-center mb-2 text-indigo-700">لعبة تمييز الأعداد 🧠</h1>
+        <h2 id="level-title" class="text-xl text-center mb-6 text-gray-600">المستوى 1: أعداد محددة يدوياً (9x9)</h2>
+
+        <!-- لوحة التحكم في الألوان -->
+        <div id="color-control-panel" class="flex justify-center items-center space-x-4 space-x-reverse mb-8 p-4 bg-gray-100 rounded-lg shadow-inner">
+            <span class="text-lg font-semibold text-gray-700">اختر اللون للتلوين:</span>
+            
+            <button id="blue-btn" data-color="odd"
+                    class="color-button blue bg-blue-500 hover:bg-blue-600 text-white shadow-lg transition duration-150">
+                أزرق (فردي)
+            </button>
+
+            <button id="red-btn" data-color="even"
+                    class="color-button red bg-red-500 hover:bg-red-600 text-white shadow-lg transition duration-150">
+                أحمر (زوجي)
+            </button>
+        </div>
+
+        <div id="game-board-container" class="overflow-x-auto flex justify-center">
+            <div id="game-board" class="game-grid">
+                <!-- سيتم ملء الجدول ديناميكيًا هنا -->
+            </div>
+        </div>
+        
+        <!-- زر التحقق الجديد -->
+        <div class="mt-8 flex justify-center">
+            <button id="check-coloring-btn"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-12 rounded-xl shadow-lg transition duration-150 transform hover:scale-105">
+                التحقق من التلوين
+            </button>
+        </div>
+
+        <!-- منطقة الرسائل والتحقق -->
+        <div id="message-container" class="mt-8">
+            <div id="instruction-box" class="message-box bg-blue-100 border-blue-400 text-blue-800">
+                التعليمات: اختر اللون أولاً، ثم اضغط على الخلايا. بعد الانتهاء من التلوين، اضغط على زر 'التحقق من التلوين'.
+            </div>
+            <div id="error-message" class="message-box bg-red-100 border-red-400 text-red-800 hidden mt-4"></div>
+            <div id="shape-hint-message" class="message-box bg-yellow-100 border-yellow-400 text-yellow-800 hidden mt-4"></div>
+        </div>
+
+        <!-- حقل التحقق من اسم الشكل -->
+        <div id="shape-check-area" class="mt-8 flex flex-col items-center space-y-4 hidden">
+            <p class="text-lg font-semibold text-gray-700">ممتاز! لقد قمت بتلوين جميع الأعداد بشكل صحيح. الآن ما هو اسم الشكل الظاهر؟</p>
+            <input type="text" id="shape-guess" placeholder="اكتب اسم الشكل هنا..."
+                   class="p-3 border-2 border-gray-300 rounded-lg w-full max-w-sm focus:border-green-500 focus:ring-1 focus:ring-green-500 text-center">
+            <button id="check-shape-btn"
+                    class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-xl shadow-md transition duration-150 transform hover:scale-105">
+                تحقق من الإجابة
+            </button>
+        </div>
+        
+        <!-- رسالة الفوز النهائية -->
+        <div id="win-message-box" class="win-message hidden">
+            <p>تهانينا! لقد أتقنت جميع المستويات بنجاح! 🎉</p>
+            <p class="text-sm mt-2 text-gray-600 font-normal">جارٍ تحويلك إلى صفحة المكافأة...</p>
+        </div>
+    </div>
+
+    <script>
+        // دالة التحويل من الأرقام الغربية إلى الشرقية
+        function toEasternArabic(number) {
+            if (number === null || number === undefined) return '';
+            const numStr = String(number);
+            const easternArabic = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            return numStr.replace(/[0-9]/g, digit => easternArabic[digit]);
+        }
+
+        const gameLevels = [
+            {
+                level: 1,
+                title: 'المستوى 1: تلوين صحيح - تلوين الشكل (9x9)',
+                cols: 9,
+                rows: 9,
+                shape: 'قلب',
+                fixedNumbers: [
+                    [5, 5, 9, 5, 7, 9, 9, 7, 9], 
+                    [7, 7, 8, 9, 7, 5, 10, 1, 7], 
+                    [5, 8, 2, 4, 1, 0, 6, 4, 5], 
+                    [10, 2, 4, 8, 0, 6, 8, 2, 4], 
+                    [4, 2, 8, 6, 0, 8, 4, 2, 0], 
+                    [9, 6, 6, 2, 4, 2, 8, 10, 7], 
+                    [1, 5, 8, 6, 4, 2, 8, 9, 7], 
+                    [9, 7, 3, 2, 6, 4, 1, 1, 5], 
+                    [3, 5, 1, 7, 10, 9, 7, 3, 5] 
+                ],
+            },
+            {
+                level: 2,
+                title: 'المستوى 2: تلوين صحيح - أعداد جديدة (9x9)',
+                cols: 9, 
+                rows: 9, 
+                shape: 'بيت',
+                fixedNumbers: [
+                    [21, 23, 25, 9, 0, 11, 29, 15, 13], 
+                    [5, 3, 1, 2, 4, 6, 27, 33, 31], 
+                    [13, 29, 8, 22, 24, 30, 32, 5, 7], 
+                    [15, 16, 12, 10, 20, 6, 8, 2, 3], 
+                    [31, 11, 14, 18, 0, 10, 12, 21, 25], 
+                    [9, 33, 6, 24, 34, 2, 38, 3, 17], 
+                    [11, 19, 18, 20, 26, 2, 8, 11, 31], 
+                    [23, 7, 22, 32, 1, 14, 12, 7, 33], 
+                    [17, 1, 0, 6, 9, 30, 26, 33, 35] 
+                ],
+            },
+            {
+                level: 3,
+                title: 'المستوى 3: إتقان - أعداد أكبر (10x9)',
+                cols: 9, 
+                rows: 10, 
+                shape: 'مظلة',
+                fixedNumbers: [
+                    [55, 71, 31, 99, 36, 37, 29, 15, 13], 
+                    [77, 91, 45, 76, 88, 98, 35, 53, 31], 
+                    [95, 42, 62, 26, 82, 28, 74, 46, 75], 
+                    [66, 40, 84, 58, 72, 94, 38, 64, 80], 
+                    [68, 82, 14, 18, 76, 10, 12, 44, 48], 
+                    [86, 54, 98, 32, 70, 20, 38, 30, 74], 
+                    [24, 19, 18, 27, 20, 23, 38, 11, 54], 
+                    [23, 17, 59, 33, 22, 95, 49, 57, 33], 
+                    [13, 11, 75, 63, 90, 53, 19, 33, 35], 
+                    [99, 85, 93, 98, 84, 23, 97, 95, 91]  
+                ],
+            }
+        ];
+
+        let currentLevelIndex = 0;
+        let currentLevelConfig = gameLevels[currentLevelIndex];
+        let currentGrid = [];
+        let selectedColor = null;
+        let shapeGuessAttempts = 0;
+
+        const gameBoard = document.getElementById('game-board');
+        const levelTitle = document.getElementById('level-title');
+        const instructionBox = document.getElementById('instruction-box');
+        const errorMessage = document.getElementById('error-message');
+        const shapeHintMessage = document.getElementById('shape-hint-message');
+        const shapeCheckArea = document.getElementById('shape-check-area');
+        const shapeGuessInput = document.getElementById('shape-guess');
+        const checkShapeBtn = document.getElementById('check-shape-btn');
+        const checkColoringBtn = document.getElementById('check-coloring-btn');
+        const winMessageBox = document.getElementById('win-message-box');
+        const blueBtn = document.getElementById('blue-btn');
+        const redBtn = document.getElementById('red-btn');
+
+        function generateGameBoard(config) {
+            const { cols, rows, fixedNumbers, title } = config;
+            currentGrid = Array(rows).fill(0).map(() => Array(cols).fill(null)); 
+            shapeGuessAttempts = 0;
+            levelTitle.textContent = title;
+            selectedColor = null; 
+            gameBoard.innerHTML = '';
+            winMessageBox.classList.add('hidden');
+            shapeCheckArea.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            shapeHintMessage.classList.add('hidden');
+            shapeGuessInput.value = '';
+            blueBtn.classList.remove('selected');
+            redBtn.classList.remove('selected');
+            blueBtn.disabled = false;
+            redBtn.disabled = false;
+            checkColoringBtn.disabled = false;
+            checkColoringBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            instructionBox.classList.remove('bg-green-100', 'border-green-400', 'text-green-800');
+            instructionBox.classList.add('bg-blue-100', 'border-blue-400', 'text-blue-800');
+            instructionBox.textContent = "التعليمات: اختر اللون أولاً، ثم اضغط على الخلايا. بعد الانتهاء من التلوين، اضغط على زر 'التحقق من التلوين'.";
+            gameBoard.style.gridTemplateColumns = `repeat(${cols}, max-content)`; 
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const number = fixedNumbers[r] && fixedNumbers[r][c] !== undefined ? fixedNumbers[r][c] : 0;
+                    const isOdd = number % 2 !== 0; 
+                    currentGrid[r][c] = { number, isOdd, isClicked: false, paintedAs: null };
+                    const cellElement = document.createElement('div');
+                    cellElement.className = 'cell bg-gray-200 hover:bg-gray-300 px-4 text-lg'; 
+                    cellElement.textContent = toEasternArabic(number); 
+                    cellElement.dataset.row = r;
+                    cellElement.dataset.col = c;
+                    cellElement.addEventListener('click', handleCellClick);
+                    gameBoard.appendChild(cellElement);
+                }
+            }
+        }
+
+        function setSelectedColor(colorType) {
+            selectedColor = colorType;
+            blueBtn.classList.remove('selected');
+            redBtn.classList.remove('selected');
+            if (colorType === 'odd') blueBtn.classList.add('selected');
+            else if (colorType === 'even') redBtn.classList.add('selected');
+            errorMessage.classList.add('hidden');
+            instructionBox.textContent = `اخترت اللون ${selectedColor === 'odd' ? 'الأزرق (فردي)' : 'الأحمر (زوجي)'}. انقر على الخلايا للتلوين!`;
+        }
+        
+        blueBtn.addEventListener('click', () => setSelectedColor('odd'));
+        redBtn.addEventListener('click', () => setSelectedColor('even'));
+
+        function handleCellClick(event) {
+            const cellElement = event.currentTarget;
+            const r = parseInt(cellElement.dataset.row);
+            const c = parseInt(cellElement.dataset.col);
+            const cellData = currentGrid[r][c];
+            errorMessage.classList.add('hidden'); 
+            shapeHintMessage.classList.add('hidden');
+            shapeCheckArea.classList.add('hidden');
+            if (!selectedColor) {
+                showError("الرجاء اختيار لون (أزرق أو أحمر) أولاً من لوحة التحكم.");
+                return;
+            }
+            cellElement.classList.remove('odd-clicked', 'even-clicked', 'bg-gray-200', 'hover:bg-gray-300');
+            if (selectedColor === 'odd') cellElement.classList.add('odd-clicked');
+            else cellElement.classList.add('even-clicked');
+            cellData.isClicked = true;
+            cellData.paintedAs = selectedColor;
+        }
+
+        function checkColoring() {
+            const allCells = currentGrid.flat();
+            const clickedCells = allCells.filter(c => c.isClicked).length;
+            if (clickedCells < allCells.length) {
+                 showError(`لم يتم تلوين جميع الخلايا بعد. تبقى ${toEasternArabic(allCells.length - clickedCells)} خلايا.`);
+                 return;
+            }
+            const isCorrect = allCells.every(cell => cell.isOdd ? cell.paintedAs === 'odd' : cell.paintedAs === 'even');
+            if (isCorrect) {
+                showSuccess("ممتاز! التلوين صحيح. ما هو اسم الشكل الظاهر؟");
+                document.querySelectorAll('.cell').forEach(cell => cell.style.pointerEvents = 'none');
+                blueBtn.disabled = true;
+                redBtn.disabled = true;
+                checkColoringBtn.disabled = true;
+                checkColoringBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                shapeCheckArea.classList.remove('hidden');
+            } else {
+                showError("التلوين غير صحيح. راجع الأعداد مرة أخرى.");
+            }
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+        
+        function showHint(message) {
+            shapeHintMessage.textContent = message;
+            shapeHintMessage.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+        }
+
+        function showSuccess(message) {
+            instructionBox.classList.remove('bg-blue-100', 'bg-red-100');
+            instructionBox.classList.add('bg-green-100', 'text-green-800');
+            instructionBox.textContent = message;
+        }
+
+        function loadNextLevel() {
+            currentLevelIndex++;
+            if (currentLevelIndex < gameLevels.length) {
+                currentLevelConfig = gameLevels[currentLevelIndex];
+                showSuccess(`رائع! جارٍ تحميل المستوى ${toEasternArabic(currentLevelConfig.level)}...`);
+                setTimeout(() => generateGameBoard(currentLevelConfig), 1500);
+            } else {
+                endGame();
+            }
+        }
+        
+        function launchConfetti() {
+            if (typeof confetti === 'function') {
+                const defaults = { spread: 360, ticks: 50, gravity: 0.5, decay: 0.94, startVelocity: 30 };
+                confetti({ ...defaults, particleCount: 80, origin: { x: 0, y: 0.7 } });
+                confetti({ ...defaults, particleCount: 80, origin: { x: 1, y: 0.7 } });
+            }
+        }
+        
+        // وظيفة إنهاء اللعبة مع التوجيه لصفحة المكافأة
+        function endGame() {
+            document.getElementById('color-control-panel').classList.add('hidden');
+            levelTitle.classList.add('hidden');
+            gameBoard.classList.add('hidden');
+            instructionBox.classList.add('hidden');
+            checkColoringBtn.classList.add('hidden');
+            shapeCheckArea.classList.add('hidden');
+            shapeHintMessage.classList.add('hidden');
+            
+            winMessageBox.classList.remove('hidden');
+            launchConfetti();
+
+            // التوجيه التلقائي بعد 3 ثوانٍ إلى صفحة المكافأة
+            setTimeout(() => {
+                window.location.href = "https://talented-nation.github.io/database/reward1.html";
+            }, 3000);
+        }
+
+        checkColoringBtn.addEventListener('click', checkColoring);
+
+        checkShapeBtn.addEventListener('click', () => {
+            const correctShape = currentLevelConfig.shape;
+            const userGuess = shapeGuessInput.value.trim().toLowerCase();
+            const level2Accepted = ['بيت', 'البيت', 'منزل', 'المنزل'];
+            let isCorrect = (currentLevelIndex === 1) ? level2Accepted.includes(userGuess) : userGuess === correctShape.toLowerCase();
+
+            if (isCorrect) loadNextLevel();
+            else {
+                shapeGuessAttempts++;
+                shapeGuessInput.value = '';
+                if (shapeGuessAttempts >= 1) showHint(`خطأ. تلميح: يبدأ بحرف "${correctShape.charAt(0)}".`);
+                else showError("الإجابة غير صحيحة.");
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => generateGameBoard(currentLevelConfig));
+    </script>
+</body>
+</html>
