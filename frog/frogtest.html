@@ -560,6 +560,16 @@
                                     <div className="text-4xl font-bold text-gray-800 mb-6 bg-gray-100 p-3 rounded-xl">
                                         النتيجة النهائية: <span>{toArabicNumerals(score)}</span>
                                     </div>
+
+                                    {/* --- BUTTON TO REDIRECT TO REWARD PAGE --- */}
+                                    <button 
+                                        onClick={() => window.location.href = 'https://talented-nation.github.io/database/reward2.html'}
+                                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-white text-xl font-bold py-3 rounded-xl mb-3 transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-lg animate-pulse"
+                                    >
+                                        🎁 اضغط هنا لاستلام جائزتك
+                                    </button>
+                                    {/* -------------------------------------- */}
+
                                     <button onClick={startGame} className="w-full bg-sky-500 hover:bg-sky-600 text-white text-xl font-bold py-3 rounded-xl transition-transform active:scale-95 flex items-center justify-center gap-2 shadow-lg">
                                         <RotateCcw size={24} /> العب مجدداً
                                     </button>
