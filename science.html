@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي العلوم</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+
+        body {
+            background-image: url('https://talented-nation.github.io/database/spacebg.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+            background-color: #050505;
+        }
+
+        /* Animated Stars & Galaxy Layer */
+        .space-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Galaxy Effect: Floating blurred nebula clouds */
+        .galaxy-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(147, 51, 234, 0.2), transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.2), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.1), transparent 50%);
+            filter: blur(80px);
+            animation: galaxy-pulse 15s infinite alternate ease-in-out;
+        }
+
+        @keyframes galaxy-pulse {
+            from { transform: scale(1) translate(0, 0); }
+            to { transform: scale(1.1) translate(2%, 2%); }
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        /* Floating Comets (Shooting Stars) */
+        .comet {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: linear-gradient(90deg, white, transparent);
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            opacity: 0;
+            animation: comet-strike var(--duration) infinite linear;
+        }
+
+        /* Tail of the comet */
+        .comet::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 0;
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
+        }
+
+        @keyframes comet-strike {
+            0% { transform: rotate(-35deg) translateX(0); opacity: 0; }
+            5% { opacity: 1; }
+            15% { transform: rotate(-35deg) translateX(-1000px); opacity: 0; }
+            100% { transform: rotate(-35deg) translateX(-1000px); opacity: 0; }
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .glass-card {
+            width: 220px;
+            height: 260px;
+            background: rgba(15, 12, 41, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            z-index: 10;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            background: rgba(15, 12, 41, 0.9);
+            border: 1px solid rgba(147, 51, 234, 0.6);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(147, 51, 234, 0.3);
+        }
+
+        .lock-icon {
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+            transition: all 0.5s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 10px;
+        }
+
+        .unlocked {
+            color: #4ade80 !important;
+            filter: drop-shadow(0 0 15px #4ade80);
+            transform: scale(1.1);
+        }
+
+        #message-box {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 12px;
+            background: rgba(220, 38, 38, 0.95);
+            color: white;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        
+        header, .flex-wrap, footer {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="p-6 text-white">
+
+    <!-- Space Effects Wrapper -->
+    <div class="space-container" id="space-effects">
+        <div class="galaxy-effect"></div>
+    </div>
+    <div class="bg-overlay"></div>
+
+    <div id="message-box">الرمز السري غير صحيح! ⚠️</div>
+
+    <!-- Header Section -->
+    <header class="text-center mb-10 mt-4">
+        <h1 class="text-6xl font-black mb-3 drop-shadow-2xl">
+            <span class="text-purple-400">تحدي</span> العلوم
+        </h1>
+        <p class="text-base text-purple-200 opacity-80 font-medium tracking-wide">أدخل الرمز السري لفتح بوابات المحطات</p>
+    </header>
+
+    <!-- Cards Container -->
+    <div class="flex flex-wrap justify-center gap-8 w-full max-w-7xl px-4">
+        
+        <script>
+            // Generate Stars and Comets
+            const container = document.getElementById('space-effects');
+            
+            // Stars
+            for (let i = 0; i < 120; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2.5;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.setProperty('--duration', `${2 + Math.random() * 4}s`);
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(star);
+            }
+
+            // Comets
+            for (let i = 0; i < 4; i++) {
+                const comet = document.createElement('div');
+                comet.className = 'comet';
+                comet.style.left = `${Math.random() * 100}%`;
+                comet.style.top = `${Math.random() * 50}%`;
+                comet.style.setProperty('--duration', `${6 + Math.random() * 10}s`);
+                comet.style.animationDelay = `${Math.random() * 15}s`;
+                container.appendChild(comet);
+            }
+
+            const sectors = ["المحقق العلمي", "السلسة الغذائية", "التغييرات", "كأس العلوم"];
+            const sectorLinks = [
+                "https://talented-nation.github.io/database/sci1.html",
+                "https://talented-nation.github.io/timss2027/food%20chain/foodchain.html",
+                "https://talented-nation.github.io/timss2027/change.html",
+                "https://talented-nation.github.io/timss2027/scigame.html"
+            ];
+            
+            // Codes for each station: 1:1233, 2:1345, 3:1311, 4:3333
+            const sectorCodes = ["1233", "1345", "1311", "3333"];
+            
+            sectors.forEach((name, index) => {
+                // Determine icon based on index/name (optional customization per card)
+                // Using generic lock for now as per original code
+                
+                document.write(`
+                    <div class="glass-card rounded-3xl p-6 flex flex-col items-center justify-between text-center group" id="card-${index}">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-purple-400">المحطة 0${index + 1}</span>
+                            <h2 class="text-xl font-bold leading-tight mt-1 text-white/90">${name}</h2>
+                        </div>
+                        
+                        <div class="my-3" id="icon-container-${index}">
+                            <svg id="lock-icon-${index}" xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-500 lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path id="lock-path-${index}" d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+
+                        <div class="w-full space-y-3">
+                            <input type="password" id="pass-${index}" placeholder="الرمز السري" 
+                                class="w-full bg-black/50 border border-white/10 rounded-xl px-2 py-2 text-center text-sm focus:outline-none focus:border-purple-500 transition-all placeholder:opacity-50">
+                            
+                            <button onclick="checkPassword(${index})" 
+                                class="w-full bg-purple-700 hover:bg-purple-600 text-white py-2 px-3 rounded-xl text-xs font-black transition-all shadow-lg active:scale-90 uppercase tracking-widest">
+                                فك التشفير
+                            </button>
+                        </div>
+                    </div>
+                `);
+            });
+
+            function checkPassword(index) {
+                const input = document.getElementById(`pass-${index}`);
+                const lockIcon = document.getElementById(`lock-icon-${index}`);
+                const lockPath = document.getElementById(`lock-path-${index}`);
+                const messageBox = document.getElementById('message-box');
+                
+                // Updated check logic to use specific code for each station
+                if (input.value === sectorCodes[index]) {
+                    lockIcon.classList.add('unlocked');
+                    // Unlock animation: opening the shackle
+                    lockPath.setAttribute('d', 'M7 11V7a5 5 0 0 1 9-3'); 
+                    input.classList.add('border-green-500');
+                    input.classList.add('text-green-400');
+                    
+                    setTimeout(() => {
+                        window.open(sectorLinks[index], '_blank');
+                    }, 600);
+                } else {
+                    input.classList.add('border-red-500');
+                    input.classList.add('animate-pulse');
+                    messageBox.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        input.classList.remove('border-red-500', 'animate-pulse');
+                        messageBox.style.display = 'none';
+                    }, 2000);
+                    
+                    input.value = "";
+                }
+            }
+        </script>
+
+    </div>
+
+    <!-- Footer Decoration -->
+    <footer class="mt-12 text-purple-300 opacity-50 text-[10px] tracking-[0.4em] font-mono">
+        SECURITY PROTOCOL: ACTIVE | GALACTIC OVERLAY: ENABLED
+    </footer>
+
+</body>
+</html>
