@@ -216,7 +216,7 @@
                 container.appendChild(comet);
             }
 
-            const sectors = ["تمييز الاعداد", "مغامرة العوامل", "مصنع الروبوت", "متاهة الاشباح", "كأس الرياضيات"];
+            const sectors = ["قاهر الاعداد", "مغامرة العوامل", "مصنع الروبوت", "متاهة الاشباح", "كأس الرياضيات"];
             const sectorLinks = [
                 "https://talented-nation.github.io/database/evenodd.html",
                 "https://talented-nation.github.io/database/frog/frogtest.html",
@@ -225,7 +225,13 @@
                 "https://talented-nation.github.io/timss2027/game2.html"
             ];
             
+            // Codes for each station: 1:1221, 2:2112, 3:1212, 4:2221, 5:2211
+            const sectorCodes = ["1221", "2112", "1212", "2221", "2211"];
+            
             sectors.forEach((name, index) => {
+                // Determine icon based on index/name (optional customization per card)
+                // Using generic lock for now as per original code
+                
                 document.write(`
                     <div class="glass-card rounded-3xl p-6 flex flex-col items-center justify-between text-center group" id="card-${index}">
                         <div>
@@ -259,7 +265,8 @@
                 const lockPath = document.getElementById(`lock-path-${index}`);
                 const messageBox = document.getElementById('message-box');
                 
-                if (input.value === "1221") {
+                // Updated check logic to use specific code for each station
+                if (input.value === sectorCodes[index]) {
                     lockIcon.classList.add('unlocked');
                     // Unlock animation: opening the shackle
                     lockPath.setAttribute('d', 'M7 11V7a5 5 0 0 1 9-3'); 
