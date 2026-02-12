@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحقق العلمي - لعبة تعليمية</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-bounce-short {
+            animation: bounce-short 1s infinite;
+        }
+        .heart-beat {
+            animation: beat 0.5s infinite alternate;
+        }
+        @keyframes beat {
+            to { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Icons Components (SVG) ---
+        const Play = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="5 3 19 12 5 21 5 3"/></svg>;
+        const Trophy = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>;
+        const Brain = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-4Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-4Z"/></svg>;
+        const FlaskConical = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>;
+        const ArrowLeft = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>;
+        const RefreshCw = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>;
+        const Check = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>;
+        const Timer = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+        const CheckCircleIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
+        const XCircleIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>;
+        const Heart = ({ className, filled }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>;
+        const ExternalLink = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>;
+
+        // --- Data Source (Outside Component) ---
+        const questionsSource = [
+            {
+            id: 1,
+            topic: "الطاقة الحرارية",
+            scenario: "يقول برهان: 'الجو حار جداً اليوم! سأرتدي معطفاً صوفياً أسوداً لكي يعكس أشعة الشمس وأشعر بالبرودة.'",
+            options: [
+                { id: 'a', text: "فكرة ذكية! الصوف مادة باردة.", correct: false },
+                { id: 'b', text: "خطأ! الأسود يمتص الحرارة والصوف يحبس حرارة الجسم.", correct: true },
+                { id: 'c', text: "صحيح، لكن يجب أن يكون المعطف مبللاً.", correct: false }
+            ],
+            explanation: "اللون الأسود يمتص معظم أطياف الضوء ويحولها لحرارة، والصوف عازل حراري يحفظ حرارة الجسم ولا يطردها."
+            },
+            {
+            id: 2,
+            topic: "الضوء والظلال",
+            scenario: "يقول برهان: 'انظر! ظلي يقع خلفي تماماً، هذا يعني أن الشمس تقع خلفي أيضاً.'",
+            options: [
+                { id: 'a', text: "صحيح، الظل يتبع مصدر الضوء.", correct: false },
+                { id: 'b', text: "خطأ! الظل يتكون في الجهة المقابلة لمصدر الضوء.", correct: true },
+                { id: 'c', text: "الظل لا علاقة له بمكان الشمس.", correct: false }
+            ],
+            explanation: "الظل يتكون عندما يحجب جسم معتم الضوء، فيظهر الظل دائماً في الجهة المعاكسة لمصدر الضوء."
+            },
+            {
+            id: 3,
+            topic: "المغناطيسية",
+            scenario: "يحاول برهان تنظيف الحديقة: 'سأستخدم هذا المغناطيس العملاق لجمع كل الزجاجات البلاستيكية بسرعة!'",
+            options: [
+                { id: 'a', text: "لن ينجح، المغناطيس يجذب المواد الحديدية فقط.", correct: true },
+                { id: 'b', text: "سينجح إذا كان المغناطيس قوياً جداً.", correct: false },
+                { id: 'c', text: "المغناطيس يجذب الزجاج فقط وليس البلاستيك.", correct: false }
+            ],
+            explanation: "المغناطيس يؤثر فقط على المواد المغناطيسية مثل الحديد والنيكل والكوبالت، ولا يجذب البلاستيك أو الخشب."
+            },
+            {
+            id: 4,
+            topic: "حالات المادة",
+            scenario: "وضع برهان وعاء ماء في المجمد وقال: 'سأنتظر قليلاً حتى يغلي الماء ويتحول إلى بخار!'",
+            options: [
+                { id: 'a', text: "صحيح، المجمد يغير حالة المادة.", correct: false },
+                { id: 'b', text: "خطأ! التجميد يحول السائل إلى صلب (جليد).", correct: true },
+                { id: 'c', text: "سيتحول الماء إلى غاز بارد.", correct: false }
+            ],
+            explanation: "خفض درجة الحرارة في المجمد يؤدي إلى تجمد الماء وتحوله للحالة الصلبة، بينما الغليان يحتاج لرفع الحرارة."
+            },
+            {
+            id: 5,
+            topic: "احتياجات النبات",
+            scenario: "يقول برهان: 'سأسقي هذه النبتة بماء البحر المالح لتنمو بسرعة وتصبح قوية مثل أسماك القرش!'",
+            options: [
+                { id: 'a', text: "فكرة ممتازة، الملح مفيد للنبات.", correct: false },
+                { id: 'b', text: "الماء المالح يقتل معظم النباتات لأنه يمتص الماء منها.", correct: true },
+                { id: 'c', text: "النباتات لا تحتاج للماء أصلاً.", correct: false }
+            ],
+            explanation: "الماء المالح ضار لمعظم النباتات (إلا أنواع خاصة) لأنه يسبب الجفاف للنبات عبر الخاصية الاسموزية."
+            },
+            {
+            id: 6,
+            topic: "الصوت والفراغ",
+            scenario: "برهان في الفضاء الخارجي يصرخ لزميله الروبوت البعيد: 'يا صديقي، هل تسمعني؟' دون استخدام جهاز لاسلكي.",
+            options: [
+                { id: 'a', text: "سيسمعه بوضوح لأن الفضاء هادئ جداً.", correct: false },
+                { id: 'b', text: "لن يسمعه لأن الصوت لا ينتقل في الفراغ.", correct: true },
+                { id: 'c', text: "سيصل الصوت لكنه سيكون بطيئاً.", correct: false }
+            ],
+            explanation: "الصوت عبارة عن موجات ميكانيكية تحتاج لوسط مادي (هواء، سائل، صلب) لتنتقل، والفضاء فراغ تام."
+            },
+            {
+            id: 7,
+            topic: "القوى والاحتكاك",
+            scenario: "يقول برهان: 'سأضع الزيت على حذائي لأجري بشكل أسرع في السباق!'",
+            options: [
+                { id: 'a', text: "فكرة رائعة لتقليل الجهد.", correct: false },
+                { id: 'b', text: "خطأ! الزيت يقلل الاحتكاك مما يجعله ينزلق ويسقط.", correct: true },
+                { id: 'c', text: "الزيت سيجعل الحذاء أثقل وزناً.", correct: false }
+            ],
+            explanation: "نحتاج لقوة الاحتكاك بين الحذاء والأرض لكي نتمكن من الدفع والمشي أو الجري؛ الزيت يقلل الاحتكاك ويسبب الانزلاق."
+            },
+            {
+            id: 8,
+            topic: "التغيرات الكيميائية",
+            scenario: "غسل برهان دراجته الحديدية وتركها مبللة في الهواء الطلق وقال: 'الآن ستصبح أنظف وأقوى!'",
+            options: [
+                { id: 'a', text: "صحيح، الماء يقوي الحديد.", correct: false },
+                { id: 'b', text: "خطأ! الرطوبة والأكسجين يسببان صدأ الحديد وتآكله.", correct: true },
+                { id: 'c', text: "الحديد سيتحول إلى فولاذ.", correct: false }
+            ],
+            explanation: "تعرض الحديد للماء والأكسجين يسبب تفاعلاً كيميائياً ينتج عنه أكسيد الحديد (الصدأ)، مما يضعف المادة."
+            },
+            {
+            id: 9,
+            topic: "دوران الأرض",
+            scenario: "يشاهد برهان الغروب ويقول: 'انظر كيف تتحرك الشمس وتغوص في البحر لتنام!'",
+            options: [
+                { id: 'a', text: "وصف شاعري وصحيح علمياً.", correct: false },
+                { id: 'b', text: "الشمس لا تتحرك، الأرض هي التي تدور حول نفسها.", correct: true },
+                { id: 'c', text: "الشمس تنطفئ في الليل.", correct: false }
+            ],
+            explanation: "تعاقب الليل والنهار يحدث بسبب دوران الأرض حول محورها أمام الشمس، وليس بسبب حركة الشمس حول الأرض."
+            },
+            {
+            id: 10,
+            topic: "النظام البيئي",
+            scenario: "يقول برهان: 'سأقضي على كل البكتيريا والفطريات في الغابة لتصبح نظيفة تماماً!'",
+            options: [
+                { id: 'a', text: "هذا سيحمي الحيوانات من الأمراض.", correct: false },
+                { id: 'b', text: "كارثة! المحللات ضرورية لإعادة تدوير المواد الغذائية للتربة.", correct: true },
+                { id: 'c', text: "لا فائدة منها، فهي مجرد كائنات صغيرة.", correct: false }
+            ],
+            explanation: "البكتيريا والفطريات (المحللات) تقوم بتحليل الكائنات الميتة وتعيد العناصر الغذائية للتربة لتمتصها النباتات مجدداً."
+            }
+        ];
+
+        // --- Shuffle Utility Function ---
+        const shuffleArray = (array) => {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        };
+
+        const REWARD_URL = "https://talented-nation.github.io/database/reward1.html";
+
+        const App = () => {
+            const [gameQuestions, setGameQuestions] = useState([]);
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [score, setScore] = useState(0);
+            const [showResult, setShowResult] = useState(false);
+            const [feedback, setFeedback] = useState(null); 
+            const [isAnswered, setIsAnswered] = useState(false);
+            const [gameStarted, setGameStarted] = useState(false);
+            const [timeLeft, setTimeLeft] = useState(20);
+            const [lives, setLives] = useState(3);
+            const [gameStartTime, setGameStartTime] = useState(null);
+            const [finalTime, setFinalTime] = useState(null);
+
+            // Function to start/restart game with shuffled questions
+            const handleStartGame = () => {
+                const randomizedQuestions = questionsSource.map(q => ({
+                    ...q,
+                    options: shuffleArray(q.options)
+                }));
+                
+                setGameQuestions(randomizedQuestions);
+                setScore(0);
+                setCurrentQuestionIndex(0);
+                setShowResult(false);
+                setIsAnswered(false);
+                setTimeLeft(20);
+                setLives(3);
+                setGameStartTime(Date.now());
+                setFinalTime(null);
+                setGameStarted(true);
+            };
+
+            // --- Timer Logic ---
+            useEffect(() => {
+                let timer;
+                if (gameStarted && !isAnswered && !showResult && timeLeft > 0) {
+                timer = setInterval(() => {
+                    setTimeLeft((prev) => prev - 1);
+                }, 1000);
+                } else if (timeLeft === 0 && !isAnswered) {
+                handleTimeUp();
+                }
+                return () => clearInterval(timer);
+            }, [gameStarted, isAnswered, showResult, timeLeft]);
+
+            // --- Redirect Logic (Reward) ---
+            useEffect(() => {
+                if (showResult && lives > 0) {
+                    const timer = setTimeout(() => {
+                        window.location.href = REWARD_URL;
+                    }, 4000); // 4 seconds delay to read message
+                    return () => clearTimeout(timer);
+                }
+            }, [showResult, lives]);
+
+            // --- Helper Functions ---
+
+            const handleTimeUp = () => {
+                setIsAnswered(true);
+                setLives(prev => Math.max(0, prev - 1));
+                setFeedback({ type: 'timeout', message: 'انتهى الوقت! ⏰' });
+            };
+
+            const handleAnswer = (isCorrect) => {
+                setIsAnswered(true);
+                if (isCorrect) {
+                setScore(score + 10);
+                setFeedback({ type: 'success', message: 'تفكير علمي ممتاز! أحسنت 🌟' });
+                } else {
+                setLives(prev => Math.max(0, prev - 1));
+                setFeedback({ type: 'error', message: 'إجابة غير دقيقة، اقرأ التفسير 👇' });
+                }
+            };
+
+            const nextQuestion = () => {
+                setFeedback(null);
+                setIsAnswered(false);
+                
+                // If lives reached 0, end the game immediately instead of going next
+                if (lives === 0) {
+                    setShowResult(true);
+                    return;
+                }
+
+                setTimeLeft(20);
+                if (currentQuestionIndex < gameQuestions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                } else {
+                    // Win condition logic
+                    setFinalTime(Date.now() - gameStartTime);
+                    setShowResult(true);
+                }
+            };
+
+            // --- UI Components ---
+
+            const ProgressBar = () => (
+                <div className="w-full bg-slate-200 h-2 mb-6 fixed top-0 left-0 z-50">
+                <div 
+                    className="bg-purple-600 h-2 transition-all duration-500" 
+                    style={{ width: `${((currentQuestionIndex + 1) / gameQuestions.length) * 100}%` }}
+                ></div>
+                </div>
+            );
+
+            // --- Reward Popup Modal ---
+            const RewardPopup = () => (
+                <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[60] animate-in fade-in">
+                    <div className="bg-white rounded-3xl p-8 max-w-sm w-full text-center relative border-4 border-yellow-400 shadow-2xl transform scale-100">
+                         <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-yellow-400 rounded-full p-4 border-4 border-white">
+                             <Trophy className="w-12 h-12 text-white animate-bounce" />
+                         </div>
+                         <h2 className="text-2xl font-black text-slate-800 mt-8 mb-2">مبروك الفوز! 🏆</h2>
+                         <p className="text-slate-600 mb-6">جاري نقلك لاستلام الجائزة...</p>
+                         <div className="flex justify-center mb-4">
+                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                         </div>
+                         <a 
+                            href={REWARD_URL}
+                            className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-full transition-all shadow-md text-sm"
+                         >
+                            <span>الذهاب للجائزة الآن</span>
+                            <ExternalLink className="w-4 h-4" />
+                         </a>
+                    </div>
+                </div>
+            );
+
+            if (!gameStarted) {
+                return (
+                <div className="min-h-screen font-sans text-right flex flex-col items-center justify-center p-4" dir="rtl">
+                    <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center border-b-8 border-purple-600">
+                    <div className="bg-purple-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+                        <Brain className="w-12 h-12 text-purple-600" />
+                    </div>
+                    <h1 className="text-3xl font-black text-slate-800 mb-2">المحقق العلمي 🕵️‍♂️</h1>
+                    <p className="text-slate-600 mb-8 leading-relaxed text-lg">
+                        الروبوت "برهان" لديه 10 قضايا علمية تحتاج لحل.<br/>
+                        لديك 20 ثانية و 3 محاولات ❤️ فقط!
+                    </p>
+                    <button 
+                        onClick={handleStartGame}
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all transform hover:scale-105 shadow-lg text-lg"
+                    >
+                        <Play className="w-6 h-6" />
+                        ابدأ التحقيق
+                    </button>
+                    </div>
+                </div>
+                );
+            }
+
+            if (showResult) {
+                return (
+                <div className="min-h-screen font-sans text-right flex flex-col items-center justify-center p-4 relative" dir="rtl">
+                    
+                    {/* Render Popup if Won (Lives > 0) */}
+                    {lives > 0 && <RewardPopup />}
+
+                    <div className="bg-white rounded-3xl shadow-xl p-8 max-w-md w-full text-center animate-in zoom-in duration-500">
+                    <div className="inline-block p-6 bg-yellow-100 rounded-full mb-6 relative">
+                        <Trophy className="w-16 h-16 text-yellow-600" />
+                        {score === 100 && <div className="absolute -top-2 -right-2 text-4xl animate-bounce">🌟</div>}
+                    </div>
+                    <h2 className="text-3xl font-bold text-slate-800 mb-2">
+                        {lives === 0 ? "نفدت المحاولات! 💔" : score >= 80 ? "محقق عبقري!" : score >= 50 ? "مجهود رائع!" : "حاول مرة أخرى"}
+                    </h2>
+                    <p className="text-slate-600 mb-6">لقد أنهيت التحقيق بنتيجة:</p>
+                    
+                    <div className="bg-purple-50 p-6 rounded-2xl mb-8 border border-purple-100">
+                        <span className="block text-sm text-purple-500 font-bold mb-1">نتيجتك النهائية</span>
+                        <span className="text-6xl font-black text-purple-700">{score}</span>
+                        <span className="text-purple-400 text-xl font-bold">/100</span>
+                    </div>
+
+                    {/* Time Display (Only if Won/Finished) */}
+                    {lives > 0 && finalTime && (
+                        <div className="bg-blue-50 p-4 rounded-xl mb-6 border border-blue-100 animate-in fade-in">
+                            <span className="block text-sm text-blue-500 font-bold mb-1">وقت الإنجاز ⏱️</span>
+                            <span className="text-2xl font-black text-blue-700">
+                                {Math.floor(finalTime / 60000)}:{String(Math.floor((finalTime % 60000) / 1000)).padStart(2, '0')}
+                            </span>
+                        </div>
+                    )}
+
+                    </div>
+                </div>
+                );
+            }
+
+            const currentQ = gameQuestions[currentQuestionIndex];
+            const timerColor = timeLeft < 10 ? 'text-red-600 animate-pulse' : 'text-slate-600';
+
+            return (
+                <div className="min-h-screen font-sans text-right pb-10" dir="rtl">
+                <ProgressBar />
+                
+                {/* Header */}
+                <header className="bg-white p-4 shadow-sm sticky top-0 z-40">
+                    <div className="max-w-md mx-auto flex justify-between items-center">
+                    <div className="flex items-center gap-2 text-purple-700">
+                        <FlaskConical className="w-6 h-6" />
+                        <span className="font-bold hidden sm:inline">القضية {currentQuestionIndex + 1} من {gameQuestions.length}</span>
+                        <span className="font-bold sm:hidden">{currentQuestionIndex + 1}/{gameQuestions.length}</span>
+                    </div>
+                    
+                    {/* Timer & Lives Display */}
+                    <div className="flex items-center gap-3">
+                        {/* Lives */}
+                        <div className="flex text-red-500 gap-1">
+                            {[...Array(3)].map((_, i) => (
+                                <Heart key={i} className={`w-6 h-6 transition-all duration-300 ${i < lives ? 'fill-current scale-100' : 'text-slate-300 scale-75'}`} filled={i < lives} />
+                            ))}
+                        </div>
+
+                        {/* Timer */}
+                        <div className={`flex items-center gap-1 font-mono text-xl font-bold ${timerColor} border-2 border-slate-100 px-2 py-1 rounded-lg`}>
+                            <Timer className="w-5 h-5" />
+                            <span>00:{timeLeft < 10 ? `0${timeLeft}` : timeLeft}</span>
+                        </div>
+                    </div>
+
+                    <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold text-sm hidden sm:block">
+                        {score} نقطة
+                    </div>
+                    </div>
+                </header>
+
+                <main className="max-w-md mx-auto p-4 mt-2">
+                    
+                    {/* Scenario Card */}
+                    <div className="bg-white rounded-2xl shadow-lg border border-purple-100 overflow-hidden mb-6 animate-in slide-in-from-bottom-4 duration-500">
+                    <div className="bg-purple-50 px-4 py-2 border-b border-purple-100 flex justify-between items-center">
+                        <span className="text-xs font-bold text-purple-600 bg-white px-2 py-1 rounded-md border border-purple-200">{currentQ.topic}</span>
+                        <span className="text-xs text-slate-400">ملف برهان 📁</span>
+                    </div>
+                    
+                    <div className="p-6">
+                        <div className="flex items-start gap-4">
+                        <div className="text-5xl shrink-0 bg-slate-100 rounded-full w-16 h-16 flex items-center justify-center border-2 border-slate-200">🤖</div>
+                        <div className="bg-slate-50 p-4 rounded-2xl rounded-tr-none border border-slate-200 relative w-full">
+                            <p className="text-lg text-slate-700 font-medium leading-relaxed">
+                            {currentQ.scenario}
+                            </p>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <h3 className="font-bold text-slate-800 mb-4 pr-2">أين الخطأ في كلام برهان؟</h3>
+
+                    {/* Options */}
+                    <div className="space-y-3 mb-6">
+                    {currentQ.options.map((opt) => {
+                        let btnClass = "w-full text-right bg-white p-4 rounded-xl border-2 border-slate-100 shadow-sm transition-all ";
+                        
+                        if (isAnswered) {
+                        if (opt.correct) btnClass += "border-green-500 bg-green-50 ring-2 ring-green-200 ";
+                        else if (feedback?.type === 'timeout') btnClass += "opacity-50 grayscale ";
+                        else btnClass += "opacity-50 grayscale ";
+                        } else {
+                        btnClass += "hover:border-purple-400 hover:shadow-md active:scale-98 cursor-pointer";
+                        }
+
+                        return (
+                        <button 
+                            key={opt.id}
+                            onClick={() => !isAnswered && handleAnswer(opt.correct)}
+                            disabled={isAnswered}
+                            className={btnClass}
+                        >
+                            <div className="flex items-center justify-between">
+                            <span>{opt.text}</span>
+                            {isAnswered && opt.correct && <Check className="text-green-600 w-5 h-5" />}
+                            {isAnswered && !opt.correct && <span className="w-5"></span>}
+                            </div>
+                        </button>
+                        );
+                    })}
+                    </div>
+
+                    {/* Feedback & Explanation Area */}
+                    {isAnswered && (
+                    <div className="animate-in fade-in zoom-in duration-300">
+                        {/* Feedback Toast Style */}
+                        <div className={`p-4 rounded-xl mb-4 flex items-center gap-3 ${
+                        feedback.type === 'success' ? 'bg-green-100 text-green-800' : 
+                        feedback.type === 'timeout' ? 'bg-orange-100 text-orange-800' :
+                        'bg-red-100 text-red-800'
+                        }`}>
+                        {feedback.type === 'success' ? <CheckCircleIcon className="w-6 h-6" /> : feedback.type === 'timeout' ? <Timer className="w-6 h-6"/> : <XCircleIcon className="w-6 h-6" />}
+                        <span className="font-bold">{feedback.message}</span>
+                        </div>
+
+                        {/* Scientific Explanation */}
+                        <div className="bg-blue-50 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
+                        <h4 className="font-bold text-blue-800 mb-1 text-sm">💡 الحقيقة العلمية:</h4>
+                        <p className="text-blue-900 text-sm leading-relaxed">
+                            {currentQ.explanation}
+                        </p>
+                        </div>
+
+                        {/* Next Button */}
+                        <button 
+                        onClick={nextQuestion}
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 animate-bounce-short"
+                        >
+                        {lives === 0 ? "عرض النتائج (Game Over)" : currentQuestionIndex < gameQuestions.length - 1 ? "القضية التالية" : "عرض النتائج"}
+                        <ArrowLeft className="w-5 h-5" />
+                        </button>
+                    </div>
+                    )}
+
+                </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
