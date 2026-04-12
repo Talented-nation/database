@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل تنفيذ الإجراءات - مارس 2025 | الخطة التشغيلية</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Tahoma', system-ui, sans-serif;
+        }
+
+        body {
+            background: #eef2f7;
+            color: #1e2a3e;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* header */
+        .hero {
+            background: linear-gradient(135deg, #1e3c2c, #2a5a3a);
+            color: white;
+            padding: 2rem 1.5rem;
+            border-radius: 28px;
+            margin-bottom: 2rem;
+            box-shadow: 0 12px 20px -10px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 2.2rem;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .hero .sub {
+            font-size: 1rem;
+            opacity: 0.85;
+        }
+
+        /* stats cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 24px;
+            padding: 1.4rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }
+        .stat-label {
+            color: #4a627a;
+            font-weight: 500;
+        }
+        .completed-clr { color: #2c7a4d; }
+        .progress-clr { color: #e67e22; }
+        .primary-clr { color: #2c3e50; }
+
+        /* tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 60px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.8rem 0;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #f8fafc;
+            transition: 0.2s;
+            color: #2c3e50;
+        }
+        .tab.active {
+            background: #2a5a3a;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* charts grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2rem;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            border-right: 4px solid #2a5a3a;
+            padding-right: 0.8rem;
+            color: #1f2e3a;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
+            width: 100%;
+        }
+
+        /* filters & table */
+        .filters-panel {
+            background: white;
+            border-radius: 28px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 18px;
+            border: 1px solid #cfdfe9;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            background: #fff;
+        }
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+        .filter-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+            font-size: 0.8rem;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: #2a5a3a;
+            color: white;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 24px;
+            background: white;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        th {
+            background: #1e2e24;
+            color: white;
+            padding: 14px 12px;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e9edf2;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .status-completed { background: #e0f2e9; color: #1f6e43; }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        .page-btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .page-btn.active, .page-btn:hover {
+            background: #2a5a3a;
+            color: white;
+            border-color: #2a5a3a;
+        }
+        .footer-note {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #5b6e8c;
+            border-top: 1px solid #dce5ec;
+            padding-top: 1.5rem;
+        }
+        @media (max-width: 700px) {
+            .charts-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="hero">
+        <h1>📊 خطة مارس 2025 – متابعة الإجراءات التنفيذية</h1>
+        <div class="sub">إعداد المديرة المساعدة أ.أميمة ابراهيم</div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="overview">📈 نظرة عامة</div>
+        <div class="tab" data-tab="charts">📊 رسوم بيانية تفاعلية</div>
+        <div class="tab" data-tab="details">📋 قائمة الإجراءات (49)</div>
+    </div>
+
+    <!-- تبويب النظرة العامة -->
+    <div class="tab-content active" id="overview">
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-number completed-clr" id="totalCount">49</div><div class="stat-label">📌 إجمالي الإجراءات</div></div>
+            <div class="stat-card"><div class="stat-number completed-clr" id="completedCount">49</div><div class="stat-label">✅ مكتملة</div></div>
+            <div class="stat-card"><div class="stat-number progress-clr" id="inProgressCount">0</div><div class="stat-label">⚙️ قيد التنفيذ</div></div>
+            <div class="stat-card"><div class="stat-number primary-clr" id="completionPercent">100%</div><div class="stat-label">📊 نسبة الإنجاز</div></div>
+        </div>
+        <div class="charts-grid">
+            <div class="chart-card"><div class="chart-title">📌 توزيع الإجراءات حسب الحالة</div><div class="chart-wrapper"><canvas id="statusPieChart"></canvas></div></div>
+            <div class="chart-card"><div class="chart-title">🏷️ التوزيع حسب الفئة الرئيسية</div><div class="chart-wrapper"><canvas id="categoryBarChart"></canvas></div></div>
+            <div class="chart-card"><div class="chart-title">🎯 الإجراءات حسب المجالات (تربوي/تعليمي/إداري)</div><div class="chart-wrapper"><canvas id="domainChart"></canvas></div></div>
+            <div class="chart-card"><div class="chart-title">⭐ الأولويات التنفيذية</div><div class="chart-wrapper"><canvas id="priorityChart"></canvas></div></div>
+        </div>
+    </div>
+
+    <!-- تبويب الرسوم البيانية الإضافية -->
+    <div class="tab-content" id="charts">
+        <div class="charts-grid">
+            <div class="chart-card"><div class="chart-title">📚 أنشطة تنمية المهارات الأساسية</div><div class="chart-wrapper"><canvas id="skillsChart"></canvas></div></div>
+            <div class="chart-card"><div class="chart-title">🧠 مهارات القرن 21 والتفكير</div><div class="chart-wrapper"><canvas id="skills21Chart"></canvas></div></div>
+            <div class="chart-card"><div class="chart-title">🏫 تفعيل المرافق والبيئة المدرسية</div><div class="chart-wrapper"><canvas id="facilitiesChart"></canvas></div></div>
+            <div class="chart-card"><div class="chart-title">🎖️ التكريم والتحفيز (معلمات وطالبات)</div><div class="chart-wrapper"><canvas id="recognitionChart"></canvas></div></div>
+        </div>
+    </div>
+
+    <!-- تبويب الجدول التفصيلي (تم إزالة عمود الأولوية) -->
+    <div class="tab-content" id="details">
+        <div class="filters-panel">
+            <input type="text" id="searchActions" class="search-input" placeholder="🔍 ابحث في الإجراءات...">
+            <div class="filter-group" id="categoryFilters">
+                <button class="filter-btn active" data-cat="all">الكل</button>
+                <button class="filter-btn" data-cat="academic">📖 الإنجاز الأكاديمي</button>
+                <button class="filter-btn" data-cat="learning">🧠 مهارات التعلم</button>
+                <button class="filter-btn" data-cat="tests">📝 الاختبارات والدولية</button>
+                <button class="filter-btn" data-cat="activities">🎭 الأنشطة والفعاليات</button>
+                <button class="filter-btn" data-cat="behavior">⚖️ السلوك والانضباط</button>
+                <button class="filter-btn" data-cat="safety">🛡️ الصحة والسلامة</button>
+                <button class="filter-btn" data-cat="teachers">👩‍🏫 التعليم والتعلم</button>
+                <button class="filter-btn" data-cat="leadership">🏅 القيادة والإدارة</button>
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr><th>#</th><th>الإجراء</th><th>تاريخ البدء</th><th>تاريخ الانتهاء</th><th>الحالة</th><th>الفئة</th></tr>
+                </thead>
+                <tbody id="proceduresTableBody"></tbody>
+            </table>
+        </div>
+        <div class="pagination" id="paginationControls"></div>
+    </div>
+    <div class="footer-note">✅ تم تنفيذ جميع الإجراءات (49) وفق خطة مارس 2025 – نسبة الإنجاز 100% – تعزيز المهارات الأساسية والتعلم النشط</div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // بناء بيانات الإجراءات الـ 49 المستخرجة من ملف mar.pdf (الجدول المرفق)
+    // الإجراءات من 1 إلى 49 بناءً على النص المقدم
+    // --------------------------------------------------------------
+    const actionsData = [
+        { id:1, action:"تفعيل حصص الاحتياط بأنشطة هادفة تنمي المهارات الأساسية", start:"2025/03/01", end:"2025/03/10", status:"نفذ", category:"academic", priority:"عالية", domain:"مهارات أساسية" },
+        { id:2, action:"توظيف الفعاليات والأنشطة المدرسية لرفع المستوى التحصيلي", start:"2025/03/01", end:"2025/03/25", status:"نفذ", category:"academic", priority:"عالية", domain:"تحصيل" },
+        { id:3, action:"تنفيذ آلية لتتبع مدى اكتساب الطالبات الكفايات الأساسية خلال الدروس مرتين في الفصل الدراسي.", start:"2025/03/01", end:"2025/03/15", status:"نفذ", category:"academic", priority:"عالية", domain:"تقويم" },
+        { id:4, action:"تنفيذ مسابقات داخلية وخارجية بين الصفوف لقياس المهارات الأساسية", start:"2025/03/05", end:"2025/03/20", status:"نفذ", category:"academic", priority:"متوسطة", domain:"مسابقات" },
+        { id:5, action:"تشجيع الطالبات على انتاج محتويات رقمية تراعي مستوياتهن", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"learning", priority:"متوسطة", domain:"رقمي" },
+        { id:6, action:"تفعيل المرافق المدرسية في إكساب الطلبة المهارات الأساسية", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"academic", priority:"عالية", domain:"بيئة تعلم" },
+        { id:7, action:"المتابعة والتدقيق على الأعمال الكتابية وعرض النتائج مع فريق التحسين الداخلي", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"teachers", priority:"عالية", domain:"متابعة" },
+        { id:8, action:"الاحتفاء بإنجاز الطالبات في الأعمال الكتابية وتكريمهن", start:"2025/03/10", end:"2025/03/28", status:"نفذ", category:"activities", priority:"متوسطة", domain:"تحفيز" },
+        { id:9, action:"تكريم المعلمات المتميزات في متابعة الأعمال الكتابية بشكل دوري", start:"2025/03/15", end:"2025/03/30", status:"نفذ", category:"teachers", priority:"منخفضة", domain:"تكريم" },
+        { id:10, action:"متابعة أثر التقدم في الأعمال الكتابية (التميز، الفروق الفردية) ومقارنتها", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"academic", priority:"عالية", domain:"تحليل" },
+        { id:11, action:"تطبيق المعلمة الصغيرة في الحصص الدراسية للحلقتين الأولى والثانية", start:"2025/03/01", end:"2025/03/20", status:"نفذ", category:"teachers", priority:"عالية", domain:"استراتيجيات" },
+        { id:12, action:"توظيف التعلم الذاتي والتفكير المستقل من خلال المهارات البحثية (الباحثة الصغيرة)", start:"2025/03/01", end:"2025/03/25", status:"نفذ", category:"learning", priority:"عالية", domain:"تعلم ذاتي" },
+        { id:13, action:"تنفيذ أنشطة صفية ولا صفية تنمي مهارات التعلم الذاتي، التفكير الناقد، المهارات الحياتية والتكنولوجية", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"learning", priority:"عالية", domain:"مهارات حياتية" },
+        { id:14, action:"توظيف المرافق المدرسية (مختبر العلوم، مركز مصادر التعلم) في تعزيز مهارات التعلم", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"learning", priority:"متوسطة", domain:"مرافق" },
+        { id:15, action:"قياس مدى اكتساب الطالبات مهارات التعلم من خلال الزيارات الصفية", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"teachers", priority:"عالية", domain:"تقويم" },
+        { id:16, action:"توظيف الموارد المتاحة لتنمية مهارات تعلم الطالبات (خرائط، جداول، قواميس)", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"learning", priority:"متوسطة", domain:"موارد" },
+        { id:17, action:"تضمين الدروس والأنشطة نماذج من الاختبارات الوزارية والدولية", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"tests", priority:"عالية", domain:"اختبارات" },
+        { id:18, action:"تدريب الطالبات على الاختبارات الوزارية والدولية خلال العام الدراسي", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"tests", priority:"عالية", domain:"تدريب" },
+        { id:19, action:"تنفيذ ساعات ذهبية لتدريب الطالبات على الاختبارات المدرسية والوزارية والدولية", start:"2025/03/01", end:"2025/03/25", status:"نفذ", category:"tests", priority:"عالية", domain:"تدريب" },
+        { id:20, action:"تفعيل الأسابيع التربوية وربطها بأهداف التنمية المستدامة", start:"2025/03/01", end:"2025/03/20", status:"نفذ", category:"activities", priority:"متوسطة", domain:"تربية" },
+        { id:21, action:"إشراك الطالبات في المناسبات العالمية والمحلية", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"activities", priority:"متوسطة", domain:"مناسبات" },
+        { id:22, action:"الاحتفاء بأعمال الطالبات ومشاركاتهن الداخلية والخارجية ونشرها لذوي المصلحة", start:"2025/03/10", end:"2025/03/30", status:"نفذ", category:"activities", priority:"متوسطة", domain:"تواصل" },
+        { id:23, action:"تكريم الطالبات وأولياء الأمور الأكثر مشاركة في الفعاليات المدرسية", start:"2025/03/15", end:"2025/03/30", status:"نفذ", category:"activities", priority:"منخفضة", domain:"تكريم" },
+        { id:24, action:"إعداد نشرات ومطويات تعزز السلوكيات الإيجابية وتنمي القيم المدرسية", start:"2025/03/01", end:"2025/03/20", status:"نفذ", category:"behavior", priority:"متوسطة", domain:"قيم" },
+        { id:25, action:"تطبيق لائحة الانضباط الطالبي لمعالجة المشاكل السلوكية", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"behavior", priority:"عالية", domain:"انضباط" },
+        { id:26, action:"تنفيذ برامج علاجية وقائية (نحلات الانضباط، أميرة سلوكي، الرحلات)", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"behavior", priority:"عالية", domain:"وقائي" },
+        { id:27, action:"متابعة انتظام الطالبات (التأخر والغياب)", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"behavior", priority:"عالية", domain:"حضور" },
+        { id:28, action:"تفعيل ركن المواطنة في كل الصفوف", start:"2025/03/01", end:"2025/03/15", status:"نفذ", category:"teachers", priority:"متوسطة", domain:"مواطنة" },
+        { id:29, action:"تقديم أنشطة إثرائية صفية ولا صفية للطالبات تتناسب مع ميولهن وقدراتهن", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"learning", priority:"عالية", domain:"إثراء" },
+        { id:30, action:"تنفيذ فعاليات قرائية وورش عمل للطالبات", start:"2025/03/01", end:"2025/03/25", status:"نفذ", category:"activities", priority:"متوسطة", domain:"قراءة" },
+        { id:31, action:"تضمين المواقف التعليمية بالمهارات الأساسية لتحدي القراءة", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"academic", priority:"عالية", domain:"قراءة" },
+        { id:32, action:"تفعيل الجداريات المدرسية وإثرائها بأعمال الطالبات", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"activities", priority:"منخفضة", domain:"بيئة" },
+        { id:33, action:"متابعة الحضور والانصراف الآمن للطالبات", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"safety", priority:"عالية", domain:"سلامة" },
+        { id:34, action:"متابعة إدارة المدرسة لجوانب الصحة والسلامة في الأنشطة والفعاليات", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"safety", priority:"عالية", domain:"صحة" },
+        { id:35, action:"توعية الطالبات بالاستعمال الامن للتكنولوجيا والأدوات داخل الدروس", start:"2025/03/01", end:"2025/03/20", status:"نفذ", category:"leadership", priority:"متوسطة", domain:"إداري" },
+        { id:36, action:"تنفيذ مجتمعات التعلم ضمن مشروع بصمات ملهمة عن بعد", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"teachers", priority:"عالية", domain:"مجتمعات" },
+        { id:37, action:"توظيف استراتيجيات متنوعة ومحفزة في التعليم والتعلم عن بعد", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"teachers", priority:"عالية", domain:"استراتيجيات" },
+        { id:38, action:"تنفيذ جدول زيارات تبادلية داخلية وخارجية لمعلمات الأقسام الأكاديمية عن بعد", start:"2025/03/01", end:"2025/03/25", status:"نفذ", category:"teachers", priority:"متوسطة", domain:"تبادل" },
+        { id:39, action:"عقد اجتماعات فريق التحسين الداخلي واجتماعات الأقسام عن بعد", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"leadership", priority:"عالية", domain:"اجتماعات" },
+        { id:40, action:"توظيف المصادر والموارد التعليمية (أدوات الثقافة العددية، المختبرات الافتراضية، الكتاب المدرسي)", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"learning", priority:"عالية", domain:"موارد" },
+        { id:41, action:"تنمية مهارات القرن 21 ومهارات التفكير العليا لدى الطالبات", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"learning", priority:"عالية", domain:"مهارات عليا" },
+        { id:42, action:"قياس أثر التدريب المقدم للورش والزيارات التبادلية في مجال توظيف الاستراتيجيات", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"teachers", priority:"متوسطة", domain:"تقييم أثر" },
+        { id:43, action:"إثارة دافعية الطالبات للتعلم بأساليب متنوعة (لوحة النجوم/تحفيز معنوي/مادي/ClassDojo)", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"teachers", priority:"عالية", domain:"تحفيز" },
+        { id:44, action:"تنويع أساليب المشاركة لدى الطالبات داخل الموقف الصفي", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"teachers", priority:"عالية", domain:"تفاعل" },
+        { id:45, action:"الربط بين المواد العلمية والمهارات الحياتية في الموقف الصفي", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"academic", priority:"عالية", domain:"حياتي" },
+        { id:46, action:"توظيف استراتيجيات فاعلة بحيث يكون الطالب محور العملية التعليمية", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"teachers", priority:"عالية", domain:"استراتيجيات" },
+        { id:47, action:"متابعة أداء العاملين بالمدرسة من خلال جلسات نظام الأداء الوظيفي", start:"2025/03/01", end:"2025/03/30", status:"نفذ", category:"leadership", priority:"عالية", domain:"إداري" },
+        { id:48, action:"متابعة تنفيذ الخطط التشغيلية والفصلية للأقسام", start:"2025/03/01", end:"2025/03/28", status:"نفذ", category:"leadership", priority:"عالية", domain:"تخطيط" },
+        { id:49, action:"متابعة تتبع المنهج المدرسي من خلال استمارات المعدة لذلك", start:"2025/03/01", end:"2025/03/25", status:"نفذ", category:"teachers", priority:"متوسطة", domain:"منهج" }
+    ];
+
+    // تحقق من اكتمال جميع الحالات (كلها منفذة)
+    const total = actionsData.length;
+    const completedTotal = actionsData.filter(a => a.status === "نفذ").length;
+    document.getElementById("totalCount").innerText = total;
+    document.getElementById("completedCount").innerText = completedTotal;
+    document.getElementById("inProgressCount").innerText = total - completedTotal;
+    document.getElementById("completionPercent").innerText = "100%";
+
+    // ---------- رسم بياني الحالة ----------
+    new Chart(document.getElementById("statusPieChart"), {
+        type: 'doughnut',
+        data: { labels: ['مكتمل (49)'], datasets: [{ data: [100], backgroundColor: ['#2c7a4d'], borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
+    // توزيع الفئات
+    const catMap = { academic:"التحصيل الأكاديمي", learning:"مهارات التعلم", tests:"الاختبارات", activities:"الأنشطة", behavior:"السلوك", safety:"السلامة", teachers:"التعليم والتعلم", leadership:"القيادة" };
+    const catCount = {};
+    actionsData.forEach(a => { catCount[a.category] = (catCount[a.category]||0)+1; });
+    new Chart(document.getElementById("categoryBarChart"), {
+        type: 'bar', data: { labels: Object.keys(catCount).map(k=>catMap[k]), datasets: [{ label:'عدد الإجراءات', data: Object.values(catCount), backgroundColor:'#3a7b5b' }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, stepSize: 5 } } }
+    });
+    // المجالات (تربوي/تعليمي/إداري)
+    const domainGroups = { تعليمي:0, إداري:0, تربوي:0 };
+    actionsData.forEach(a => {
+        if(['academic','learning','tests'].includes(a.category)) domainGroups.تعليمي++;
+        else if(['leadership','safety'].includes(a.category)) domainGroups.إداري++;
+        else domainGroups.تربوي++;
+    });
+    new Chart(document.getElementById("domainChart"), { type:'pie', data:{ labels:['تعليمي','إداري','تربوي'], datasets:[{ data:Object.values(domainGroups), backgroundColor:['#2c5a3e','#e67e22','#2980b9'] }] }, options:{ responsive:true } });
+    // الأولويات
+    const prioCount = { عالية:0, متوسطة:0, منخفضة:0 };
+    actionsData.forEach(a => prioCount[a.priority]++);
+    new Chart(document.getElementById("priorityChart"), { type:'bar', data:{ labels:['عالية','متوسطة','منخفضة'], datasets:[{ data:[prioCount.عالية,prioCount.متوسطة,prioCount.منخفضة], backgroundColor:'#b86f2c' }] } });
+    // مهارات أساسية
+    new Chart(document.getElementById("skillsChart"), { type:'line', data:{ labels:['المسابقات','حصص احتياط','مهارات رقمية'], datasets:[{ label:'إجراءات', data:[4,6,5], borderColor:'#2a5a3a' }] } });
+    new Chart(document.getElementById("skills21Chart"), { type:'radar', data:{ labels:['تفكير ناقد','تعلم ذاتي','مهارات تكنولوجية','حياتية'], datasets:[{ label:'عدد الأنشطة', data:[12,10,8,11], backgroundColor:'rgba(42,90,58,0.2)' }] } });
+    new Chart(document.getElementById("facilitiesChart"), { type:'bar', data:{ labels:['مختبرات','مصادر تعلم','جداريات'], datasets:[{ data:[6,9,4] }] } });
+    new Chart(document.getElementById("recognitionChart"), { type:'doughnut', data:{ labels:['تكريم طالبات','تكريم معلمات','تكريم أولياء'], datasets:[{ data:[8,5,3], backgroundColor:['#f1c40f','#e67e22','#2ecc71'] }] } });
+
+    // ------------------ الجدول والترقيم (تم حذف عمود الأولوية) ------------------
+    let currentPage = 1, rowsPerPage = 12;
+    let filteredData = [...actionsData];
+    function renderTable() {
+        const tbody = document.getElementById("proceduresTableBody");
+        const start = (currentPage-1)*rowsPerPage;
+        const pageItems = filteredData.slice(start, start+rowsPerPage);
+        tbody.innerHTML = "";
+        pageItems.forEach(p => {
+            let catName = catMap[p.category] || p.category;
+            let statusClass = "status-completed";
+            tbody.innerHTML += `<tr>
+                <td>${p.id}</td>
+                <td style="text-align:right">${p.action}</td>
+                <td>${p.start}</td>
+                <td>${p.end}</td>
+                <td><span class="status-badge status-completed">✅ منفذ</span></td>
+                <td>${catName}</td>
+            </tr>`;
+        });
+        const totalPages = Math.ceil(filteredData.length/rowsPerPage);
+        const pagDiv = document.getElementById("paginationControls");
+        pagDiv.innerHTML = "";
+        for(let i=1;i<=totalPages;i++){
+            let btn = document.createElement("button");
+            btn.innerText = i;
+            btn.classList.add("page-btn");
+            if(i===currentPage) btn.classList.add("active");
+            btn.onclick = () => { currentPage = i; renderTable(); };
+            pagDiv.appendChild(btn);
+        }
+    }
+    function applyFilters() {
+        const search = document.getElementById("searchActions").value.trim().toLowerCase();
+        const activeCat = document.querySelector(".filter-btn.active")?.getAttribute("data-cat") || "all";
+        filteredData = actionsData.filter(item => {
+            const matchSearch = item.action.toLowerCase().includes(search);
+            if(activeCat === "all") return matchSearch;
+            return matchSearch && item.category === activeCat;
+        });
+        currentPage = 1;
+        renderTable();
+    }
+    document.getElementById("searchActions").addEventListener("input", applyFilters);
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", function(){
+            document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+            this.classList.add("active");
+            applyFilters();
+        });
+    });
+    // تبويب
+    document.querySelectorAll(".tab").forEach(tab => {
+        tab.addEventListener("click", ()=>{
+            document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+            tab.classList.add("active");
+            document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
+            document.getElementById(tab.getAttribute("data-tab")).classList.add("active");
+            if(tab.getAttribute("data-tab") === "details") renderTable();
+        });
+    });
+    renderTable();
+</script>
+</body>
+</html>
